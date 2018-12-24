@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>fukasawah&#39;s blog</title>
+    <link>http://example.org/</link>
+    <description>Recent content on fukasawah&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>ja-JP</language>
+    <lastBuildDate>Mon, 24 Dec 2018 04:48:16 +0900</lastBuildDate>
+    
+	<atom:link href="http://example.org/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Using HUGO</title>
+      <link>http://example.org/posts/using-hugo/</link>
+      <pubDate>Mon, 24 Dec 2018 04:48:16 +0900</pubDate>
+      
+      <guid>http://example.org/posts/using-hugo/</guid>
+      <description>HUGO HUGO - https://gohugo.io/
+サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。
+簡単なBlogや、ちょっと大きめなJavaScriptの実験場として、いい感じに公開したりできるかも、と思い使い始めた。
+導入 Hugoのダウンロード Windowsの場合、0.52でcachedir周りのバグがあるらしく使えない模様 そのため、0.51を使用した。
+1個のバイナリファイルになっているのでそのまま扱う。 PATHは適当に通す。
+サイトを作る hugo new site blog  以降は作成したサイトのディレクトリで作業をする
+cd blog  Gitで管理を始める 作ったサイトごとにGitリポジトリを作る。
+git init  テーマを決める 1から作るのは手間なので、 https://themes.gohugo.io/ を見ていい感じのを探す。今回はhermitにした。
+git submodule add -b v1.1.0 https://github.com/Track3/hermit.git themes/hermit echo &#39;theme = &amp;quot;hermit&amp;quot;&#39; &amp;gt;&amp;gt; config.toml  hermitはいくつか設定が必要なので、追記する。 hermitのサンプルのconfig.tomlを参考に以下のようにした。
+dateform*辺りは必須。/posts/のmenuもあったほうがよい。
+cat &amp;lt;&amp;lt; &#39;__EOF__&#39; &amp;gt;&amp;gt; config.toml [Params] dateform = &amp;quot;Jan 2, 2006&amp;quot; dateformShort = &amp;quot;Jan 2&amp;quot; dateformNum = &amp;quot;2006-01-02&amp;quot; dateformNumTime = &amp;quot;2006-01-02 15:04 -0700&amp;quot; homeSubtitle = &amp;quot;I feel like to be lazy&amp;quot; justifyContent = false [menu] [[menu.</description>
+    </item>
+    
+  </channel>
+</rss>

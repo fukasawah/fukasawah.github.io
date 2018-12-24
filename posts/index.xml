@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+		<title>Posts on fukasawah&#39;s blog</title>
+		<link>http://example.org/posts/</link>
+		<description>Recent content in Posts on fukasawah&#39;s blog</description>
+		<generator>Hugo -- gohugo.io</generator>
+		<language>ja-JP</language>
+		<lastBuildDate>Mon, 24 Dec 2018 04:48:16 +0900</lastBuildDate>
+		<atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>Using HUGO</title>
+			<link>http://example.org/posts/using-hugo/</link>
+			<pubDate>Mon, 24 Dec 2018 04:48:16 +0900</pubDate>
+			
+			<guid>http://example.org/posts/using-hugo/</guid>
+			<description>HUGO HUGO - https://gohugo.io/
+サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。
+簡単なBlogや、ちょっと大きめなJavaScriptの実験場として、いい感じに公開したりできるかも、と思い使い始めた。
+導入 Hugoのダウンロード Windowsの場合、0.52でcachedir周りのバグがあるらしく使えない模様 そのため、0.51を使用した。
+1個のバイナリファイルになっているのでそのまま扱う。 PATHは適当に通す。
+サイトを作る hugo new site blog  以降は作成したサイトのディレクトリで作業をする
+cd blog  Gitで管理を始める 作ったサイトごとにGitリポジトリを作る。
+git init  テーマを決める 1から作るのは手間なので、 https://themes.gohugo.io/ を見ていい感じのを探す。今回はhermitにした。
+git submodule add -b v1.1.0 https://github.com/Track3/hermit.git themes/hermit echo &#39;theme = &amp;quot;hermit&amp;quot;&#39; &amp;gt;&amp;gt; config.toml  hermitはいくつか設定が必要なので、追記する。 hermitのサンプルのconfig.tomlを参考に以下のようにした。
+dateform*辺りは必須。/posts/のmenuもあったほうがよい。
+cat &amp;lt;&amp;lt; &#39;__EOF__&#39; &amp;gt;&amp;gt; config.toml [Params] dateform = &amp;quot;Jan 2, 2006&amp;quot; dateformShort = &amp;quot;Jan 2&amp;quot; dateformNum = &amp;quot;2006-01-02&amp;quot; dateformNumTime = &amp;quot;2006-01-02 15:04 -0700&amp;quot; homeSubtitle = &amp;quot;I feel like to be lazy&amp;quot; justifyContent = false [menu] [[menu.</description>
+			<content type="html"><![CDATA[
+
+<h2 id="hugo">HUGO</h2>
+
+<p>HUGO - <a href="https://gohugo.io/">https://gohugo.io/</a></p>
+
+<p>サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。</p>
+
+<p>簡単なBlogや、ちょっと大きめなJavaScriptの実験場として、いい感じに公開したりできるかも、と思い使い始めた。</p>
+
+<h2 id="導入">導入</h2>
+
+<h3 id="hugoのダウンロード">Hugoのダウンロード</h3>
+
+<p>Windowsの場合、<a href="https://discourse.gohugo.io/t/error-failed-to-create-file-caches-from-configuration-file-exists/15635/18">0.52でcachedir周りのバグがあるらしく使えない模様</a>
+そのため、0.51を使用した。</p>
+
+<p>1個のバイナリファイルになっているのでそのまま扱う。
+PATHは適当に通す。</p>
+
+<h3 id="サイトを作る">サイトを作る</h3>
+
+<pre><code>hugo new site blog
+</code></pre>
+
+<p>以降は作成したサイトのディレクトリで作業をする</p>
+
+<pre><code>cd blog
+</code></pre>
+
+<h3 id="gitで管理を始める">Gitで管理を始める</h3>
+
+<p>作ったサイトごとにGitリポジトリを作る。</p>
+
+<pre><code>git init
+</code></pre>
+
+<h3 id="テーマを決める">テーマを決める</h3>
+
+<p>1から作るのは手間なので、 <a href="https://themes.gohugo.io/">https://themes.gohugo.io/</a> を見ていい感じのを探す。今回は<a href="https://themes.gohugo.io/hermit/">hermit</a>にした。</p>
+
+<pre><code>git submodule add -b v1.1.0 https://github.com/Track3/hermit.git themes/hermit
+echo 'theme = &quot;hermit&quot;' &gt;&gt; config.toml
+</code></pre>
+
+<p>hermitはいくつか設定が必要なので、追記する。
+<a href="https://github.com/Track3/hermit/blob/master/exampleSite/config.toml">hermitのサンプルのconfig.toml</a>を参考に以下のようにした。</p>
+
+<p><code>dateform*</code>辺りは必須。<code>/posts/</code>のmenuもあったほうがよい。</p>
+
+<pre><code>cat &lt;&lt; '__EOF__' &gt;&gt; config.toml
+[Params]
+  dateform        = &quot;Jan 2, 2006&quot;
+  dateformShort   = &quot;Jan 2&quot;
+  dateformNum     = &quot;2006-01-02&quot;
+  dateformNumTime = &quot;2006-01-02 15:04 -0700&quot;
+
+  homeSubtitle = &quot;I feel like to be lazy&quot;
+
+  justifyContent = false
+
+[menu]
+  [[menu.main]]
+    name = &quot;Posts&quot;
+    url = &quot;/posts/&quot;
+    weight = 10
+
+__EOF__
+</code></pre>
+
+<p>テーマは色々設定がある場合があるため、テーマを使う場合はこの辺りを注意する（dateform当たりの設定がないせいで後述のローカル起動で失敗して困っていた）</p>
+
+<p>下地はここまで。</p>
+
+<h2 id="githubにリポジトリを作る">githubにリポジトリを作る</h2>
+
+<p>*.github.ioというリポジトリを作っておくと、Github Pagesの機能で見ることができるようになる。</p>
+
+<h3 id="リポジトリを作成する">リポジトリを作成する</h3>
+
+<p><code>ユーザ名.github.io</code>という形を取る必要がある。fukasawahの場合は<code>fukasawah.github.io</code>という感じ。</p>
+
+<p>後でpushするので、中身は空っぽでよい。</p>
+
+<h2 id="記事を作成">記事を作成</h2>
+
+<h3 id="記事を作成-1">記事を作成</h3>
+
+<pre><code>hugo new posts/using-hugo.md
+</code></pre>
+
+<p><code>content/posts/using-hugo.md</code> が出来上がるので、MarkDowkで書いていく。</p>
+
+<pre><code>---
+title: &quot;Using HUGO&quot;
+date: 2018-12-24T04:48:16+09:00
+draft: false
+featuredImg: &quot;&quot;
+tags:
+  - HUGO
+---
+
+HUGO
+--------------
+
+HUGO - https://gohugo.io/
+
+サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。
+
+</code></pre>
+
+<p>というかんじで。最初の数行はメタ情報でなんとなく何を意味するかわかるはず。</p>
+
+<ul>
+<li><code>draft</code>がtrueの場合、デフォルトだと対象にならない(HTMLが生成されない)なので、適宜手でfalseにする必要がありそう。</li>
+</ul>
+
+<h3 id="表示確認">表示確認</h3>
+
+<p>手元で簡単に表示の確認を行える。</p>
+
+<pre><code>hugo server
+</code></pre>
+
+<h3 id="ビルドを行う">ビルドを行う</h3>
+]]></content>
+		</item>
+		
+	</channel>
+</rss>
