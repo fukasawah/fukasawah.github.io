@@ -2,23 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>Posts on fukasawah&#39;s blog</title>
-		<link>http://example.org/posts/</link>
+		<link>https://fukasawah.github.io/posts/</link>
 		<description>Recent content in Posts on fukasawah&#39;s blog</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>ja-JP</language>
 		<lastBuildDate>Mon, 24 Dec 2018 04:48:16 +0900</lastBuildDate>
-		<atom:link href="http://example.org/posts/index.xml" rel="self" type="application/rss+xml" />
+		<atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
 		
 		<item>
 			<title>Using HUGO</title>
-			<link>http://example.org/posts/using-hugo/</link>
+			<link>https://fukasawah.github.io/posts/using-hugo/</link>
 			<pubDate>Mon, 24 Dec 2018 04:48:16 +0900</pubDate>
 			
-			<guid>http://example.org/posts/using-hugo/</guid>
+			<guid>https://fukasawah.github.io/posts/using-hugo/</guid>
 			<description>HUGO HUGO - https://gohugo.io/
-サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。
-簡単なBlogや、ちょっと大きめなJavaScriptの実験場として、いい感じに公開したりできるかも、と思い使い始めた。
-導入 Hugoのダウンロード Windowsの場合、0.52でcachedir周りのバグがあるらしく使えない模様 そのため、0.51を使用した。
+静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。
+また、記事の公開には、Github Pagesを使う。Netlifyも試したいが、こちらの方が手軽そうだったので。
+導入のモチベーションとしては、簡単なBlogがほしい、広告嫌、という場合に、これならいい感じに公開できるかも、と思い使い始めた。
+導入 HUGOのダウンロード Windowsの場合、0.52でcachedir周りのバグがあるらしく使えない模様 そのため、0.51を使用した。
 1個のバイナリファイルになっているのでそのまま扱う。 PATHは適当に通す。
 サイトを作る hugo new site blog  以降は作成したサイトのディレクトリで作業をする
 cd blog  Gitで管理を始める 作ったサイトごとにGitリポジトリを作る。
@@ -32,13 +33,15 @@ cat &amp;lt;&amp;lt; &#39;__EOF__&#39; &amp;gt;&amp;gt; config.toml [Params] dat
 
 <p>HUGO - <a href="https://gohugo.io/">https://gohugo.io/</a></p>
 
-<p>サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。</p>
+<p>静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。</p>
 
-<p>簡単なBlogや、ちょっと大きめなJavaScriptの実験場として、いい感じに公開したりできるかも、と思い使い始めた。</p>
+<p>また、記事の公開には、<a href="https://pages.github.com/">Github Pages</a>を使う。Netlifyも試したいが、こちらの方が手軽そうだったので。</p>
+
+<p>導入のモチベーションとしては、簡単なBlogがほしい、広告嫌、という場合に、これならいい感じに公開できるかも、と思い使い始めた。</p>
 
 <h2 id="導入">導入</h2>
 
-<h3 id="hugoのダウンロード">Hugoのダウンロード</h3>
+<h3 id="hugoのダウンロード">HUGOのダウンロード</h3>
 
 <p>Windowsの場合、<a href="https://discourse.gohugo.io/t/error-failed-to-create-file-caches-from-configuration-file-exists/15635/18">0.52でcachedir周りのバグがあるらしく使えない模様</a>
 そのため、0.51を使用した。</p>
@@ -100,15 +103,37 @@ __EOF__
 
 <p>下地はここまで。</p>
 
-<h2 id="githubにリポジトリを作る">githubにリポジトリを作る</h2>
+<h2 id="github-pages用のリポジトリを作る">GitHub Pages用のリポジトリを作る</h2>
 
-<p>*.github.ioというリポジトリを作っておくと、Github Pagesの機能で見ることができるようになる。</p>
+<p>*.github.ioというリポジトリを作っておくと、<a href="https://pages.github.com/">Github Pages</a>で見ることができるようになる。</p>
+
+<p>このリポジトリにHTMLなどで作られたファイルを管理するだけで、Github Pagesの機能でホスティングされ、インターネット上に公開される。</p>
+
+<p>今回はHUGOで出来た成果物を、このGitHub Pagesで公開するようにする。</p>
 
 <h3 id="リポジトリを作成する">リポジトリを作成する</h3>
 
-<p><code>ユーザ名.github.io</code>という形を取る必要がある。fukasawahの場合は<code>fukasawah.github.io</code>という感じ。</p>
+<p><code>ユーザ名.github.io</code>という形を取る必要がある。fukasawahというidなら<code>fukasawah.github.io</code>という感じ。</p>
 
-<p>後でpushするので、中身は空っぽでよい。</p>
+<p>1個はcommitが無いとsubmodule登録できないので、index.html辺りを作っておく。</p>
+
+<p>README.md でもよいが、その場合は後で削除する必要がある。github.ioはREADME.md &gt; index.htmlの順でトップを表示するため。</p>
+
+<p>README.mdかindex.htmlが作成できたら、<code>https://ユーザ名.github.io</code>という形でアクセスできるか一度ブラウザで確認する。</p>
+
+<p>反映までタイムラグがあるので、1分ほど待って確認する。</p>
+
+<h3 id="リポジトリをサブモジュールとして登録する">リポジトリをサブモジュールとして登録する</h3>
+
+<pre><code>git submodule add https://github.com/fukasawah/ユーザ名.github.io.git public
+</code></pre>
+
+<h3 id="config-tomlのbaseurlを修正する">config.tomlのbaseURLを修正する</h3>
+
+<p>テーマによってはこの変数を元に作る場合があるので、直す。</p>
+
+<pre><code>baseURL = &quot;https://ユーザ名.github.io/&quot;
+</code></pre>
 
 <h2 id="記事を作成">記事を作成</h2>
 
@@ -145,12 +170,67 @@ HUGO - https://gohugo.io/
 
 <h3 id="表示確認">表示確認</h3>
 
-<p>手元で簡単に表示の確認を行える。</p>
+<p><code>hugo server</code>により、手元で簡単に表示の確認を行える。</p>
 
-<pre><code>hugo server
-</code></pre>
+<p><code>http://localhost:1313/</code> にアクセスすると見れる。</p>
+
+<p><code>draft:true</code>の記事も含めたい場合は、<code>hugo server -D</code>という形に<code>-D</code>オプションを付け足す。</p>
+
+<p>なお、デフォルトで保存を検知してブラウザ側で自動リロードをかけてくれる。</p>
 
 <h3 id="ビルドを行う">ビルドを行う</h3>
+
+<pre><code>hugo
+</code></pre>
+
+<p><code>public</code>ディレクトリの下に生成されたファイルが並ぶ。</p>
+
+<h3 id="ビルドを行い-github-ioのリモートリポジトリに反映する">ビルドを行い、github.ioのリモートリポジトリに反映する</h3>
+
+<p><code>hugo</code>を実行すると、draftになっていないものを対象に、<code>public</code>ディレクトリの下にファイルが生成される。</p>
+
+<p>後は生成されたpublicの中身をcommit&amp;pushする。
+submoduleとはいえ、中身はGitリポジトリなので、普通にGitの操作でよい。</p>
+
+<pre><code>(
+  hugo &amp;&amp; \
+  cd public &amp;&amp; \
+  git add . &amp;&amp; \
+  git commit -m &quot;Update&quot; &amp;&amp; \
+  git push
+)
+</code></pre>
+
+<p>反映までタイムラグがあるので、その時は少し待って確認する。</p>
+
+<p>良く使うはずなので、<code>.bash_profile</code>等にaliasを作っておくと良い。</p>
+
+<pre><code>alias hugo-publish='(hugo &amp;&amp; cd public &amp;&amp; git add . &amp;&amp; git commit -m &quot;Update&quot; &amp;&amp; git push)'
+</code></pre>
+
+<h3 id="元の記事もローカルリポジトリにコミットする">元の記事もローカルリポジトリにコミットする</h3>
+
+<p>元のMarkdownや設定が管理されていないので、このタイミングで管理する。publicも含めてしまってよい。</p>
+
+<pre><code>git add .
+git commit -m &quot;Update&quot;
+</code></pre>
+
+<p>（不明点: resources配下に生成されたファイルも含まれてしまうがこれは良いのか？）</p>
+
+<p>後は、必要に応じてリモートリポジトリを作りPushしておくと、他の端末からでもHUGOがあれば同じ環境を使うことができるようになる。</p>
+
+<h3 id="おわり">おわり</h3>
+
+<p>これでHUGO+GitHub Pagesで簡単なBlogを書くことができるようになった。</p>
+
+<p>今回の成果物は以下。</p>
+
+<ul>
+<li>HUGO以外の完全なコード: <a href="https://github.com/fukasawah/blog">https://github.com/fukasawah/blog</a></li>
+<li>GitHub Pages用リポジトリ: <a href="https://github.com/fukasawah/fukasawah.github.io">https://github.com/fukasawah/fukasawah.github.io</a></li>
+<li>GitHub Pages: <a href="https://fukasawah.github.io">https://fukasawah.github.io</a></li>
+</ul>
 ]]></content>
 		</item>
 		

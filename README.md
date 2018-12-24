@@ -1,1 +1,0 @@
-# fukasawah.github.io
