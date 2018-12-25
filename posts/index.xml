@@ -231,6 +231,28 @@ git commit -m &quot;Update&quot;
 <li>GitHub Pages用リポジトリ: <a href="https://github.com/fukasawah/fukasawah.github.io">https://github.com/fukasawah/fukasawah.github.io</a></li>
 <li>GitHub Pages: <a href="https://fukasawah.github.io">https://fukasawah.github.io</a></li>
 </ul>
+
+<h2 id="おまけ">おまけ</h2>
+
+<h3 id="投稿に画像の貼り付けを行いたい">投稿に画像の貼り付けを行いたい</h3>
+
+<p>hugoはデフォルトで<code>static</code>配下のディレクトリとファイルを、そのまま<code>public</code>に配置する模様。</p>
+
+<p>なので、<code>static/foo/image.jpg</code>とおいておけば、<code>![](/foo/image.jpg)</code>で表示ができるようになる。</p>
+
+<p>また、VSCode で <a href="https://marketplace.visualstudio.com/items?itemName=mushan.vscode-paste-image">Paste Imageという拡張機能</a>を使っている場合、以下の設定を行っておくと、ファイルは<code>static/images/Postのファイル名/タイムスタンプ.png</code>、Markdownには<code>![](/images/ファイル名/タイムスタンプ.png)</code>が張り付けられるようになり、良い感じになる。（絶対パスになっているので、URLの構造に注意）</p>
+
+<p>設定はWorkspace毎に設定できるので、hugoを使っている環境にだけ適用したい、という事もできる。（ディレクトリのルートの<code>.vscode/settings.json</code>に書くだけ）</p>
+
+<pre><code>{
+    &quot;pasteImage.path&quot;: &quot;${projectRoot}/static/images/${currentFileNameWithoutExt}&quot;,
+    &quot;pasteImage.insertPattern&quot;: &quot;${imageSyntaxPrefix}/images/${currentFileNameWithoutExt}/${imageFileName}${imageSyntaxSuffix}&quot;
+}
+</code></pre>
+
+<p>以下は画像。貼り付けのお試し。</p>
+
+<p><img src="/images/using-hugo/2018-12-25-16-45-13.png" alt="" /></p>
 ]]></content>
 		</item>
 		
