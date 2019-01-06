@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://fukasawah.github.io/posts/a-part-static-link-in-gnu-ld/</loc>
+    <lastmod>2019-01-07T03:15:17+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://fukasawah.github.io/posts/using-hugo/</loc>
     <lastmod>2018-12-24T04:48:16+09:00</lastmod>
   </url>
@@ -20,7 +25,7 @@
   
   <url>
     <loc>https://fukasawah.github.io/posts/</loc>
-    <lastmod>2018-12-24T04:48:16+09:00</lastmod>
+    <lastmod>2019-01-07T03:15:17+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -32,7 +37,7 @@
   
   <url>
     <loc>https://fukasawah.github.io/</loc>
-    <lastmod>2018-12-24T04:48:16+09:00</lastmod>
+    <lastmod>2019-01-07T03:15:17+09:00</lastmod>
     <priority>0</priority>
   </url>
   

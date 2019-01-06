@@ -6,10 +6,19 @@
     <description>Recent content on fukasawah&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Mon, 24 Dec 2018 04:48:16 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 07 Jan 2019 03:15:17 +0900</lastBuildDate>
     
 	<atom:link href="https://fukasawah.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>GNU ldで一部をスタティックリンクにする</title>
+      <link>https://fukasawah.github.io/posts/a-part-static-link-in-gnu-ld/</link>
+      <pubDate>Mon, 07 Jan 2019 03:15:17 +0900</pubDate>
+      
+      <guid>https://fukasawah.github.io/posts/a-part-static-link-in-gnu-ld/</guid>
+      <description>tl;dr gccなら-Wl,...でリンク時のオプション(==ldコマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。 ldのオ</description>
+    </item>
     
     <item>
       <title>Using HUGO</title>
@@ -17,18 +26,7 @@
       <pubDate>Mon, 24 Dec 2018 04:48:16 +0900</pubDate>
       
       <guid>https://fukasawah.github.io/posts/using-hugo/</guid>
-      <description>HUGO HUGO - https://gohugo.io/
-静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。
-また、記事の公開には、Github Pagesを使う。Netlifyも試したいが、こちらの方が手軽そうだったので。
-導入のモチベーションとしては、簡単なBlogがほしい、広告嫌、という場合に、これならいい感じに公開できるかも、と思い使い始めた。
-導入 HUGOのダウンロード Windowsの場合、0.52でcachedir周りのバグがあるらしく使えない模様 そのため、0.51を使用した。
-1個のバイナリファイルになっているのでそのまま扱う。 PATHは適当に通す。
-サイトを作る hugo new site blog  以降は作成したサイトのディレクトリで作業をする
-cd blog  Gitで管理を始める 作ったサイトごとにGitリポジトリを作る。
-git init  テーマを決める 1から作るのは手間なので、 https://themes.gohugo.io/ を見ていい感じのを探す。今回はhermitにした。
-git submodule add -b v1.1.0 https://github.com/Track3/hermit.git themes/hermit echo &#39;theme = &amp;quot;hermit&amp;quot;&#39; &amp;gt;&amp;gt; config.toml  hermitはいくつか設定が必要なので、追記する。 hermitのサンプルのconfig.tomlを参考に以下のようにした。
-dateform*辺りは必須。/posts/のmenuもあったほうがよい。
-cat &amp;lt;&amp;lt; &#39;__EOF__&#39; &amp;gt;&amp;gt; config.toml [Params] dateform = &amp;quot;Jan 2, 2006&amp;quot; dateformShort = &amp;quot;Jan 2&amp;quot; dateformNum = &amp;quot;2006-01-02&amp;quot; dateformNumTime = &amp;quot;2006-01-02 15:04 -0700&amp;quot; homeSubtitle = &amp;quot;I feel like to be lazy&amp;quot; justifyContent = false [menu] [[menu.</description>
+      <description>HUGO HUGO - https://gohugo.io/ 静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。 また、記事の公開には、Github Pagesを使う。Netl</description>
     </item>
     
   </channel>
