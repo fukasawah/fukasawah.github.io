@@ -195,7 +195,7 @@ LetsEncryptによる証明書の作成・更新を行うためのプログラム
 <li>DNSSEC: オン</li>
 </ul>
 
-<p><img src="/images/vps-server-setup/2019-03-16-21-14-23.png" alt="" /></p>
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-14-23.png" alt="" /></p>
 
 <p>作成出来たらゾーンについてネームサーバが割り当たる。ゾーンで登録したレコードの情報はこのネームサーバに設定される。</p>
 
@@ -205,7 +205,7 @@ LetsEncryptによる証明書の作成・更新を行うためのプログラム
 
 <p>まず、<a href="https://domains.google.com/">Google Domains</a>を開き、ネームサーバを変更する。</p>
 
-<p><img src="/images/vps-server-setup/2019-03-16-21-20-14.png" alt="" /></p>
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-20-14.png" alt="" /></p>
 
 <p>この変更は最長1日ぐらいかかる。結構時間がかかった。</p>
 
@@ -299,7 +299,7 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
 </code></pre>
 
 <p>実行後、Cloud DNS上をみると、以下のようにレコードを登録していることが分かる。
-<img src="/images/vps-server-setup/2019-03-17-22-59-38.png" alt="" /></p>
+<img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-22-59-38.png" alt="" /></p>
 
 <p>うまくいくと以下のような形になる。</p>
 
@@ -481,12 +481,12 @@ firewall-cmd --add-service=https --zone=public --permanent
 
 <p>Chrome等のブラウザでアクセスして表示されればOK</p>
 
-<p><img src="/images/vps-server-setup/2019-03-17-23-35-31.png" alt="" /></p>
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-35-31.png" alt="" /></p>
 
 <p>SSLの妥当性もテストしてくれるサービスがあるので、これも試す。
 <a href="https://www.ssllabs.com/ssltest/">https://www.ssllabs.com/ssltest/</a></p>
 
-<p><img src="/images/vps-server-setup/2019-03-17-23-40-44.png" alt="" /></p>
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png" alt="" /></p>
 
 <p>いいですね。</p>
 ]]></content>
