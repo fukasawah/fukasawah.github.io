@@ -11,10 +11,10 @@
 		
 		<item>
 			<title>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</title>
-			<link>https://fukasawah.github.io/posts/vps-server-setup/</link>
+			<link>https://fukasawah.github.io/posts/vps-server-setup-with-letsencrypt/</link>
 			<pubDate>Mon, 25 Mar 2019 02:16:16 +0900</pubDate>
 			
-			<guid>https://fukasawah.github.io/posts/vps-server-setup/</guid>
+			<guid>https://fukasawah.github.io/posts/vps-server-setup-with-letsencrypt/</guid>
 			<description>まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする</description>
 			<content type="html"><![CDATA[
 
