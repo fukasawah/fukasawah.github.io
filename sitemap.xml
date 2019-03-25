@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://fukasawah.github.io/posts/2019/install-postgresql-11-on-centos7/</loc>
+    <lastmod>2019-03-26T03:23:23+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://fukasawah.github.io/posts/vps-server-setup-with-letsencrypt/</loc>
     <lastmod>2019-03-25T02:16:16+09:00</lastmod>
   </url>
@@ -35,14 +40,20 @@
   </url>
   
   <url>
+    <loc>https://fukasawah.github.io/tags/postgresql/</loc>
+    <lastmod>2019-03-26T03:23:23+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://fukasawah.github.io/posts/</loc>
-    <lastmod>2019-03-25T02:16:16+09:00</lastmod>
+    <lastmod>2019-03-26T03:23:23+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fukasawah.github.io/tags/server/</loc>
-    <lastmod>2019-03-25T02:16:16+09:00</lastmod>
+    <lastmod>2019-03-26T03:23:23+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -54,7 +65,7 @@
   
   <url>
     <loc>https://fukasawah.github.io/</loc>
-    <lastmod>2019-03-25T02:16:16+09:00</lastmod>
+    <lastmod>2019-03-26T03:23:23+09:00</lastmod>
     <priority>0</priority>
   </url>
   
