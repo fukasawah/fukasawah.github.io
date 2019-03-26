@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>fukasawah&#39;s blog</title>
+    <title>fukasawah.github.io</title>
     <link>https://fukasawah.github.io/</link>
-    <description>Recent content on fukasawah&#39;s blog</description>
+    <description>Recent content on fukasawah.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
     <lastBuildDate>Wed, 27 Mar 2019 02:08:03 +0900</lastBuildDate>
@@ -13,55 +13,55 @@
     
     <item>
       <title>Basic Authentication on Nginx</title>
-      <link>https://fukasawah.github.io/posts/2019/basic-authentication-on-nginx/</link>
+      <link>https://fukasawah.github.io/posts/2019/03/27/basic-authentication-on-nginx/</link>
       <pubDate>Wed, 27 Mar 2019 02:08:03 +0900</pubDate>
       
-      <guid>https://fukasawah.github.io/posts/2019/basic-authentication-on-nginx/</guid>
+      <guid>https://fukasawah.github.io/posts/2019/03/27/basic-authentication-on-nginx/</guid>
       <description>Apache Httpdのツールとして提供されているhtpasswdコマンドを使うのが良い。 （最初はpythonで自前で計算しようとしたが、思っていた以</description>
     </item>
     
     <item>
       <title>NginxのVirtualhost設定～WildcardSSL証明書を添えて～</title>
-      <link>https://fukasawah.github.io/posts/2019/virtualhost-nginx-with-wildcard-ssl/</link>
+      <link>https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/</link>
       <pubDate>Tue, 26 Mar 2019 04:10:14 +0900</pubDate>
       
-      <guid>https://fukasawah.github.io/posts/2019/virtualhost-nginx-with-wildcard-ssl/</guid>
+      <guid>https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/</guid>
       <description>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。 ただ、このとき、証明書の設定箇所</description>
     </item>
     
     <item>
       <title>Install PostgreSQL 11 on CentOS 7</title>
-      <link>https://fukasawah.github.io/posts/2019/install-postgresql-11-on-centos7/</link>
+      <link>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</link>
       <pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate>
       
-      <guid>https://fukasawah.github.io/posts/2019/install-postgresql-11-on-centos7/</guid>
+      <guid>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</guid>
       <description>PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの</description>
     </item>
     
     <item>
       <title>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</title>
-      <link>https://fukasawah.github.io/posts/vps-server-setup-with-letsencrypt/</link>
+      <link>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</link>
       <pubDate>Mon, 25 Mar 2019 02:16:16 +0900</pubDate>
       
-      <guid>https://fukasawah.github.io/posts/vps-server-setup-with-letsencrypt/</guid>
+      <guid>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</guid>
       <description>まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする</description>
     </item>
     
     <item>
       <title>GNU ldで一部をスタティックリンクにする</title>
-      <link>https://fukasawah.github.io/posts/a-part-static-link-in-gnu-ld/</link>
+      <link>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</link>
       <pubDate>Mon, 07 Jan 2019 03:15:17 +0900</pubDate>
       
-      <guid>https://fukasawah.github.io/posts/a-part-static-link-in-gnu-ld/</guid>
+      <guid>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</guid>
       <description>tl;dr gccなら-Wl,...でリンク時のオプション(==ldコマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。 ldのオ</description>
     </item>
     
     <item>
       <title>Using HUGO</title>
-      <link>https://fukasawah.github.io/posts/using-hugo/</link>
+      <link>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</link>
       <pubDate>Mon, 24 Dec 2018 04:48:16 +0900</pubDate>
       
-      <guid>https://fukasawah.github.io/posts/using-hugo/</guid>
+      <guid>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</guid>
       <description>HUGO HUGO - https://gohugo.io/ 静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。 また、記事の公開には、Github Pagesを使う。Netl</description>
     </item>
     

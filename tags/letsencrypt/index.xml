@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Letsencrypt on fukasawah&#39;s blog</title>
+    <title>Letsencrypt on fukasawah.github.io</title>
     <link>https://fukasawah.github.io/tags/letsencrypt/</link>
-    <description>Recent content in Letsencrypt on fukasawah&#39;s blog</description>
+    <description>Recent content in Letsencrypt on fukasawah.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
     <lastBuildDate>Mon, 25 Mar 2019 02:16:16 +0900</lastBuildDate>
@@ -13,10 +13,10 @@
     
     <item>
       <title>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</title>
-      <link>https://fukasawah.github.io/posts/vps-server-setup-with-letsencrypt/</link>
+      <link>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</link>
       <pubDate>Mon, 25 Mar 2019 02:16:16 +0900</pubDate>
       
-      <guid>https://fukasawah.github.io/posts/vps-server-setup-with-letsencrypt/</guid>
+      <guid>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</guid>
       <description>まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする</description>
     </item>
     
