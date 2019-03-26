@@ -6,8 +6,49 @@
 		<description>Recent content in Posts on fukasawah&#39;s blog</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>ja-JP</language>
-		<lastBuildDate>Tue, 26 Mar 2019 04:10:14 +0900</lastBuildDate>
+		<lastBuildDate>Wed, 27 Mar 2019 02:08:03 +0900</lastBuildDate>
 		<atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>Basic Authentication on Nginx</title>
+			<link>https://fukasawah.github.io/posts/2019/basic-authentication-on-nginx/</link>
+			<pubDate>Wed, 27 Mar 2019 02:08:03 +0900</pubDate>
+			
+			<guid>https://fukasawah.github.io/posts/2019/basic-authentication-on-nginx/</guid>
+			<description>Apache Httpdのツールとして提供されているhtpasswdコマンドを使うのが良い。 （最初はpythonで自前で計算しようとしたが、思っていた以</description>
+			<content type="html"><![CDATA[<p>Apache Httpdのツールとして提供されている<code>htpasswd</code>コマンドを使うのが良い。
+（最初はpythonで自前で計算しようとしたが、<a href="https://svn.apache.org/viewvc/apr/apr/trunk/crypto/">思っていた以上に面倒だった</a>ので諦めた&hellip;）</p>
+
+<pre><code>yum install httpd-tools
+</code></pre>
+
+<p><code>htpasswd</code>の利用法は以下のドキュメント。
+<a href="https://httpd.apache.org/docs/2.4/misc/password_encryptions.html">https://httpd.apache.org/docs/2.4/misc/password_encryptions.html</a></p>
+
+<p>こんな感じに作る。新規作成時は<code>-c</code>をつける</p>
+
+<pre><code>$ sudo htpasswd -c -m /etc/nginx/.htpasswd testuser
+New password:
+Re-type new password:
+Adding password for user testuser
+</code></pre>
+
+<p>ただ、出来上がるファイルは誰でも読める状態になっているので、<code>644</code>から<code>600</code>に変える。</p>
+
+<pre><code>sudo chmod 0600 /etc/nginx/.htpasswd
+</code></pre>
+
+<p>nginx.confの設定を変える。設定のドキュメントは以下。</p>
+
+<p><a href="https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html">https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html</a></p>
+
+<p>以下をhttp,server,locationのいずれかのディレクティブに追加する。</p>
+
+<pre><code>    auth_basic           &quot;need authenticate&quot;;
+    auth_basic_user_file /etc/nginx/.htpasswd;
+</code></pre>
+]]></content>
+		</item>
 		
 		<item>
 			<title>NginxのVirtualhost設定～WildcardSSL証明書を添えて～</title>
