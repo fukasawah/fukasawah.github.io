@@ -20,5 +20,14 @@
       <description>PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの</description>
     </item>
     
+    <item>
+      <title>PostgreSQLのユーザ管理</title>
+      <link>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</link>
+      <pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate>
+      
+      <guid>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</guid>
+      <description>sudo -u postgres createuser --no-createdb --login --pwprompt --no-createrole --no-superuser --pwprompt testuser psqlで接続できるか確認する。 psql -U testuser testdb DBに関しては特に指定は無くても、存在すればアクセスできる。テーブルも作れる。</description>
+    </item>
+    
   </channel>
 </rss>

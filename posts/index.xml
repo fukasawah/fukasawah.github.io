@@ -6,8 +6,303 @@
 		<description>Recent content in Posts on fukasawah.github.io</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>ja-JP</language>
-		<lastBuildDate>Wed, 27 Mar 2019 02:08:03 +0900</lastBuildDate>
+		<lastBuildDate>Sat, 25 May 2019 14:20:19 +0900</lastBuildDate>
 		<atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>MCP資格のAZ-103に不合格しました</title>
+			<link>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</link>
+			<pubDate>Sat, 25 May 2019 14:20:19 +0900</pubDate>
+			
+			<guid>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</guid>
+			<description>700点で合格、結果530点でダメでした。かすりもしねえ・・・ 気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えて</description>
+			<content type="html"><![CDATA[
+
+<p>700点で合格、結果530点でダメでした。かすりもしねえ・・・</p>
+
+<p>気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えてる対策も・・・</p>
+
+<p>問題内容はほとんどないです。というか厳密に覚えてないので書きづらい。</p>
+
+<h2 id="受験までに気になっていたこと">受験までに気になっていたこと</h2>
+
+<h3 id="試験の流れ">試験の流れ</h3>
+
+<ul>
+<li>入場（新宿駅南口付近の某所。開始15分よりも前でも入場できた）</li>
+<li>受付にいき名乗る。身分証も提示。</li>
+<li>説明が始まり、注意事項と同意書を書く</li>
+<li>同意書を提出し、準備が出来たら所定の場所に向かうよう指示される（この後は少し自由）</li>
+<li>電話の電源を切り、荷物をロッカーに預ける</li>
+<li>トイレなどを済ませる</li>
+<li>所定の場所に向かい、受験中の説明を聞く</li>
+<li>PCが置いてある席に案内される</li>
+<li>PCで受験を受ける</li>
+<li>一通り問題に答えると合否の結果が出る。結果の画面は印刷してもらえる</li>
+<li>その後「試験を終了」ボタンを押して退出</li>
+<li>退出の受付と結果の画面の写しをもらう</li>
+<li>お疲れ様でした</li>
+</ul>
+
+<p>なお、結果は点数のみでどこが間違えたかは教えてくれないが、こんな感じでどの分野が良かったか/悪かったかは教えてくれる。</p>
+
+<p>こちらは全般的にダメでID周りが壊滅的な例です。誰か教えてくれ。</p>
+
+<p><img src="/images/2019/fail-an-examination-az-103/result.jpg" alt="" /></p>
+
+<h3 id="問題の言語について">問題の言語について</h3>
+
+<p>日本語で翻訳も怪しい所はあまりなかった。</p>
+
+<p>WebAppをWebアプリと訳していたりちょっと残念なところはあったが、Microsoftのドキュメントを日本語で日常的に読んでいれば補完が利くので違和感はないと思う。</p>
+
+<h3 id="試験時間について">試験時間について</h3>
+
+<p>180分。メールでは210分と書かれていたが30分は説明などの時間に使われる。</p>
+
+<p>時間配分については自分で決められるが、後述するとおり、前の問題に戻れない点に注意する。</p>
+
+<h3 id="身分証について">身分証について</h3>
+
+<p>メールでも記載があったが、身分を証明するものが２つ必要。
+今回は運転免許証とパスポートを持っていった。</p>
+
+<p>入場する運転免許証とパスポートはどちらかだけでもよくて、他にも保険証でも良いらしい。
+要は顔写真と名前が一致する公式なものと、名前が一致する公式なものを２つ組み合わせれば良いらしい。</p>
+
+<h3 id="持ち物について">持ち物について</h3>
+
+<p>持ち込めない荷物はロッカーがあるので預けることができた。
+（ちょっとした手荷物やジャケットは入るが、旅行鞄などは無理なサイズ感）</p>
+
+<p>試験は席に案内されて受けることになるが、身分証1つ以外の私物は一切持ち込めない。</p>
+
+<p>ただ、ロッカーの鍵、ホワイトボード、ペンが貸与されるので、これは持ち込むことができる。</p>
+
+<p>ホワイトボードとペンは構成図を書くときなど、問題のイメージをつかむために使うものらしい。これは後で退出時に帰す事になる。お持ち帰りできない。</p>
+
+<h3 id="受験時間は余裕があるか-ないか">受験時間は余裕があるか・ないか</h3>
+
+<p>構成図を書いたりじっくり考えたりしたとこもあったが、それでも180分のうち90分も余らせたので余裕は十分ある。不合格だったんですけどね。</p>
+
+<p>前の設問に戻れない形式なので、その間で見直しを入れるぐらいはやって良いかな。（進捗を見ながらですが）</p>
+
+<h2 id="問題形式">問題形式</h2>
+
+<p>基本はすべて選択だが、いくつか問題形式がある。</p>
+
+<ul>
+<li>１問について何度かyesかnoで答える(多分yesになるまで続く)
+
+<ul>
+<li>「○○を実現したい」という設問にたいして「ソリューション：××をすればよい。yesかnoか？」で答えていく。××の部分はnoを答えるたびに変わるイメージ。</li>
+<li>この問題形式は１回答えると前には戻れないし、後の問題を確認することもできないので、「Noって答えたけどやっぱyesだったじゃん！」ってなっても手遅れ。</li>
+</ul></li>
+<li>１問１答を繰り返していくものが大半
+
+<ul>
+<li>１つ選択、複数選択、順序選択、穴埋め選択 ぐらい</li>
+<li>一部、資料やスクリーンショットがあり、状況を読み解いて答えるものもある</li>
+</ul></li>
+<li>ケーススタディという概要と要件が書かれているものを読み解いて設問に答える内容
+
+<ul>
+<li>設問と関係ない要件もかなり書かれている印象を受けた（もしかしたら間接的に関わる可能性はあるんだろうけど）</li>
+<li>設問を先に軽く読んでから要点を押さえに行った方が良いかもしれない</li>
+</ul></li>
+</ul>
+
+<p>これらの問題形式があった。今回は以下のような感じだった。</p>
+
+<ul>
+<li>１問について何度かyesかnoで答える（3問ぐらい）</li>
+<li>1問1答(7問ぐらい)</li>
+<li>1問1答(30問ぐらい)</li>
+<li>ケーススタディ(3問ぐらい)</li>
+<li>ケーススタディ(3問ぐらい)</li>
+</ul>
+
+<p>注意したいのは、これらの間は<strong>次に移ると問題の見直しや修正が出来なくなる</strong>。</p>
+
+<p>全体の進捗（n問m問）と残り時間は常時表示されるが、どういう問題構成かはわからない。</p>
+
+<p>1問1答が大半で、1問あたり長くても5分で答えを出せるはずなので、時間的にはかなり余裕が出来るはず。
+でも足りないよりは余ったほうが良いので、気持ち余裕を持つぐらいで良いと思う。
+（ウェビナーでは時間が足りない的な事を言われたが、私は90分ぐらい余らせた。次回は1回は全部見直しを入れるぐらいはすると思う。）</p>
+
+<p>ウェビナーでは「実際に操作する」みたいな話を聞いていたが、そういう問題はAZ-103にはなかったように見える。点数が少なすぎて足切りされたかもしれないけど。</p>
+
+<h2 id="問題内容">問題内容</h2>
+
+<p>多分一番知りたい情報だと思うが、書かないようにする。
+ほとんど覚えていないというのもあるけど。ただ、本当に幅広い範囲で出る。</p>
+
+<ul>
+<li>VMのバックアップ(Recovery Services)周り(後述)</li>
+<li>Azure CLIでWindows Server 2016のVMを作りたい。Publisher、Offer、Skuを穴埋めしなさい（<a href="https://docs.microsoft.com/en-us/azure/virtual-machines/windows/cli-ps-findimage#table-of-commonly-used-windows-images">こんなん覚える</a>必要ある？）</li>
+<li>オンプレのVMをAzure VMへ移行するためのテンプレート化についての問題</li>
+<li>パブリックプレビューのプライベートDNSゾーン</li>
+<li>Azure Network Watcherを使った問題(NSGのルールが適切かどうか確認するときに使う？)</li>
+</ul>
+
+<p>分野が偏っていたり、全然かけてないけど、こんな感じでいっぱい出るし、Skills measuredに書かれてないAzure Network Watcherの問題とか平気で出てくる。</p>
+
+<h2 id="対策">対策</h2>
+
+<p>結果のレポートにかかれているが、苦手分野がわかるのでそこを重点的にやっていきましょうという感じ。</p>
+
+<p>要約すると、大人しく高い金をだして問題集を買い、知らんことにぶつかったら調べて手を動かして覚える、が良い気がしている。時間をめちゃくちゃ使うだろうけど。</p>
+
+<p>今回取り組んだ勉強法としては以下。それ以外の方法を知らなかった。</p>
+
+<ul>
+<li>試験の<a href="https://www.microsoft.com/en-us/learning/exam-AZ-103.aspx">Skills measured</a>を見て単語を拾ってドキュメントを漁る</li>
+<li><a href="https://docs.microsoft.com/ja-jp/learn/azure/">Microsoft LearnのAzure</a>で範囲に含まれていそうなところを進める</li>
+<li>AZ体系になる前の問題集が会社にあったので読む</li>
+</ul>
+
+<p>受験して思ったのは、Skills measuredにある内容から試験を想像するのはまず無理だったということ。</p>
+
+<p>ドキュメントは単一の機能の説明がほとんどで実運用時の事はあまり書かれてない。（ドキュメントなのでそりゃそうなんだけど、問題に出てくるような内容はもっと奥深くにある。だから普通に探したら見つからないし読まない。）</p>
+
+<p>Learnで学べる内容はサービスの綺麗な部分を切り取ってる内容なので試験対策には弱すぎる。Azureに慣れさせる意味では良いかもしれない。</p>
+
+<p>「AZ体系になる前の問題集」はクソみたいな翻訳、解説無し（もしくは翻訳されてない）、明らかに答え違うよね？という問題があったりするが、試験に即した問題造りになっており、試験対策には優秀だと思う。あと2問ほど問題集通りの内容が出てきたものもあった。最近のならもう少し良いかもしれない。</p>
+
+<p>という感じで、問題集は効果あったなーという感じだった。</p>
+
+<p>「こんだけ範囲が広いんだし、1個ぐらい犠牲にしてもええやろ」というふうに考えててID管理周りは少し削ってたけど、問題の割合を見ると少なくなかったし、出題割合あんま参考にならんな・・・という感じだった。</p>
+
+<p>あと少しズレますが、一般的な概念の問題や用語はもちろん、Azureの用語の説明は全く出てこない。問題文にある「ブレード」とか何だよ、と思ったら、Portal上でリソースを選んだりしたときに出てくる左側のメニューのことらしい、というのを試験中に知ったとか。まぁそんな感じのレベルなんで落ちたんでしょう。</p>
+
+<p><a href="https://docs.microsoft.com/ja-jp/azure/architecture/">アーキテクチャセンター</a>はちょっと見落としてたが、今風のアーキテクチャの話しかないので多分役に立たない気がする。でもAD回りは読んでも良いかもしれない。（後で読む）</p>
+
+<h2 id="感想">感想</h2>
+
+<p>勉強不足でした。</p>
+
+<p>ちなみに普段からAzureを触ってないというわけではなく、必要に応じてAzure CLIを使った手順書を書いたり、ARM Templateを書いたりする程度にはやってます。まぁAzure様からしたら「お前のそれはお遊びだ」というわけですね。</p>
+
+<p>試験は単純に知らなくて「そういう事も出来るのか！」というのはかなり多くあった。
+逆を言えば「そんなこと覚えている必要ある？」という内容でもある。</p>
+
+<p>あと、VM回りで以下の2問があったが、個人的には「最初の手順をミスってんだから早い段階で気づいて作り直せ」って思ってる。</p>
+
+<ul>
+<li>VM1で動かしてるデータディスクをVM2で使いたい。最小限のダウンタイムになるよう意識して手順で3つ並べろ</li>
+<li>Recovery Servicesが２つある（RS1,RS2）RS1でバックアップしていたVMをRS2で取るようにしたい。まず何を行えばよいか？（4つから1つ選択）</li>
+</ul>
+
+<p>あとExpressRouteの問題は辛い。そんな高価なもん気軽にハンズオンできるわけないだろ！いい加減にしろ！</p>
+
+<p>愚痴ばかりになってしまった。正直もう受けたくないがお仕事だからね・・・</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>JJUG CCC 2019 Spring いってきた</title>
+			<link>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</link>
+			<pubDate>Sat, 18 May 2019 20:36:00 +0900</pubDate>
+			
+			<guid>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</guid>
+			<description>いってきました。 [English] DevOps without Measurement is a Fail (Erno Venäläinen) @venalainene 英語聞き取れないマンだけど英語のセッションを選んだ。 スライドと話している雰囲気で理解</description>
+			<content type="html"><![CDATA[
+
+<p>いってきました。</p>
+
+<h3 id="english-devops-without-measurement-is-a-fail-erno-venäläinen-venalainene-https-twitter-com-venalainene">[English] DevOps without Measurement is a Fail (Erno Venäläinen) <a href="https://twitter.com/venalainene">@venalainene</a></h3>
+
+<p>英語聞き取れないマンだけど英語のセッションを選んだ。
+スライドと話している雰囲気で理解しようとしたが、ま－無理だった。</p>
+
+<p>これを選んだ理由はDevOpsは計測が無いと失敗するという強いお言葉だったので、じゃあ何を見てるのかとか気になった。なおDevOpsの理解はそこまで無い状態。</p>
+
+<p>とりあえずこの辺り。多分もっとある</p>
+
+<ul>
+<li>Shift Leftの考え方</li>
+<li>DevOpsをうまく進めるための5つのDriver
+
+<ul>
+<li>多分ここの話の内容に聞こえた。<a href="https://newrelic.com/resource/how-to-measure-the-success-of-devops">https://newrelic.com/resource/how-to-measure-the-success-of-devops</a></li>
+</ul></li>
+<li>監視のアンチパターン</li>
+<li>監視のデザインパターン</li>
+</ul>
+
+<p>監視の(アンチ|デザイン)パターンについては、<a href="https://www.oreilly.co.jp/books/9784873118642/">入門 監視</a> で触れているような内容だったと思う。良い本だぁ・・・</p>
+
+<p>そんな感じで単語しかわからずよく分からなかったので、スライドが出たら(機械)翻訳して読み直したい所</p>
+
+<h3 id="テストエンジニアが教える-junitを書き始める前に考えるべきテスト-風間裕也-nihonbuson-https-twitter-com-nihonbuson">テストエンジニアが教える JUnitを書き始める前に考えるべきテスト (風間裕也) <a href="https://twitter.com/nihonbuson">@nihonbuson</a></h3>
+
+<p>Slide: <a href="https://speakerdeck.com/nihonbuson/jjug-ccc-2019-spring">https://speakerdeck.com/nihonbuson/jjug-ccc-2019-spring</a></p>
+
+<p>開発者は（テストの文脈で）どんなことをすればよいかの話。軽いワークもあった。テスト技法は境界値分析のみの紹介。</p>
+
+<p><a href="http://jstqb.jp/dl/JSTQB-SyllabusFoundation_Version2011.J02.pdf#page=15">テストの7原則</a> はソフトウェア開発に関わる人の共通認識にしたいですね・・・</p>
+
+<p>コーディング前からテストの内容を話すことですれ違いを無くす話は納得感がある。結構思い込みでみんないい感じにやってくれると思いがち。ちゃんと言葉なり図なりで共有すると「そういえば」という気づきがあったりする。</p>
+
+<p>あとテストケースについて理由を説明させるのはよいですね。どういう観点のテストか理解しやすくなり、抜け漏れの観点も絞れる。テスト名にも使える。いいですね。</p>
+
+<p>おまけが本編。</p>
+
+<p>QAチーム何するの？開発者がしっかりテスト出来てるならQAエンジニアいらなくね？という質問が過去にあったそうで、その答えとしては「<strong>QAはCheckingではなくTestingを行いたい</strong>（だから要る）」という話。他のエンジニアのBlogの引用もあった。</p>
+
+<p>開発者が行うテスト（バリデーション、状態遷移とかの仕様が決まったものに対するテスト）はCheckingであり、そうでない部分（全体を通して明らかになっていなさそうな部分を組み合わせを見つけて挙動を見るテスト）を考えて行うのがTestingとなる。という理解。これ、かなり自分の中で納得感があった。システムテストを結合試験の焼き回しになりがちな所があったりするが、本当の操作で正常に通るのはもちろん、何か変な事が出来ないかを考えるきっかけはこのタイミングしかできない。</p>
+
+<h3 id="ソフトウェア設計の教育工学的な分析と育成へのアイデア-松下正嗣-masatsugumatsus-https-twitter-com-masatsugumatsus">ソフトウェア設計の教育工学的な分析と育成へのアイデア(松下正嗣) <a href="https://twitter.com/masatsugumatsus">@masatsugumatsus</a></h3>
+
+<p>Slide: <a href="https://speakerdeck.com/deffence1776/jjug-2019-spring-fa-biao-zi-liao-sohutoueashe-ji-falsejiao-yu-gong-xue-de-nafen-xi-toyu-cheng-hefalseaidea">https://speakerdeck.com/deffence1776/jjug-2019-spring-fa-biao-zi-liao-sohutoueashe-ji-falsejiao-yu-gong-xue-de-nafen-xi-toyu-cheng-hefalseaidea</a></p>
+
+<p>思考実験レベルで実用レベルではないというお断りをしてた。中盤以降、時間が少なく駆け足になってた。(20分枠だったけどスライドを見ると40分枠で話そうとしてたように感じる)</p>
+
+<p>過去に新人教育的な事をやったので。後のセッションでも教育的な話を聞きに行ったけど、こちらは抽象的な話と理解している。</p>
+
+<p>設計スキルについて「研修で教えるの、正直難しい。センスや好み？」という問題提起があり、同じ問題を感じてるなぁ、と共感を持ってた。ただ「センス」で片付けたくないという思いはあった。</p>
+
+<p>そこで出てきた「インストラクショナルデザイン」という手法の話が良かった。漠然と探すよりはよっぽど良刺そうな感じは話を聞いてても思った。</p>
+
+<p>それ以降は私には難しかった・・・スライド見ながら勉強します。</p>
+
+<h3 id="スキマ分野で生き残るための戦略-すずきただし-tada-suzu-https-twitter-com-tada-suzu">スキマ分野で生き残るための戦略(すずきただし) <a href="https://twitter.com/tada_suzu">@tada_suzu</a></h3>
+
+<p>Slide: <a href="https://docs.google.com/presentation/d/1JN4hbvTe89G6pwlIndrC3192kh2XKrt51Yjc5Ievt4M/edit#slide=id.p">https://docs.google.com/presentation/d/1JN4hbvTe89G6pwlIndrC3192kh2XKrt51Yjc5Ievt4M/edit#slide=id.p</a></p>
+
+<p>完璧な開発現場はないからそのスキマを探して良くしていく戦略を取るとそれが評価や立ち位置に繋がり良いという話。</p>
+
+<p>まとめのほうで「自分が動きやすい位置を見つけて、あまり苦しまない開発人生を！」と話してて、本当にこれが大事だよなぁ、というのを感じてる。仕事が全部ではないけど、仕事はかなり人生の割を食うわけだし、苦しむのは損。</p>
+
+<p>ただ、今までやってなかったというのは、逆を返せば今までそれでやっていけていたので、その変化に価値を見出す人が上に居るかどうか、というのはあるんじゃないかなぁ。
+最近は仕事の楽しさがわからなくなっている。客は求めてないけど自分の興味があるツールやライブラリをぶち込みたい衝動があるけど。</p>
+
+<h3 id="jjug会長と一緒に考えたspring-boot-x-javascript-x-intellij-x-アジャイルというモダンな新人研修を今まさにやっている話-株式会社カサレアル-suke-masa-https-twitter-com-suke-masa-zer0-u-https-twitter-com-zer0-u">JJUG会長と一緒に考えたSpring Boot x JavaScript x IntelliJ x アジャイルというモダンな新人研修を今まさにやっている話 (株式会社カサレアル) <a href="https://twitter.com/suke_masa">@suke_masa</a> <a href="https://twitter.com/zer0_u">@zer0_u</a></h3>
+
+<p>Slide: <a href="https://speakerdeck.com/masatoshitada/modern-new-employees-training-spring-boot-javascript-intellij-agile">https://speakerdeck.com/masatoshitada/modern-new-employees-training-spring-boot-javascript-intellij-agile</a></p>
+
+<p>上記のとおり、新人教育的な事をやったのでその延長で。こちらは実際の研修の進め方など具体的な話。
+15年(おそらく20年)同じ受動的なカリキュラムで、主体的に取り組めてモダンなカリキュラム（タイトル通り）に刷新したとのこと。去年から取り組んでいるらしい（今年はjQueryからReact+SPAにしたぐらいらしい？）</p>
+
+<p>Gitは開発研修初日からいれてて、GitLabを使いコード管理とCI、Docker環境を疑似クラウドに見立ててデプロイという感じ。演習はSprintも取り入れて約2ヵ月で。
+Servletを捨ててSpring Bootでやったが、多少整理がをしたものの実務上は問題がなかったらしい。</p>
+
+<p>質問もいくつか上がってて、「未経験の人はいたか」は「少数だけど居た」とか「研修を進めて技術レベルに差が出てきたときに一緒に進めるのが辛い」という点は「出来る子は出来ない子のフォローをすることで、出来る子はより深く理解でき、出来ない子は出来るようになる」というふうに進めたとか。</p>
+
+<p>ただ、企業様によってこのカリキュラムは合う合わないがあるとのこと。
+現場によるからうちはそんなもん(Spring Boot等)ないからもっと汎用的な技術(Servlet等)のほうがーって言う感じなんだと思う。両方やるってなると2か月じゃ全然足りないんだよなぁ。</p>
+
+<p>どこも同じだなぁ。</p>
+
+<h3 id="マイクロサービス-４つの分割アプローチの比較-増田-亨-masuda220-https-twitter-com-masuda220">マイクロサービス：４つの分割アプローチの比較(増田　亨) <a href="https://twitter.com/masuda220">@masuda220</a></h3>
+
+<p>Slide: <a href="https://www.slideshare.net/masuda220/ss-146325870">https://www.slideshare.net/masuda220/ss-146325870</a></p>
+
+<p>難しかった（小並感）</p>
+
+<p>疲れちゃったのでこの辺で。</p>
+]]></content>
+		</item>
 		
 		<item>
 			<title>Basic Authentication on Nginx</title>
@@ -321,6 +616,56 @@ SELECT * FROM pg_tools WHERE description LIKE '%全文検索%';
 
 -- テーブル削除
 DROP TABLE pg_tools;
+</code></pre>
+]]></content>
+		</item>
+		
+		<item>
+			<title>PostgreSQLのユーザ管理</title>
+			<link>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</link>
+			<pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate>
+			
+			<guid>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</guid>
+			<description>sudo -u postgres createuser --no-createdb --login --pwprompt --no-createrole --no-superuser --pwprompt testuser psqlで接続できるか確認する。 psql -U testuser testdb DBに関しては特に指定は無くても、存在すればアクセスできる。テーブルも作れる。</description>
+			<content type="html"><![CDATA[<pre><code>sudo -u postgres createuser --no-createdb --login --pwprompt --no-createrole --no-superuser --pwprompt testuser
+</code></pre>
+
+<p>psqlで接続できるか確認する。</p>
+
+<pre><code>psql -U testuser testdb
+</code></pre>
+
+<p>DBに関しては特に指定は無くても、存在すればアクセスできる。テーブルも作れる。</p>
+
+<p>このようにDB作成直後はユーザが割と何でもできるので、一旦権限を取り上げて特定のDBに対してのみ権限を与える。</p>
+
+<pre><code>sudo -u postgres psql  &lt;&lt; '__EOF__'
+REVOKE CONNECT ON DATABASE testdb FROM PUBLIC; -- 指定したDBから接続権限を取り上げる
+REVOKE ALL ON SCHEMA public FROM PUBLIC; -- 全てのpublicスキーマからすべての権限を取り上げる
+__EOF__
+</code></pre>
+
+<p>上記のpsqlコマンドで接続できなくなったことを確認する。</p>
+
+<pre><code>sudo -u postgres psql  &lt;&lt; '__EOF__'
+GRANT CONNECT ON DATABASE testdb TO testuser; -- 指定したDBへ指定したユーザの接続を許可
+GRANT USAGE ON SCHEMA public TO testuser;-- 指定したユーザへpublicスキーマの操作の許可
+__EOF__
+</code></pre>
+
+<p>該当DBのpublicスキーマを使ったテーブルの作成・削除などはできるようになる。</p>
+
+<p>TODO: これで大丈夫な根拠について、ソース探す</p>
+
+<p>今回は行わないが、リモートからアクセスする場合、<code>pg_hba.conf</code>も編集が必要。</p>
+
+<p><a href="https://www.postgresql.jp/document/10/html/auth-pg-hba-conf.html">https://www.postgresql.jp/document/10/html/auth-pg-hba-conf.html</a></p>
+
+<p>今時ならhostsslでしょう。</p>
+
+<p>認証方式の<a href="https://www.postgresql.jp/document/10/html/auth-methods.html#AUTH-PASSWORD">ドキュメントはこの辺り</a>。<code>scram-sha-256&gt;md5&gt;&gt;&gt;&gt;password</code> といったところ。</p>
+
+<pre><code>hostssl testdb testuser 0.0.0.0/0 md5
 </code></pre>
 ]]></content>
 		</item>

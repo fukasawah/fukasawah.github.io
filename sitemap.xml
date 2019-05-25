@@ -3,6 +3,16 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</loc>
+    <lastmod>2019-05-25T14:20:19+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</loc>
+    <lastmod>2019-05-18T20:36:00+09:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://fukasawah.github.io/posts/2019/03/27/basic-authentication-on-nginx/</loc>
     <lastmod>2019-03-27T02:30:33+09:00</lastmod>
   </url>
@@ -15,6 +25,11 @@
   <url>
     <loc>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</loc>
     <lastmod>2019-03-26T04:23:57+09:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</loc>
+    <lastmod>2019-03-26T03:23:23+09:00</lastmod>
   </url>
   
   <url>
@@ -38,6 +53,12 @@
   </url>
   
   <url>
+    <loc>https://fukasawah.github.io/tags/examination/</loc>
+    <lastmod>2019-05-25T14:20:19+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://fukasawah.github.io/tags/hugo/</loc>
     <lastmod>2018-12-25T16:56:00+09:00</lastmod>
     <priority>0</priority>
@@ -46,6 +67,12 @@
   <url>
     <loc>https://fukasawah.github.io/tags/letsencrypt/</loc>
     <lastmod>2019-03-25T03:18:13+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fukasawah.github.io/tags/mcp/</loc>
+    <lastmod>2019-05-25T14:20:19+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -63,7 +90,7 @@
   
   <url>
     <loc>https://fukasawah.github.io/posts/</loc>
-    <lastmod>2019-03-27T02:30:33+09:00</lastmod>
+    <lastmod>2019-05-25T14:20:19+09:00</lastmod>
     <priority>0</priority>
   </url>
   
@@ -75,13 +102,19 @@
   
   <url>
     <loc>https://fukasawah.github.io/tags/</loc>
-    <lastmod>2018-12-25T16:56:00+09:00</lastmod>
+    <lastmod>2019-05-25T14:20:19+09:00</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://fukasawah.github.io/</loc>
-    <lastmod>2019-03-27T02:30:33+09:00</lastmod>
+    <lastmod>2019-05-25T14:20:19+09:00</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://fukasawah.github.io/tags/%E3%82%A4%E3%83%99%E3%83%B3%E3%83%88/</loc>
+    <lastmod>2019-05-18T20:36:00+09:00</lastmod>
     <priority>0</priority>
   </url>
   

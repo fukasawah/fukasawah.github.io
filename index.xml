@@ -6,10 +6,28 @@
     <description>Recent content on fukasawah.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Wed, 27 Mar 2019 02:08:03 +0900</lastBuildDate>
+    <lastBuildDate>Sat, 25 May 2019 14:20:19 +0900</lastBuildDate>
     
 	<atom:link href="https://fukasawah.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>MCP資格のAZ-103に不合格しました</title>
+      <link>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</link>
+      <pubDate>Sat, 25 May 2019 14:20:19 +0900</pubDate>
+      
+      <guid>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</guid>
+      <description>700点で合格、結果530点でダメでした。かすりもしねえ・・・ 気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えて</description>
+    </item>
+    
+    <item>
+      <title>JJUG CCC 2019 Spring いってきた</title>
+      <link>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</link>
+      <pubDate>Sat, 18 May 2019 20:36:00 +0900</pubDate>
+      
+      <guid>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</guid>
+      <description>いってきました。 [English] DevOps without Measurement is a Fail (Erno Venäläinen) @venalainene 英語聞き取れないマンだけど英語のセッションを選んだ。 スライドと話している雰囲気で理解</description>
+    </item>
     
     <item>
       <title>Basic Authentication on Nginx</title>
@@ -36,6 +54,15 @@
       
       <guid>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</guid>
       <description>PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの</description>
+    </item>
+    
+    <item>
+      <title>PostgreSQLのユーザ管理</title>
+      <link>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</link>
+      <pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate>
+      
+      <guid>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</guid>
+      <description>sudo -u postgres createuser --no-createdb --login --pwprompt --no-createrole --no-superuser --pwprompt testuser psqlで接続できるか確認する。 psql -U testuser testdb DBに関しては特に指定は無くても、存在すればアクセスできる。テーブルも作れる。</description>
     </item>
     
     <item>
