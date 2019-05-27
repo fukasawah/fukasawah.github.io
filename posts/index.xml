@@ -1147,7 +1147,7 @@ firewall-cmd --add-service=https --zone=public --permanent
 <p>SSLの妥当性もテストしてくれるサービスがあるので、これも試す。
 <a href="https://www.ssllabs.com/ssltest/">https://www.ssllabs.com/ssltest/</a></p>
 
-<p><img src="/images/vps-server-setup-with-letsencrypt/20  19-03-17-23-40-44.png" alt="" /></p>
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png" alt="" /></p>
 
 <p>いいですね。</p>
 
