@@ -1046,7 +1046,7 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
 
 <p>毎日午前3時12分に実行する。（時間はずらす）</p>
 
-<pre><code>12 3 * * * docker run -it --rm --name certbot -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; -v &quot;/var/log/letsencrypt:/var/log/letsencrypt&quot; certbot/dns-google renew
+<pre><code>12 3 * * * docker run --rm --name certbot -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; -v &quot;/var/log/letsencrypt:/var/log/letsencrypt&quot; certbot/dns-google renew 
 </code></pre>
 
 <h2 id="nginxの導入とssl証明書の利用">nginxの導入とSSL証明書の利用</h2>
@@ -1147,9 +1147,11 @@ firewall-cmd --add-service=https --zone=public --permanent
 <p>SSLの妥当性もテストしてくれるサービスがあるので、これも試す。
 <a href="https://www.ssllabs.com/ssltest/">https://www.ssllabs.com/ssltest/</a></p>
 
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png" alt="" /></p>
+<p><img src="/images/vps-server-setup-with-letsencrypt/20  19-03-17-23-40-44.png" alt="" /></p>
 
 <p>いいですね。</p>
+
+<p>ちなみに、証明書を更新し終わったらnginxもreloadを行わないと反映されない。ので、<code>systemctl reload nginx</code>をcronに入れておくなりすると良いでしょう。</p>
 ]]></content>
 		</item>
 		
