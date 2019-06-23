@@ -6,10 +6,19 @@
     <description>Recent content on fukasawah.github.io</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>ja-JP</language>
-    <lastBuildDate>Mon, 24 Jun 2019 00:58:49 +0900</lastBuildDate>
+    <lastBuildDate>Mon, 24 Jun 2019 01:28:17 +0900</lastBuildDate>
     
 	<atom:link href="https://fukasawah.github.io/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>About</title>
+      <link>https://fukasawah.github.io/about/</link>
+      <pubDate>Mon, 24 Jun 2019 01:28:17 +0900</pubDate>
+      
+      <guid>https://fukasawah.github.io/about/</guid>
+      <description>私が勉強したことなどを書く場所です。 コメントが現在残せませんので、何かありましたらTwitter等でお願いします。（コメント付けるサービス入</description>
+    </item>
     
     <item>
       <title>PulumiでAzureのリソースを構成する</title>
@@ -99,21 +108,6 @@
       
       <guid>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</guid>
       <description>HUGO HUGO - https://gohugo.io/ 静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。 また、記事の公開には、Github Pagesを使う。Netl</description>
-    </item>
-    
-    <item>
-      <title></title>
-      <link>https://fukasawah.github.io/posts/1/01/01/_unposted_memo/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://fukasawah.github.io/posts/1/01/01/_unposted_memo/</guid>
-      <description>インフラメモ
-既存の問題 全般 IaCはとても良くて、メンテナンスされない手順書よりも良いし、手順ミスしない機械がやってくれる楽さは替えがたい。
-再適用時は変更だけで済むか、作り直しになるかはちゃんと検証しなくてはならない。 完全モードは非常にリスキーで運用フローをしっかり固めたり、手動変更を一切禁じるなどしない限りはオススメできない。 増分モードは現状に増分適用している時と1から構築しようとした時と比べて、同じ状況になる保証がない。
-Azure Resource Manager Template  利点  公式のツールで息が長い事が期待できる 状態を管理するファイルがいらない 最新の機能に追従している（多分） 公式がVS Code向けの拡張機能を出しているので最低限のシンタックスチェックや未使用変数の検知は行える  欠点  JSONで書かなければならない JSONの上にテンプレート構文を構築しているため、テンプレートを読み解くスキルを身に着ける必要があり、初学者に読み解かせるのは困難（後継者問題につながる。） key-valueで構築するためどうしても冗長な記述が多くなる 依存関係を把握して明示しなければならない   ARM Templateはタダで美味しく使えるわけではなくて、覚悟して使わないといけなく、不安の中で使っていかないといけない。
-VM1個立てるのに250行以上書くことになる。 愚直に書いていたら5000行を超えるので、頑張って共通化して1000行程度に減らした経験はあるが、共通化を試行錯誤するのも時間がめちゃくちゃかかるのでそこに価値が見いだせるかは非常に怪しい。 （構築は1日で、共通化に2日とか。）
-共通化の仕組みも乏しい。単品リソースのループぐらいは出来るが、Nested templateを使ったループはサポートされてないし、外部URLでテンプレートを参照する機能はあるが、ローカルファイルを参照する機能がない。
-実行時のエラーは慣れてくると付近のリソースを見ればアタリは付けられる。が、些細なリソース名ミスでも仰々しいほどのエラーが出るので、これに慣れるしかない。</description>
     </item>
     
   </channel>
