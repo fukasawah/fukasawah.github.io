@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ja-JP">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<meta itemprop="name" content="">
+<meta itemprop="description" content="インフラメモ
+既存の問題 全般 IaCはとても良くて、メンテナンスされない手順書よりも良いし、手順ミスしない機械がやってくれる楽さは替えがたい。
+再適用時は変更だけで済むか、作り直しになるかはちゃんと検証しなくてはならない。 完全モードは非常にリスキーで運用フローをしっかり固めたり、手動変更を一切禁じるなどしない限りはオススメできない。 増分モードは現状に増分適用している時と1から構築しようとした時と比べて、同じ状況になる保証がない。
+Azure Resource Manager Template  利点  公式のツールで息が長い事が期待できる 状態を管理するファイルがいらない 最新の機能に追従している（多分） 公式がVS Code向けの拡張機能を出しているので最低限のシンタックスチェックや未使用変数の検知は行える  欠点  JSONで書かなければならない JSONの上にテンプレート構文を構築しているため、テンプレートを読み解くスキルを身に着ける必要があり、初学者に読み解かせるのは困難（後継者問題につながる。） key-valueで構築するためどうしても冗長な記述が多くなる 依存関係を把握して明示しなければならない   ARM Templateはタダで美味しく使えるわけではなくて、覚悟して使わないといけなく、不安の中で使っていかないといけない。
+VM1個立てるのに250行以上書くことになる。 愚直に書いていたら5000行を超えるので、頑張って共通化して1000行程度に減らした経験はあるが、共通化を試行錯誤するのも時間がめちゃくちゃかかるのでそこに価値が見いだせるかは非常に怪しい。 （構築は1日で、共通化に2日とか。）
+共通化の仕組みも乏しい。単品リソースのループぐらいは出来るが、Nested templateを使ったループはサポートされてないし、外部URLでテンプレートを参照する機能はあるが、ローカルファイルを参照する機能がない。
+実行時のエラーは慣れてくると付近のリソースを見ればアタリは付けられる。が、些細なリソース名ミスでも仰々しいほどのエラーが出るので、これに慣れるしかない。">
+
+
+
+<meta itemprop="wordCount" content="30">
+
+
+
+<meta itemprop="keywords" content="" />
+<meta property="og:title" content="" />
+<meta property="og:description" content="インフラメモ
+既存の問題 全般 IaCはとても良くて、メンテナンスされない手順書よりも良いし、手順ミスしない機械がやってくれる楽さは替えがたい。
+再適用時は変更だけで済むか、作り直しになるかはちゃんと検証しなくてはならない。 完全モードは非常にリスキーで運用フローをしっかり固めたり、手動変更を一切禁じるなどしない限りはオススメできない。 増分モードは現状に増分適用している時と1から構築しようとした時と比べて、同じ状況になる保証がない。
+Azure Resource Manager Template  利点  公式のツールで息が長い事が期待できる 状態を管理するファイルがいらない 最新の機能に追従している（多分） 公式がVS Code向けの拡張機能を出しているので最低限のシンタックスチェックや未使用変数の検知は行える  欠点  JSONで書かなければならない JSONの上にテンプレート構文を構築しているため、テンプレートを読み解くスキルを身に着ける必要があり、初学者に読み解かせるのは困難（後継者問題につながる。） key-valueで構築するためどうしても冗長な記述が多くなる 依存関係を把握して明示しなければならない   ARM Templateはタダで美味しく使えるわけではなくて、覚悟して使わないといけなく、不安の中で使っていかないといけない。
+VM1個立てるのに250行以上書くことになる。 愚直に書いていたら5000行を超えるので、頑張って共通化して1000行程度に減らした経験はあるが、共通化を試行錯誤するのも時間がめちゃくちゃかかるのでそこに価値が見いだせるかは非常に怪しい。 （構築は1日で、共通化に2日とか。）
+共通化の仕組みも乏しい。単品リソースのループぐらいは出来るが、Nested templateを使ったループはサポートされてないし、外部URLでテンプレートを参照する機能はあるが、ローカルファイルを参照する機能がない。
+実行時のエラーは慣れてくると付近のリソースを見ればアタリは付けられる。が、些細なリソース名ミスでも仰々しいほどのエラーが出るので、これに慣れるしかない。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://fukasawah.github.io/posts/1/01/01/_unposted_memo/" />
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="インフラメモ
+既存の問題 全般 IaCはとても良くて、メンテナンスされない手順書よりも良いし、手順ミスしない機械がやってくれる楽さは替えがたい。
+再適用時は変更だけで済むか、作り直しになるかはちゃんと検証しなくてはならない。 完全モードは非常にリスキーで運用フローをしっかり固めたり、手動変更を一切禁じるなどしない限りはオススメできない。 増分モードは現状に増分適用している時と1から構築しようとした時と比べて、同じ状況になる保証がない。
+Azure Resource Manager Template  利点  公式のツールで息が長い事が期待できる 状態を管理するファイルがいらない 最新の機能に追従している（多分） 公式がVS Code向けの拡張機能を出しているので最低限のシンタックスチェックや未使用変数の検知は行える  欠点  JSONで書かなければならない JSONの上にテンプレート構文を構築しているため、テンプレートを読み解くスキルを身に着ける必要があり、初学者に読み解かせるのは困難（後継者問題につながる。） key-valueで構築するためどうしても冗長な記述が多くなる 依存関係を把握して明示しなければならない   ARM Templateはタダで美味しく使えるわけではなくて、覚悟して使わないといけなく、不安の中で使っていかないといけない。
+VM1個立てるのに250行以上書くことになる。 愚直に書いていたら5000行を超えるので、頑張って共通化して1000行程度に減らした経験はあるが、共通化を試行錯誤するのも時間がめちゃくちゃかかるのでそこに価値が見いだせるかは非常に怪しい。 （構築は1日で、共通化に2日とか。）
+共通化の仕組みも乏しい。単品リソースのループぐらいは出来るが、Nested templateを使ったループはサポートされてないし、外部URLでテンプレートを参照する機能はあるが、ローカルファイルを参照する機能がない。
+実行時のエラーは慣れてくると付近のリソースを見ればアタリは付けられる。が、些細なリソース名ミスでも仰々しいほどのエラーが出るので、これに慣れるしかない。"/>
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title></title>
+	<link rel="stylesheet" href="https://fukasawah.github.io/css/style.min.013cece40d8270df4082e0a1182c603ee7035c87e962ff83c71c1aa506d9b0e8.css" integrity="sha256-ATzs5A2CcN9AguChGCxgPucDXIfpYv+DxxwapQbZsOg=">
+	
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp faster">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://fukasawah.github.io/">fukasawah.github.io</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					<a href="https://fukasawah.github.io/posts/">Posts</a>
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://fukasawah.github.io/posts/">Posts</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 1, 0001</span></div>
+				<h1></h1>
+			</header>
+			<div class="content">
+				
+
+<p>インフラメモ</p>
+
+<h3 id="既存の問題">既存の問題</h3>
+
+<h4 id="全般">全般</h4>
+
+<p>IaCはとても良くて、メンテナンスされない手順書よりも良いし、手順ミスしない機械がやってくれる楽さは替えがたい。</p>
+
+<p>再適用時は変更だけで済むか、作り直しになるかはちゃんと検証しなくてはならない。
+完全モードは非常にリスキーで運用フローをしっかり固めたり、手動変更を一切禁じるなどしない限りはオススメできない。
+増分モードは現状に増分適用している時と1から構築しようとした時と比べて、同じ状況になる保証がない。</p>
+
+<h4 id="azure-resource-manager-template">Azure Resource Manager Template</h4>
+
+<ul>
+<li>利点
+
+<ul>
+<li>公式のツールで息が長い事が期待できる</li>
+<li>状態を管理するファイルがいらない</li>
+<li>最新の機能に追従している（多分）</li>
+<li>公式がVS Code向けの拡張機能を出しているので最低限のシンタックスチェックや未使用変数の検知は行える</li>
+</ul></li>
+<li>欠点
+
+<ul>
+<li>JSONで書かなければならない</li>
+<li>JSONの上にテンプレート構文を構築しているため、テンプレートを読み解くスキルを身に着ける必要があり、初学者に読み解かせるのは困難（後継者問題につながる。）</li>
+<li>key-valueで構築するためどうしても冗長な記述が多くなる</li>
+<li>依存関係を把握して明示しなければならない</li>
+</ul></li>
+</ul>
+
+<p>ARM Templateはタダで美味しく使えるわけではなくて、覚悟して使わないといけなく、不安の中で使っていかないといけない。</p>
+
+<p>VM1個立てるのに250行以上書くことになる。
+愚直に書いていたら5000行を超えるので、頑張って共通化して1000行程度に減らした経験はあるが、共通化を試行錯誤するのも時間がめちゃくちゃかかるのでそこに価値が見いだせるかは非常に怪しい。
+（構築は1日で、共通化に2日とか。）</p>
+
+<p>共通化の仕組みも乏しい。単品リソースのループぐらいは出来るが、Nested templateを使ったループはサポートされてないし、外部URLでテンプレートを参照する機能はあるが、ローカルファイルを参照する機能がない。</p>
+
+<p>実行時のエラーは慣れてくると付近のリソースを見ればアタリは付けられる。が、些細なリソース名ミスでも仰々しいほどのエラーが出るので、これに慣れるしかない。</p>
+
+			</div>
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>30 Words</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 09:00 &#43;0900</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://fukasawah.github.io/posts/2018/12/24/using-hugo/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>Using HUGO</span>
+			</a>
+		</div>
+		<div id="comments" class="thin">
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 <a href="https://fukasawah.github.io/">fukasawah</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://fukasawah.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+	<script src="https://fukasawah.github.io/js/main.min.8f39f24808e9d0a9b02da58c2d2838da859dc0b7bdfadbdb1883aae8b6adacfe.js" integrity="sha256-jznySAjp0KmwLaWMLSg42oWdwLe9+tvbGIOq6LatrP4="></script>
+
+</body>
+
+</html>

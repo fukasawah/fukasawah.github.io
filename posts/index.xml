@@ -6,8 +6,281 @@
 		<description>Recent content in Posts on fukasawah.github.io</description>
 		<generator>Hugo -- gohugo.io</generator>
 		<language>ja-JP</language>
-		<lastBuildDate>Sat, 25 May 2019 14:20:19 +0900</lastBuildDate>
+		<lastBuildDate>Mon, 24 Jun 2019 00:58:49 +0900</lastBuildDate>
 		<atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>PulumiでAzureのリソースを構成する</title>
+			<link>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</link>
+			<pubDate>Mon, 24 Jun 2019 00:58:49 +0900</pubDate>
+			
+			<guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid>
+			<description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description>
+			<content type="html"><![CDATA[
+
+<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
+Azure Resource Manager(Template)やTerraformで出来ることと同じだが、特定の言語(JavaScript,TypeScript,Python)で記述できるのが強み。</p>
+
+<p>Azure Resource Manager Templateに嫌気がさしつつ、terraformでやろうかな、と思っていたらPulumi見かけたのでクイックスタートを走ってみた。</p>
+
+<h3 id="pulumiのインストール">Pulumiのインストール</h3>
+
+<p>以下でOS毎のインストール方法が書かれている。</p>
+
+<p><a href="https://pulumi.io/reference/install/">https://pulumi.io/reference/install/</a></p>
+
+<p>Azureを使う場合はAzure CLI 2.0.x以上を入れておく。</p>
+
+<p><a href="https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest">https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest</a></p>
+
+<h3 id="ログイン">ログイン</h3>
+
+<p>Pulumiは状態管理などをPulumiが提供しているサーバ上で行う。
+terraformのようにS3ストレージにtfstateを上げて共有する代わりにこれらを使うが、ログインのためのアカウント作成が面倒なのと、状態ファイルを握られるのが何か嫌なので、今回は使わない事にする。</p>
+
+<p>ローカルに用意することもできるので、今回はこれを使う。</p>
+
+<pre><code>mkdir ~/quickstart
+cd ~/quickstart
+pulumi login &quot;file://~/quickstart&quot;
+</code></pre>
+
+<h3 id="プロジェクトを作る">プロジェクトを作る</h3>
+
+<p>AzureのQuickStartを読みながら進める</p>
+
+<p><a href="https://pulumi.io/quickstart/azure/install-pulumi/">https://pulumi.io/quickstart/azure/install-pulumi/</a></p>
+
+<p>プロバイダはAzure、言語はTypeScriptでプロジェクトを作成する。
+ローカルにログインしての作成なので、少し表示が違う。</p>
+
+<pre><code>$ pulumi new azure-typescript
+Created project 'quickstart'
+
+Enter your passphrase to protect config/secrets: ********
+Re-enter your passphrase to confirm: ********
+Created stack 'dev'
+
+Enter your passphrase to unlock config/secrets
+    (set PULUMI_CONFIG_PASSPHRASE to remember): ********
+Saved config
+
+Installing dependencies...
+
+...
+
+added 163 packages from 190 contributors and audited 510 packages in 35.953s
+found 0 vulnerabilities
+
+Finished installing dependencies
+
+Your new project is ready to go!
+
+To perform an initial deployment, run 'pulumi up'
+</code></pre>
+
+<p>ローカルの場合はパスフレーズを使い暗号化を行う。これはプロジェクト毎に設定するようだ。
+次に、プロジェクトを作成した後、<code>dev</code>というstackが作られる。stackというのは環境みたいなもので、しばしば開発者が確認で使う「Development(開発環境)」や、お客様が遊んで使う「staging(検証環境)」ユーザが実際に使う「production(本番環境)」と呼んだりするが、Pulumiではこれらを1つ1つを<strong>stack</strong>と呼んで分けている。
+なので、プロジェクトの中には複数のstackがあり、stack毎に反映していくことになる。今回はデフォルトのstackとしてdevが作られたが、stackの操作はサブコマンドの<code>pulumi stack</code>で一通り操作できる。(<a href="https://pulumi.io/reference/stack/">doc</a>)</p>
+
+<h3 id="pulumiのプログラムを書く">Pulumiのプログラムを書く</h3>
+
+<p><code>index.ts</code>が実際のコードになる。デフォルトでリソースグループとストレージアカウントを作成するコードが用意されている。</p>
+
+<p>少し改変する。</p>
+
+<pre><code class="language-ts">import * as pulumi from &quot;@pulumi/pulumi&quot;;
+import * as azure from &quot;@pulumi/azure&quot;;
+
+const PROJECT_NAME = 'pulumi'
+
+// Create an Azure Resource Group
+const resourceGroup = new azure.core.ResourceGroup(`rg-${PROJECT_NAME}`, {
+    location: &quot;JapanEast&quot;,
+});
+
+// Create an Azure resource (Storage Account)
+const account = new azure.storage.Account(`storage${PROJECT_NAME}`, {
+    resourceGroupName: resourceGroup.name,
+    location: resourceGroup.location,
+    accountTier: &quot;Standard&quot;,
+    accountReplicationType: &quot;LRS&quot;,
+});
+
+// Export the connection string for the storage account
+export const connectionString = account.primaryConnectionString;
+</code></pre>
+
+<h3 id="pulumi-upで反映する">Pulumi upで反映する</h3>
+
+<pre><code>$ pulumi up
+Enter your passphrase to unlock config/secrets
+    (set PULUMI_CONFIG_PASSPHRASE to remember): ********
+Previewing update (dev):
+
+ +  pulumi:pulumi:Stack quickstart-dev create
+ +  azure:core:ResourceGroup rg-pulumi create
+ +  azure:storage:Account storagepulumi create
+
+Resources:
+    + 3 to create
+
+Updating (dev):
+
+ +  pulumi:pulumi:Stack quickstart-dev creating
+ +  azure:core:ResourceGroup rg-pulumi creating
+ +  azure:core:ResourceGroup rg-pulumi created
+ +  azure:storage:Account storagepulumi creating
+@ updating....
+ +  azure:storage:Account storagepulumi created
+
+Outputs:
+    connectionString: &quot;DefaultEndpointsProtocol=https;AccountName=storagepulumi516909b7;AccountKey=********************/********************==;EndpointSuffix=core.windows.net&quot;
+
+Resources:
+    + 3 created
+
+Duration: 29s
+
+Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
+</code></pre>
+
+<p>出来上がったが、実際に作られたリソース名は<code>rg-pulumided110d7</code>や<code>storagepulumi516909b7</code>という感じで後ろに8文字のサフィックスがくっつく形となった。これはPulumiが勝手につけているようだ。</p>
+
+<p>storageはともかく、リソースグループは付けたくないと思うので、明示的に指定する方法を探る。</p>
+
+<h3 id="リソース名を明示して変更を反映する">リソース名を明示して変更を反映する</h3>
+
+<p>用意されているリソースには大抵nameプロパティがあり、これを明示的に設定すればよいらしい。</p>
+
+<pre><code class="language-ts">// Create an Azure Resource Group
+const resourceGroup = new azure.core.ResourceGroup(`rg-${PROJECT_NAME}`, {
+    name: `rg-${PROJECT_NAME}`, // この行を追記
+    location: &quot;JapanEast&quot;,
+});
+</code></pre>
+
+<p>Azureのリソースグループは通常名前変更ができないし、そもそも前のリソースの名前(<code>rg-pulumided110d7</code>)がわからなくなる。</p>
+
+<p>しかしpulumiは前回実行後の状態を(現在は)ローカルで管理している。</p>
+
+<p>今回は、使われなくなったリソースは削除し、再度新規作成する形で置き換わる。（この挙動は「IaCあるある」で既存のデータが吹っ飛ぶので注意が必要。）
+また、リソースグループに紐づくストレージアカウントも作り直しになっている。（リソースグループの移動は出来るはずだが、Pulumiはそこまで面倒見てないらしい。）</p>
+
+<pre><code>$ pulumi up
+Previewing update (dev):
+
+     Type                         Name            Plan        Info
+     pulumi:pulumi:Stack          quickstart-dev
+ +-   azure:core:ResourceGroup  rg-pulumi       replace     [diff: ~name]
+ +-   azure:storage:Account     storagepulumi   replace     [diff: ~location,name,resourceGroupName]
+
+Resources:
+    +-2 to replace
+    1 unchanged
+
+Do you want to perform this update? yes
+Updating (dev):
+
+     Type                         Name            Status       Info
+     pulumi:pulumi:Stack          quickstart-dev
+ +-   azure:core:ResourceGroup  rg-pulumi       replaced     [diff: ~name]
+ +-   azure:storage:Account     storagepulumi   replaced     [diff: ~name,resourceGroupName]
+
+Outputs:
+  ~ connectionString: &quot;DefaultEndpointsProtocol=https;AccountName=storagepulumi516909b7;AccountKey=********************/********************==;EndpointSuffix=core.windows.net&quot; =&gt; &quot;DefaultEndpointsProtocol=https;AccountName=storagepulumi77efe7b5;AccountKey=********************/********************==;EndpointSuffix=core.windows.net&quot;
+
+Resources:
+    +-2 replaced
+    1 unchanged
+
+Duration: 1m14s
+
+Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
+</code></pre>
+
+<h2 id="aciでnginxコンテナを立てる">ACIでnginxコンテナを立てる</h2>
+
+<p>チュートリアルでは、ストレージアカウントを削除し、nginxのACI(Azure Container Instances)を立てる例に書き換えているので習う。</p>
+
+<p><a href="https://pulumi.io/quickstart/azure/modify-program/">https://pulumi.io/quickstart/azure/modify-program/</a></p>
+
+<pre><code class="language-ts">import * as pulumi from &quot;@pulumi/pulumi&quot;;
+import * as azure from &quot;@pulumi/azure&quot;;
+
+const PROJECT_NAME = 'pulumi'
+
+// Create an Azure Resource Group
+const resourceGroup = new azure.core.ResourceGroup(`rg-${PROJECT_NAME}`, {
+    name: `rg-${PROJECT_NAME}`,
+    location: &quot;JapanEast&quot;,
+});
+
+// Create an Azure Container Group
+const container = new azure.containerservice.Group(&quot;aci-nginx&quot;, {
+    containers: [{
+        name: &quot;nginx&quot;,
+        image: &quot;nginx&quot;,
+        memory: 1,
+        cpu: 1,
+        ports: [{
+            port: 80,
+            protocol: &quot;TCP&quot;
+        }],
+    }],
+    osType: &quot;Linux&quot;,
+    resourceGroupName: resourceGroup.name,
+    location: resourceGroup.location,
+});
+
+// Export the public IP of the container
+export const ip = container.ipAddress;
+</code></pre>
+
+<p>その後、<code>pulumi up</code>すると、ストレージアカウントが消えて、ACIが作成されたことが分かる。</p>
+
+<p>作成後、nginxにアクセスする。接続先のIPは以下のようにして取れる。</p>
+
+<pre><code class="language-bash">curl $(pulumi stack output ip)
+</code></pre>
+
+<p><code>pulumi stack output ip</code>の<code>ip</code>はindex.tsでexportしている変数<code>ip</code>のことで、これを参照することが出来るらしい。便利。</p>
+
+<h3 id="リソースの削除">リソースの削除</h3>
+
+<pre><code>pulumi destroy
+</code></pre>
+
+<h3 id="次のステップ">次のステップ</h3>
+
+<p>ドキュメントにはgithubのサンプルコードを案内している。</p>
+
+<p><a href="https://pulumi.io/quickstart/azure/next-steps/">https://pulumi.io/quickstart/azure/next-steps/</a></p>
+
+<p><a href="https://github.com/pulumi/examples">https://github.com/pulumi/examples</a></p>
+
+<p>他のクラウドと比べると少し少ないが、Azureのサンプルがいくつか載っている。書き方の参考になるかもしれない。</p>
+
+<h2 id="感想">感想</h2>
+
+<p>TypeScriptとVSCodeの書き味が最高だった。TypeScriptのモジュールシステムを使えるはずなので、共通化もしやすそう。</p>
+
+<p>欠点は後発なのでまだまだプラクティスが少ないこと。公式がサポートに入っていないのでリソースの追加・修正があった時に追従するのが遅いだろう、という所かな。</p>
+
+<p>ただ後者は<a href="https://pulumi.io/reference/pkg/nodejs/pulumi/azure/core/#TemplateDeployment">TemplateDeployment</a>リソースがあるので、部分的にARM Templateでカバーできそうだ。ちゃんとoutputも扱える。</p>
+
+<h2 id="その他">その他</h2>
+
+<h3 id="バックエンドは他にないのか">バックエンドは他にないのか？</h3>
+
+<p>ローカルは何かイマイチ（git反映忘れそう）だし、PulumiのWebサーバに依存したくないなぁ、と思っていた。
+そこで他のバックエンドを使えないか調べたところ、一応AWS,GCP,Azureをサポートしているようだ。</p>
+
+<p>内部的にはgo-cloudで抽象化しているので、<a href="https://gocloud.dev/howto/blob/open-bucket/">go-cloudのopenBucketのドキュメント</a>を見ると、どのような環境変数が必要かは分かる。</p>
+
+<p>細かいところは「<a href="https://qiita.com/fukasawah/items/7c793ab8b08d19cd9376">Qiita - Pulumiの状態管理にクラウドストレージバックエンドを使う</a>」に書いた。</p>
+]]></content>
+		</item>
 		
 		<item>
 			<title>MCP資格のAZ-103に不合格しました</title>
@@ -1664,6 +1937,66 @@ git commit -m &quot;Update&quot;
 <p>以下は画像。貼り付けのお試し。</p>
 
 <p><img src="/images/using-hugo/2018-12-25-16-45-13.png" alt="" /></p>
+]]></content>
+		</item>
+		
+		<item>
+			<title></title>
+			<link>https://fukasawah.github.io/posts/1/01/01/_unposted_memo/</link>
+			<pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+			
+			<guid>https://fukasawah.github.io/posts/1/01/01/_unposted_memo/</guid>
+			<description>インフラメモ
+既存の問題 全般 IaCはとても良くて、メンテナンスされない手順書よりも良いし、手順ミスしない機械がやってくれる楽さは替えがたい。
+再適用時は変更だけで済むか、作り直しになるかはちゃんと検証しなくてはならない。 完全モードは非常にリスキーで運用フローをしっかり固めたり、手動変更を一切禁じるなどしない限りはオススメできない。 増分モードは現状に増分適用している時と1から構築しようとした時と比べて、同じ状況になる保証がない。
+Azure Resource Manager Template  利点  公式のツールで息が長い事が期待できる 状態を管理するファイルがいらない 最新の機能に追従している（多分） 公式がVS Code向けの拡張機能を出しているので最低限のシンタックスチェックや未使用変数の検知は行える  欠点  JSONで書かなければならない JSONの上にテンプレート構文を構築しているため、テンプレートを読み解くスキルを身に着ける必要があり、初学者に読み解かせるのは困難（後継者問題につながる。） key-valueで構築するためどうしても冗長な記述が多くなる 依存関係を把握して明示しなければならない   ARM Templateはタダで美味しく使えるわけではなくて、覚悟して使わないといけなく、不安の中で使っていかないといけない。
+VM1個立てるのに250行以上書くことになる。 愚直に書いていたら5000行を超えるので、頑張って共通化して1000行程度に減らした経験はあるが、共通化を試行錯誤するのも時間がめちゃくちゃかかるのでそこに価値が見いだせるかは非常に怪しい。 （構築は1日で、共通化に2日とか。）
+共通化の仕組みも乏しい。単品リソースのループぐらいは出来るが、Nested templateを使ったループはサポートされてないし、外部URLでテンプレートを参照する機能はあるが、ローカルファイルを参照する機能がない。
+実行時のエラーは慣れてくると付近のリソースを見ればアタリは付けられる。が、些細なリソース名ミスでも仰々しいほどのエラーが出るので、これに慣れるしかない。</description>
+			<content type="html"><![CDATA[
+
+<p>インフラメモ</p>
+
+<h3 id="既存の問題">既存の問題</h3>
+
+<h4 id="全般">全般</h4>
+
+<p>IaCはとても良くて、メンテナンスされない手順書よりも良いし、手順ミスしない機械がやってくれる楽さは替えがたい。</p>
+
+<p>再適用時は変更だけで済むか、作り直しになるかはちゃんと検証しなくてはならない。
+完全モードは非常にリスキーで運用フローをしっかり固めたり、手動変更を一切禁じるなどしない限りはオススメできない。
+増分モードは現状に増分適用している時と1から構築しようとした時と比べて、同じ状況になる保証がない。</p>
+
+<h4 id="azure-resource-manager-template">Azure Resource Manager Template</h4>
+
+<ul>
+<li>利点
+
+<ul>
+<li>公式のツールで息が長い事が期待できる</li>
+<li>状態を管理するファイルがいらない</li>
+<li>最新の機能に追従している（多分）</li>
+<li>公式がVS Code向けの拡張機能を出しているので最低限のシンタックスチェックや未使用変数の検知は行える</li>
+</ul></li>
+<li>欠点
+
+<ul>
+<li>JSONで書かなければならない</li>
+<li>JSONの上にテンプレート構文を構築しているため、テンプレートを読み解くスキルを身に着ける必要があり、初学者に読み解かせるのは困難（後継者問題につながる。）</li>
+<li>key-valueで構築するためどうしても冗長な記述が多くなる</li>
+<li>依存関係を把握して明示しなければならない</li>
+</ul></li>
+</ul>
+
+<p>ARM Templateはタダで美味しく使えるわけではなくて、覚悟して使わないといけなく、不安の中で使っていかないといけない。</p>
+
+<p>VM1個立てるのに250行以上書くことになる。
+愚直に書いていたら5000行を超えるので、頑張って共通化して1000行程度に減らした経験はあるが、共通化を試行錯誤するのも時間がめちゃくちゃかかるのでそこに価値が見いだせるかは非常に怪しい。
+（構築は1日で、共通化に2日とか。）</p>
+
+<p>共通化の仕組みも乏しい。単品リソースのループぐらいは出来るが、Nested templateを使ったループはサポートされてないし、外部URLでテンプレートを参照する機能はあるが、ローカルファイルを参照する機能がない。</p>
+
+<p>実行時のエラーは慣れてくると付近のリソースを見ればアタリは付けられる。が、些細なリソース名ミスでも仰々しいほどのエラーが出るので、これに慣れるしかない。</p>
 ]]></content>
 		</item>
 		
