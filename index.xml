@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>fukasawah.github.io</title>
@@ -17,7 +17,7 @@
       <pubDate>Mon, 24 Jun 2019 01:28:17 +0900</pubDate>
       
       <guid>https://fukasawah.github.io/about/</guid>
-      <description>私が勉強したことなどを書く場所です。 コメントが現在残せませんので、何かありましたらTwitter等でお願いします。（コメント付けるサービス入</description>
+      <description>私が勉強したことなどを書く場所です。 Profile fukasawah 1988年生まれのSIer企業で働くエンジニア。話を振られれば喋るコミュ症。代表作はないです。 UI/</description>
     </item>
     
     <item>
@@ -72,15 +72,6 @@
       
       <guid>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</guid>
       <description>PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの</description>
-    </item>
-    
-    <item>
-      <title>PostgreSQLのユーザ管理</title>
-      <link>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</link>
-      <pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate>
-      
-      <guid>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</guid>
-      <description>sudo -u postgres createuser --no-createdb --login --pwprompt --no-createrole --no-superuser --pwprompt testuser psqlで接続できるか確認する。 psql -U testuser testdb DBに関しては特に指定は無くても、存在すればアクセスできる。テーブルも作れる。</description>
     </item>
     
     <item>

@@ -4,23 +4,20 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-<meta itemprop="name" content="NginxのVirtualhost設定～WildcardSSL証明書を添えて～">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge"><meta itemprop="name" content="NginxのVirtualhost設定～WildcardSSL証明書を添えて～">
 <meta itemprop="description" content="以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。 ただ、このとき、証明書の設定箇所">
-
-
 <meta itemprop="datePublished" content="2019-03-26T04:10:14&#43;09:00" />
-<meta itemprop="dateModified" content="2019-03-26T04:23:57&#43;09:00" />
+<meta itemprop="dateModified" content="2020-04-02T08:26:55&#43;09:00" />
 <meta itemprop="wordCount" content="875">
 
 
 
-<meta itemprop="keywords" content="Server,Nginx," />
-<meta property="og:title" content="NginxのVirtualhost設定～WildcardSSL証明書を添えて～" />
+<meta itemprop="keywords" content="Server,Nginx," /><meta property="og:title" content="NginxのVirtualhost設定～WildcardSSL証明書を添えて～" />
 <meta property="og:description" content="以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。 ただ、このとき、証明書の設定箇所" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/" /><meta property="article:published_time" content="2019-03-26T04:10:14&#43;09:00"/>
-<meta property="article:modified_time" content="2019-03-26T04:23:57&#43;09:00"/>
+<meta property="og:url" content="https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/" />
+<meta property="article:published_time" content="2019-03-26T04:10:14+09:00" />
+<meta property="article:modified_time" content="2020-04-02T08:26:55+09:00" />
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="NginxのVirtualhost設定～WildcardSSL証明書を添えて～"/>
 <meta name="twitter:description" content="以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。 ただ、このとき、証明書の設定箇所"/>
@@ -69,45 +66,34 @@
 				<h1>NginxのVirtualhost設定～WildcardSSL証明書を添えて～</h1>
 			</header>
 			<div class="content">
-				
-
-<p>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。</p>
-
+				<p>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。</p>
 <p>ただ、このとき、証明書の設定箇所は1か所にしたい（増やすときに面倒なので）</p>
-
 <p>まさしくな手順はnginxのドキュメントにある。</p>
-
 <p><a href="https://nginx.org/en/docs/http/configuring_https_servers.html#certificate_with_several_names">https://nginx.org/en/docs/http/configuring_https_servers.html#certificate_with_several_names</a></p>
-
-<h3 id="etc-nginx-nginx-conf-の修正"><code>/etc/nginx/nginx.conf</code>の修正</h3>
-
+<h3 id="etcnginxnginxconfの修正"><code>/etc/nginx/nginx.conf</code>の修正</h3>
 <p>/etc/nginx/nginx.confのSSLの設定を、<code>server</code>ディレクティブではなく、<strong><code>http</code>ディレクティブに移動する。</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nginx" data-lang="nginx">   <span style="color:#75715e"># certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_certificate</span> <span style="color:#e6db74">/etc/letsencrypt/live/fukasawah.dev/fullchain.pem</span>;
+    <span style="color:#66d9ef">ssl_certificate_key</span> <span style="color:#e6db74">/etc/letsencrypt/live/fukasawah.dev/privkey.pem</span>;
+    <span style="color:#66d9ef">ssl_session_timeout</span> <span style="color:#e6db74">1d</span>;
+    <span style="color:#66d9ef">ssl_session_cache</span> <span style="color:#e6db74">shared:SSL:50m</span>;
+    <span style="color:#66d9ef">ssl_session_tickets</span> <span style="color:#66d9ef">off</span>;
+        <span style="color:#75715e"># modern configuration. tweak to your needs.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_protocols</span> <span style="color:#e6db74">TLSv1.2</span>;
+    <span style="color:#66d9ef">ssl_ciphers</span> <span style="color:#e6db74">&#39;ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256&#39;</span>;
+    <span style="color:#66d9ef">ssl_prefer_server_ciphers</span> <span style="color:#66d9ef">on</span>;
 
-<pre><code class="language-nginx">   # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-    ssl_certificate /etc/letsencrypt/live/fukasawah.dev/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/fukasawah.dev/privkey.pem;
-    ssl_session_timeout 1d;
-    ssl_session_cache shared:SSL:50m;
-    ssl_session_tickets off;
-        # modern configuration. tweak to your needs.
-    ssl_protocols TLSv1.2;
-    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
-    ssl_prefer_server_ciphers on;
+    <span style="color:#75715e"># HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">add_header</span> <span style="color:#e6db74">Strict-Transport-Security</span> <span style="color:#e6db74">max-age=15768000</span>;
 
-    # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
-    add_header Strict-Transport-Security max-age=15768000;
+    <span style="color:#75715e"># OCSP Stapling ---
+</span><span style="color:#75715e"></span>    <span style="color:#75715e"># fetch OCSP records from URL in ssl_certificate and cache them
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_stapling</span> <span style="color:#66d9ef">on</span>;
+    <span style="color:#66d9ef">ssl_stapling_verify</span> <span style="color:#66d9ef">on</span>;
 
-    # OCSP Stapling ---
-    # fetch OCSP records from URL in ssl_certificate and cache them
-    ssl_stapling on;
-    ssl_stapling_verify on;
-
-    ## verify chain of trust of OCSP response using Root CA and Intermediate certs
-    ssl_trusted_certificate /etc/letsencrypt/live/fukasawah.dev/chain.pem;
-</code></pre>
-
-<p>次にserver_nameをちゃんと与える。</p>
-
+    <span style="color:#75715e">## verify chain of trust of OCSP response using Root CA and Intermediate certs
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_trusted_certificate</span> <span style="color:#e6db74">/etc/letsencrypt/live/fukasawah.dev/chain.pem</span>;
+</code></pre></div><p>次にserver_nameをちゃんと与える。</p>
 <pre><code>    server {
         listen 443 ssl http2;
         listen [::]:443 ssl http2;
@@ -121,49 +107,32 @@
         location / {
         }
     # 省略
-</code></pre>
-
-<h3 id="etc-nginx-conf-d-virtualhost-test-conf-を作成する"><code>/etc/nginx/conf.d/virtualhost-test.conf</code> を作成する</h3>
-
+</code></pre><h3 id="etcnginxconfdvirtualhost-testconf-を作成する"><code>/etc/nginx/conf.d/virtualhost-test.conf</code> を作成する</h3>
 <p>httpディレクティブにある<code>include /etc/nginx/conf.d/*.conf</code>の設定で読むだけなので、<code>.conf</code>で終われば何でも良い。<code>virtualhost-サブドメイン名.conf</code>がわかりやすいんじゃないでしょうか。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nginx" data-lang="nginx"><span style="color:#66d9ef">server</span> {
+    <span style="color:#f92672">listen</span> <span style="color:#ae81ff">443</span> <span style="color:#e6db74">ssl</span> <span style="color:#e6db74">http2</span>;
+    <span style="color:#f92672">listen</span> <span style="color:#e6db74">[::]:443</span> <span style="color:#e6db74">ssl</span> <span style="color:#e6db74">http2</span>;
 
-<pre><code class="language-nginx">server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-
-    server_name test.fukasawah.dev; # server_nameをちゃんと変える
-
-    root /usr/share/nginx/html/test; # 試しにテスト用のディレクトリをrootにする
-    index index.html;
+    <span style="color:#f92672">server_name</span> <span style="color:#e6db74">test.fukasawah.dev</span>; <span style="color:#75715e"># server_nameをちゃんと変える
+</span><span style="color:#75715e"></span>
+    <span style="color:#f92672">root</span> <span style="color:#e6db74">/usr/share/nginx/html/test</span>; <span style="color:#75715e"># 試しにテスト用のディレクトリをrootにする
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">index</span> <span style="color:#e6db74">index.html</span>;
 }
-</code></pre>
-
-<p>見ての通り、SSLの設定はないが、同じhttpディレクティブに存在するserverディレクティブなので、httpディレクティブで設定したSSL設定が引き継がれている。これで追加するときも楽になる。</p>
-
+</code></pre></div><p>見ての通り、SSLの設定はないが、同じhttpディレクティブに存在するserverディレクティブなので、httpディレクティブで設定したSSL設定が引き継がれている。これで追加するときも楽になる。</p>
 <p>動作確認用にテスト用のファイルを配置する。</p>
-
-<pre><code class="language-bash">sudo mkdir -p /usr/share/nginx/html/test
-sudo tee /usr/share/nginx/html/test/index.html &lt;&lt; __EOF__
-&lt;!DOCTYPE html&gt;
-&lt;body&gt;
-  &lt;p&gt;Hello World&lt;/p&gt;
-&lt;/body&gt;
-__EOF__
-</code></pre>
-
-<h3 id="サーバに設定を反映">サーバに設定を反映</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mkdir -p /usr/share/nginx/html/test
+sudo tee /usr/share/nginx/html/test/index.html <span style="color:#e6db74">&lt;&lt; __EOF__
+</span><span style="color:#e6db74">&lt;!DOCTYPE html&gt;
+</span><span style="color:#e6db74">&lt;body&gt;
+</span><span style="color:#e6db74">  &lt;p&gt;Hello World&lt;/p&gt;
+</span><span style="color:#e6db74">&lt;/body&gt;
+</span><span style="color:#e6db74">__EOF__</span>
+</code></pre></div><h3 id="サーバに設定を反映">サーバに設定を反映</h3>
 <pre><code>sudo systemctl reload nginx
-</code></pre>
-
-<p><a href="https://fukasawah.dev">https://fukasawah.dev</a> と <a href="http://test.fukasawah.dev">http://test.fukasawah.dev</a> で見え方が変わっていることを確認する。（同じHTMLが返ってきていないこと）</p>
-
+</code></pre><p><a href="https://fukasawah.dev">https://fukasawah.dev</a> と <a href="http://test.fukasawah.dev">http://test.fukasawah.dev</a> で見え方が変わっていることを確認する。（同じHTMLが返ってきていないこと）</p>
 <p>また証明書も確認して同じものを使っていることも確認しておく。</p>
-
 <p>以上。</p>
-
 <p>あと内々で公開するとき用に、Digest認証をかけたい所だが、標準ではないモジュールなのでちょっと手間そう。Basic認証で妥協しようかな。TLSの上で通信されてるから大丈夫だ！大丈夫！</p>
-
 <p>どうでもよいが、SSL証明書はもはやTLS証明書である・・・。</p>
 
 			</div>
@@ -174,7 +143,7 @@ __EOF__
 				</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>875 Words</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-03-26 04:10 &#43;0900</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"></circle><line x1="1.05" y1="12" x2="7" y2="12"></line><line x1="17.01" y1="12" x2="22.96" y2="12"></line></svg><a href="https://github.com/fukasawah/blog/commit/1062d69d9cbbfc998f27186ca249b02e3f173907" target="_blank" rel="noopener">1062d69</a> @ 2019-03-26</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"></circle><line x1="1.05" y1="12" x2="7" y2="12"></line><line x1="17.01" y1="12" x2="22.96" y2="12"></line></svg><a href="https://github.com/fukasawah/blog/commit/f94e090ab4338fb62f515cd56465d35b1a36066b" target="_blank" rel="noopener">f94e090</a> @ 2020-04-02</p>
 			</footer>
 		</article>
 		<div class="post-nav thin">
@@ -210,7 +179,7 @@ __EOF__
 	</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 <a href="https://fukasawah.github.io/">fukasawah</a></p>
+		<p>&copy; 2020 <a href="https://fukasawah.github.io/">fukasawah</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://fukasawah.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

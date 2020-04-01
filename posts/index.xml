@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 	<channel>
 		<title>Posts on fukasawah.github.io</title>
@@ -16,44 +15,26 @@
 			
 			<guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid>
 			<description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description>
-			<content type="html"><![CDATA[
-
-<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
+			<content type="html"><![CDATA[<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
 Azure Resource Manager(Template)やTerraformで出来ることと同じだが、特定の言語(JavaScript,TypeScript,Python)で記述できるのが強み。</p>
-
 <p>Azure Resource Manager Templateに嫌気がさしつつ、terraformでやろうかな、と思っていたらPulumi見かけたのでクイックスタートを走ってみた。</p>
-
 <h3 id="pulumiのインストール">Pulumiのインストール</h3>
-
 <p>以下でOS毎のインストール方法が書かれている。</p>
-
 <p><a href="https://pulumi.io/reference/install/">https://pulumi.io/reference/install/</a></p>
-
 <p>Azureを使う場合はAzure CLI 2.0.x以上を入れておく。</p>
-
 <p><a href="https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest">https://docs.microsoft.com/en-us/cli/azure/?view=azure-cli-latest</a></p>
-
 <h3 id="ログイン">ログイン</h3>
-
 <p>Pulumiは状態管理などをPulumiが提供しているサーバ上で行う。
 terraformのようにS3ストレージにtfstateを上げて共有する代わりにこれらを使うが、ログインのためのアカウント作成が面倒なのと、状態ファイルを握られるのが何か嫌なので、今回は使わない事にする。</p>
-
 <p>ローカルに用意することもできるので、今回はこれを使う。</p>
-
 <pre><code>mkdir ~/quickstart
 cd ~/quickstart
 pulumi login &quot;file://~/quickstart&quot;
-</code></pre>
-
-<h3 id="プロジェクトを作る">プロジェクトを作る</h3>
-
+</code></pre><h3 id="プロジェクトを作る">プロジェクトを作る</h3>
 <p>AzureのQuickStartを読みながら進める</p>
-
 <p><a href="https://pulumi.io/quickstart/azure/install-pulumi/">https://pulumi.io/quickstart/azure/install-pulumi/</a></p>
-
 <p>プロバイダはAzure、言語はTypeScriptでプロジェクトを作成する。
 ローカルにログインしての作成なので、少し表示が違う。</p>
-
 <pre><code>$ pulumi new azure-typescript
 Created project 'quickstart'
 
@@ -77,42 +58,33 @@ Finished installing dependencies
 Your new project is ready to go!
 
 To perform an initial deployment, run 'pulumi up'
-</code></pre>
-
-<p>ローカルの場合はパスフレーズを使い暗号化を行う。これはプロジェクト毎に設定するようだ。
+</code></pre><p>ローカルの場合はパスフレーズを使い暗号化を行う。これはプロジェクト毎に設定するようだ。
 次に、プロジェクトを作成した後、<code>dev</code>というstackが作られる。stackというのは環境みたいなもので、しばしば開発者が確認で使う「Development(開発環境)」や、お客様が遊んで使う「staging(検証環境)」ユーザが実際に使う「production(本番環境)」と呼んだりするが、Pulumiではこれらを1つ1つを<strong>stack</strong>と呼んで分けている。
 なので、プロジェクトの中には複数のstackがあり、stack毎に反映していくことになる。今回はデフォルトのstackとしてdevが作られたが、stackの操作はサブコマンドの<code>pulumi stack</code>で一通り操作できる。(<a href="https://pulumi.io/reference/stack/">doc</a>)</p>
-
 <h3 id="pulumiのプログラムを書く">Pulumiのプログラムを書く</h3>
-
 <p><code>index.ts</code>が実際のコードになる。デフォルトでリソースグループとストレージアカウントを作成するコードが用意されている。</p>
-
 <p>少し改変する。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">import</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">as</span> <span style="color:#a6e22e">pulumi</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@pulumi/pulumi&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">as</span> <span style="color:#a6e22e">azure</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@pulumi/azure&#34;</span>;
 
-<pre><code class="language-ts">import * as pulumi from &quot;@pulumi/pulumi&quot;;
-import * as azure from &quot;@pulumi/azure&quot;;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">PROJECT_NAME</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;pulumi&#39;</span>
 
-const PROJECT_NAME = 'pulumi'
-
-// Create an Azure Resource Group
-const resourceGroup = new azure.core.ResourceGroup(`rg-${PROJECT_NAME}`, {
-    location: &quot;JapanEast&quot;,
+<span style="color:#75715e">// Create an Azure Resource Group
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+    <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;JapanEast&#34;</span>,
 });
 
-// Create an Azure resource (Storage Account)
-const account = new azure.storage.Account(`storage${PROJECT_NAME}`, {
-    resourceGroupName: resourceGroup.name,
-    location: resourceGroup.location,
-    accountTier: &quot;Standard&quot;,
-    accountReplicationType: &quot;LRS&quot;,
+<span style="color:#75715e">// Create an Azure resource (Storage Account)
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">account</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">Account</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">storage</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+    <span style="color:#a6e22e">resourceGroupName</span>: <span style="color:#66d9ef">resourceGroup.name</span>,
+    <span style="color:#a6e22e">location</span>: <span style="color:#66d9ef">resourceGroup.location</span>,
+    <span style="color:#a6e22e">accountTier</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Standard&#34;</span>,
+    <span style="color:#a6e22e">accountReplicationType</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;LRS&#34;</span>,
 });
 
-// Export the connection string for the storage account
-export const connectionString = account.primaryConnectionString;
-</code></pre>
-
-<h3 id="pulumi-upで反映する">Pulumi upで反映する</h3>
-
+<span style="color:#75715e">// Export the connection string for the storage account
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">connectionString</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">account</span>.<span style="color:#a6e22e">primaryConnectionString</span>;
+</code></pre></div><h3 id="pulumi-upで反映する">Pulumi upで反映する</h3>
 <pre><code>$ pulumi up
 Enter your passphrase to unlock config/secrets
     (set PULUMI_CONFIG_PASSPHRASE to remember): ********
@@ -143,30 +115,19 @@ Resources:
 Duration: 29s
 
 Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
-</code></pre>
-
-<p>出来上がったが、実際に作られたリソース名は<code>rg-pulumided110d7</code>や<code>storagepulumi516909b7</code>という感じで後ろに8文字のサフィックスがくっつく形となった。これはPulumiが勝手につけているようだ。</p>
-
+</code></pre><p>出来上がったが、実際に作られたリソース名は<code>rg-pulumided110d7</code>や<code>storagepulumi516909b7</code>という感じで後ろに8文字のサフィックスがくっつく形となった。これはPulumiが勝手につけているようだ。</p>
 <p>storageはともかく、リソースグループは付けたくないと思うので、明示的に指定する方法を探る。</p>
-
 <h3 id="リソース名を明示して変更を反映する">リソース名を明示して変更を反映する</h3>
-
 <p>用意されているリソースには大抵nameプロパティがあり、これを明示的に設定すればよいらしい。</p>
-
-<pre><code class="language-ts">// Create an Azure Resource Group
-const resourceGroup = new azure.core.ResourceGroup(`rg-${PROJECT_NAME}`, {
-    name: `rg-${PROJECT_NAME}`, // この行を追記
-    location: &quot;JapanEast&quot;,
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#75715e">// Create an Azure Resource Group
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, <span style="color:#75715e">// この行を追記
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;JapanEast&#34;</span>,
 });
-</code></pre>
-
-<p>Azureのリソースグループは通常名前変更ができないし、そもそも前のリソースの名前(<code>rg-pulumided110d7</code>)がわからなくなる。</p>
-
+</code></pre></div><p>Azureのリソースグループは通常名前変更ができないし、そもそも前のリソースの名前(<code>rg-pulumided110d7</code>)がわからなくなる。</p>
 <p>しかしpulumiは前回実行後の状態を(現在は)ローカルで管理している。</p>
-
 <p>今回は、使われなくなったリソースは削除し、再度新規作成する形で置き換わる。（この挙動は「IaCあるある」で既存のデータが吹っ飛ぶので注意が必要。）
 また、リソースグループに紐づくストレージアカウントも作り直しになっている。（リソースグループの移動は出来るはずだが、Pulumiはそこまで面倒見てないらしい。）</p>
-
 <pre><code>$ pulumi up
 Previewing update (dev):
 
@@ -197,87 +158,59 @@ Resources:
 Duration: 1m14s
 
 Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
-</code></pre>
-
-<h2 id="aciでnginxコンテナを立てる">ACIでnginxコンテナを立てる</h2>
-
+</code></pre><h2 id="aciでnginxコンテナを立てる">ACIでnginxコンテナを立てる</h2>
 <p>チュートリアルでは、ストレージアカウントを削除し、nginxのACI(Azure Container Instances)を立てる例に書き換えているので習う。</p>
-
 <p><a href="https://pulumi.io/quickstart/azure/modify-program/">https://pulumi.io/quickstart/azure/modify-program/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#66d9ef">import</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">as</span> <span style="color:#a6e22e">pulumi</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@pulumi/pulumi&#34;</span>;
+<span style="color:#66d9ef">import</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">as</span> <span style="color:#a6e22e">azure</span> <span style="color:#a6e22e">from</span> <span style="color:#e6db74">&#34;@pulumi/azure&#34;</span>;
 
-<pre><code class="language-ts">import * as pulumi from &quot;@pulumi/pulumi&quot;;
-import * as azure from &quot;@pulumi/azure&quot;;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">PROJECT_NAME</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;pulumi&#39;</span>
 
-const PROJECT_NAME = 'pulumi'
-
-// Create an Azure Resource Group
-const resourceGroup = new azure.core.ResourceGroup(`rg-${PROJECT_NAME}`, {
-    name: `rg-${PROJECT_NAME}`,
-    location: &quot;JapanEast&quot;,
+<span style="color:#75715e">// Create an Azure Resource Group
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>,
+    <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;JapanEast&#34;</span>,
 });
 
-// Create an Azure Container Group
-const container = new azure.containerservice.Group(&quot;aci-nginx&quot;, {
-    containers: [{
-        name: &quot;nginx&quot;,
-        image: &quot;nginx&quot;,
-        memory: 1,
-        cpu: 1,
-        ports: [{
-            port: 80,
-            protocol: &quot;TCP&quot;
+<span style="color:#75715e">// Create an Azure Container Group
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">container</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">containerservice</span>.<span style="color:#a6e22e">Group</span>(<span style="color:#e6db74">&#34;aci-nginx&#34;</span>, {
+    <span style="color:#a6e22e">containers</span><span style="color:#f92672">:</span> [{
+        <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;nginx&#34;</span>,
+        <span style="color:#a6e22e">image</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;nginx&#34;</span>,
+        <span style="color:#a6e22e">memory</span>: <span style="color:#66d9ef">1</span>,
+        <span style="color:#a6e22e">cpu</span>: <span style="color:#66d9ef">1</span>,
+        <span style="color:#a6e22e">ports</span><span style="color:#f92672">:</span> [{
+            <span style="color:#a6e22e">port</span>: <span style="color:#66d9ef">80</span>,
+            <span style="color:#a6e22e">protocol</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;TCP&#34;</span>
         }],
     }],
-    osType: &quot;Linux&quot;,
-    resourceGroupName: resourceGroup.name,
-    location: resourceGroup.location,
+    <span style="color:#a6e22e">osType</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Linux&#34;</span>,
+    <span style="color:#a6e22e">resourceGroupName</span>: <span style="color:#66d9ef">resourceGroup.name</span>,
+    <span style="color:#a6e22e">location</span>: <span style="color:#66d9ef">resourceGroup.location</span>,
 });
 
-// Export the public IP of the container
-export const ip = container.ipAddress;
-</code></pre>
-
-<p>その後、<code>pulumi up</code>すると、ストレージアカウントが消えて、ACIが作成されたことが分かる。</p>
-
+<span style="color:#75715e">// Export the public IP of the container
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">export</span> <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">ip</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">container</span>.<span style="color:#a6e22e">ipAddress</span>;
+</code></pre></div><p>その後、<code>pulumi up</code>すると、ストレージアカウントが消えて、ACIが作成されたことが分かる。</p>
 <p>作成後、nginxにアクセスする。接続先のIPは以下のようにして取れる。</p>
-
-<pre><code class="language-bash">curl $(pulumi stack output ip)
-</code></pre>
-
-<p><code>pulumi stack output ip</code>の<code>ip</code>はindex.tsでexportしている変数<code>ip</code>のことで、これを参照することが出来るらしい。便利。</p>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl <span style="color:#66d9ef">$(</span>pulumi stack output ip<span style="color:#66d9ef">)</span>
+</code></pre></div><p><code>pulumi stack output ip</code>の<code>ip</code>はindex.tsでexportしている変数<code>ip</code>のことで、これを参照することが出来るらしい。便利。</p>
 <h3 id="リソースの削除">リソースの削除</h3>
-
 <pre><code>pulumi destroy
-</code></pre>
-
-<h3 id="次のステップ">次のステップ</h3>
-
+</code></pre><h3 id="次のステップ">次のステップ</h3>
 <p>ドキュメントにはgithubのサンプルコードを案内している。</p>
-
 <p><a href="https://pulumi.io/quickstart/azure/next-steps/">https://pulumi.io/quickstart/azure/next-steps/</a></p>
-
 <p><a href="https://github.com/pulumi/examples">https://github.com/pulumi/examples</a></p>
-
 <p>他のクラウドと比べると少し少ないが、Azureのサンプルがいくつか載っている。書き方の参考になるかもしれない。</p>
-
 <h2 id="感想">感想</h2>
-
 <p>TypeScriptとVSCodeの書き味が最高だった。TypeScriptのモジュールシステムを使えるはずなので、共通化もしやすそう。</p>
-
 <p>欠点は後発なのでまだまだプラクティスが少ないこと。公式がサポートに入っていないのでリソースの追加・修正があった時に追従するのが遅いだろう、という所かな。</p>
-
 <p>ただ後者は<a href="https://pulumi.io/reference/pkg/nodejs/pulumi/azure/core/#TemplateDeployment">TemplateDeployment</a>リソースがあるので、部分的にARM Templateでカバーできそうだ。ちゃんとoutputも扱える。</p>
-
 <h2 id="その他">その他</h2>
-
 <h3 id="バックエンドは他にないのか">バックエンドは他にないのか？</h3>
-
 <p>ローカルは何かイマイチ（git反映忘れそう）だし、PulumiのWebサーバに依存したくないなぁ、と思っていた。
 そこで他のバックエンドを使えないか調べたところ、一応AWS,GCP,Azureをサポートしているようだ。</p>
-
 <p>内部的にはgo-cloudで抽象化しているので、<a href="https://gocloud.dev/howto/blob/open-bucket/">go-cloudのopenBucketのドキュメント</a>を見ると、どのような環境変数が必要かは分かる。</p>
-
 <p>細かいところは「<a href="https://qiita.com/fukasawah/items/7c793ab8b08d19cd9376">Qiita - Pulumiの状態管理にクラウドストレージバックエンドを使う</a>」に書いた。</p>
 ]]></content>
 		</item>
@@ -289,28 +222,17 @@ export const ip = container.ipAddress;
 			
 			<guid>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</guid>
 			<description>700点で合格、結果530点でダメでした。かすりもしねえ・・・ 気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えて</description>
-			<content type="html"><![CDATA[
-
-<p>700点で合格、結果530点でダメでした。かすりもしねえ・・・</p>
-
+			<content type="html"><![CDATA[<p>700点で合格、結果530点でダメでした。かすりもしねえ・・・</p>
 <p>気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えてる対策も・・・</p>
-
 <p>問題内容はほとんどないです。書こうにも<a href="https://www.microsoft.com/ja-jp/learning/certification-exam-policies.aspx">ポリシーの秘密保持契約</a>に引っかかりそうなのでビビってる。</p>
-
 <blockquote>
 <p>1 . 守秘義務</p>
-
 <p>(中略)</p>
-
 <p>試験の質問、解答、内容、計算、図表、図面またはワークシートを含む、試験または試験に関連する情報（「試験関連情報」）の開示は固く禁じられています</p>
 </blockquote>
-
 <p>そもそも、厳密に覚えてないので書こうにも書きづらい。</p>
-
 <h2 id="受験までに気になっていたこと">受験までに気になっていたこと</h2>
-
 <h3 id="試験の流れ">試験の流れ</h3>
-
 <ul>
 <li>入場（新宿駅南口付近の某所。開始15分よりも前でも入場できた）</li>
 <li>受付にいき名乗る。身分証も提示。</li>
@@ -326,133 +248,79 @@ export const ip = container.ipAddress;
 <li>退出の受付と結果の画面の写しをもらう</li>
 <li>お疲れ様でした</li>
 </ul>
-
 <p>なお、結果は点数のみでどこが間違えたかは教えてくれないが、こんな感じでどの分野が良かったか/悪かったかは教えてくれる。</p>
-
 <p>こちらは全般的にダメでID周りが壊滅的な例です。誰か教えてくれ。</p>
-
-<p><img src="/images/2019/fail-an-examination-az-103/result.jpg" alt="" /></p>
-
+<p><img src="/images/2019/fail-an-examination-az-103/result.jpg" alt=""></p>
 <h3 id="問題の言語について">問題の言語について</h3>
-
 <p>日本語で翻訳も怪しい所はあまりなかった。</p>
-
 <p>WebAppをWebアプリと訳していたりちょっと残念なところはあったが、Microsoftのドキュメントを日本語で日常的に読んでいれば補完が利くので違和感はないと思う。</p>
-
 <h3 id="試験時間について">試験時間について</h3>
-
 <p>180分。メールでは210分と書かれていたが30分は説明などの時間に使われる。</p>
-
 <p>時間配分については自分で決められるが、後述するとおり、前の問題に戻れない点に注意する。</p>
-
 <h3 id="身分証について">身分証について</h3>
-
 <p>メールでも記載があったが、身分を証明するものが２つ必要。
 今回は運転免許証とパスポートを持っていった。</p>
-
 <p>入場する運転免許証とパスポートはどちらかだけでもよくて、他にも保険証でも良いらしい。
 要は顔写真と名前が一致する公式なものと、名前が一致する公式なものを２つ組み合わせれば良いらしい。</p>
-
 <h3 id="持ち物について">持ち物について</h3>
-
 <p>持ち込めない荷物はロッカーがあるので預けることができた。
 （ちょっとした手荷物やジャケットは入るが、旅行鞄などは無理なサイズ感）</p>
-
 <p>試験は席に案内されて受けることになるが、身分証1つ以外の私物は一切持ち込めない。</p>
-
 <p>ただ、ロッカーの鍵、ホワイトボード、ペンが貸与されるので、これは持ち込むことができる。</p>
-
 <p>ホワイトボードとペンは構成図を書くときなど、問題のイメージをつかむために使うものらしい。これは後で退出時に帰す事になる。お持ち帰りできない。</p>
-
-<h3 id="受験時間は余裕があるか-ないか">受験時間は余裕があるか・ないか</h3>
-
+<h3 id="受験時間は余裕があるかないか">受験時間は余裕があるか・ないか</h3>
 <p>構成図を書いたりじっくり考えたりしたとこもあったが、それでも180分のうち90分も余らせたので余裕は十分ある。不合格だったんですけどね。</p>
-
 <p>前の設問に戻れない形式なので、その間で見直しを入れるぐらいはやって良いかな。（進捗を見ながらですが）</p>
-
 <h2 id="出題形式">出題形式</h2>
-
 <p>すべて選択式だった。具体的にどんな感じかは公式が動画付きで出している。
 受験時の画面もこのままだった（おそらく模擬試験の動画なので、実際とは細かい違いはあるけど。）</p>
-
 <p><a href="https://www.microsoft.com/ja-jp/learning/certification-exams.aspx#meo-section4">マイクロソフト認定資格試験 - 試験形式および質問のタイプ</a></p>
-
 <p>この動画の中で実際に見たのは以下。</p>
-
 <ul>
 <li>最適解問題 (1問1回答)</li>
 <li>リストの作成 (1問・複数回答・順序有り)</li>
 <li>複数の選択 (1問・複数回答・順序無し)</li>
 <li>事例 (ケーススタディ)</li>
 </ul>
-
 <p>注意したいのは、問題の見直し・修正が出来なくなるタイミングがいくつかあること。
 一応ちゃんと警告と確認があるので早々困らないと思う。</p>
-
 <ul>
 <li>いくつかブロックがあり、その1ブロックの中に4問～30問ぐらいの問題がある。4～5ブロックあって合計47問とかそんな感じ。で、ブロックをまたぐと前のブロックの見直し・修正が出来なくなる。</li>
 <li>1つの問題に対して、質問が1つ提示され、これを何度かyes/noを答え続ける問題があり、これも前に戻れない。noって答えたけどやっぱりyesだった！となっても戻れない。</li>
 </ul>
-
 <p>全体の進捗（n問m問）と残り時間は常時表示されるが、どういう問題構成か事前に知る事はできない。</p>
-
 <p>1問1答が大半で、1問あたり長くても5分で答えを出せるはずなので、時間的にはかなり余裕が出来るはず。
 でも足りないよりは余ったほうが良いので、気持ち余裕を持つぐらいで良いと思う。
 （ウェビナーでは時間が足りない的な事を言われたが、私は90分ぐらい余らせた。次回は1回は全部見直しを入れるぐらいはすると思う。）</p>
-
 <p>ウェビナーでは「実際に操作する」みたいな話を聞いていたが、そういう問題はAZ-103にはなかったように見える。点数が少なすぎて足切りされたかもしれないけど。</p>
-
 <h2 id="問題内容">問題内容</h2>
-
 <p>上記のとおり書かないようにする。本当に幅広い範囲で出るとしか言えない。</p>
-
 <p>個人的には<a href="https://www.microsoft.com/ja-jp/learning/exam-az-103.aspx">試験ページのスキルの評価（Skills measured）</a>から汲み取るのはかなり難しい。</p>
-
 <p>「○○を実現したい。次の中から選べ」という感じがほとんどで、実現する方法についてわからないとまず答えられない。</p>
-
 <p>でも納得がいかない部分があるので少し書くと、おそらくネットワークの「有効なセキュリティルールを評価する」の範疇でAzure Network Watcherの問題とか出てくるし、VMの「データディスクの追加」でデータディスクを他のVMに付け替える問題が出てくる。前者は知らんかっただけだけど、後者はレアケースな作業でしょうに。</p>
-
 <h2 id="対策">対策</h2>
-
 <p>結果のレポートにかかれているが、苦手分野がわかるのでそこを重点的にやっていきましょうという感じ。</p>
-
 <p>要約すると、大人しく高い金をだして問題集を買い、苦手分野を重点的に解いて、知らんことにぶつかったら調べて手を動かして覚える、が良い気がしている。時間をめちゃくちゃ使うだろうけど。</p>
-
 <p>今回取り組んだ勉強法としては以下。それ以外の方法を知らなかった。</p>
-
 <ul>
 <li>試験の<a href="https://www.microsoft.com/en-us/learning/exam-AZ-103.aspx">Skills measured</a>を見て単語を拾ってドキュメントを漁る</li>
 <li><a href="https://docs.microsoft.com/ja-jp/learn/azure/">Microsoft LearnのAzure</a>で範囲に含まれていそうなところを進める</li>
 <li>AZ体系になる前の問題集が会社にあったので読む</li>
 </ul>
-
 <p>受験して思ったのは、Skills measuredにある内容から試験を想像するのはまず無理だったということ。</p>
-
 <p>ドキュメントは単一の機能の説明がほとんどで実運用時の事はあまり書かれてない。（ドキュメントなのでそりゃそうなんだけど、問題に出てくるような内容はもっと奥深くにある。だから普通に探したら見つからないし読まない。）</p>
-
 <p>Learnで学べる内容はサービスの綺麗な部分を切り取ってる内容なので試験対策には弱すぎる。Azureに慣れさせる意味では良いかもしれない。</p>
-
 <p>「AZ体系になる前の問題集」はクソみたいな翻訳、解説無し（もしくは翻訳されてない）、明らかに答え違うよね？という問題があったりするが、試験に即した問題造りになっており、試験対策には優秀だと思う。あと2問ほど問題集通りの内容が出てきたものもあった。最近のならもう少し良いかもしれない。</p>
-
 <p>という感じで、問題集はちょっと効果あったなーという感じだった。</p>
-
 <p>「こんだけ範囲が広いんだし、1個ぐらい犠牲にしてもええやろ」というふうに考えててID管理周りは少し削ってたけど、問題の割合を見ると少なくなかったし、出題割合あんま参考にならんな・・・という感じだった。</p>
-
 <p>あと少しズレますが、一般的な概念の問題や用語はもちろん、Azureの用語の説明は全く出てこない。問題文にある「ブレード」とか何だよ、と思ったら、Portal上でリソースを選んだりしたときに出てくる左側のメニューのことらしい、というのを試験中に知ったとか。まぁそんな感じのレベルなんで落ちたんでしょう。</p>
-
 <p><a href="https://docs.microsoft.com/ja-jp/azure/architecture/">アーキテクチャセンター</a>はちょっと見落としてたが、今風のアーキテクチャの話しかないので多分役に立たない気がする。でもAD回りは読んでも良いかもしれない。（後で読む）</p>
-
 <h2 id="感想">感想</h2>
-
 <p>勉強不足でした。</p>
-
 <p>ちなみに普段からAzureを触ってないというわけではなく、必要に応じてAzure CLIを使った手順書を書いたり、ARM Templateを書いたりする程度にはやってます。まぁAzure様からしたら「お前のそれはお遊びだ」というわけですね。</p>
-
 <p>試験は単純に知らなくて「そういう事も出来るのか！」というのはかなり多くあった。
 逆を言えば「そんなこと覚えている必要ある？」という内容でもある。</p>
-
 <p>あとExpressRouteの問題は辛い。そんな高価なもん気軽にハンズオンできるわけないだろ！いい加減にしろ！</p>
-
 <p>愚痴ばかりになってしまった。正直もう受けたくないがお仕事だからね・・・</p>
 ]]></content>
 		</item>
@@ -464,100 +332,59 @@ export const ip = container.ipAddress;
 			
 			<guid>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</guid>
 			<description>いってきました。 [English] DevOps without Measurement is a Fail (Erno Venäläinen) @venalainene 英語聞き取れないマンだけど英語のセッションを選んだ。 スライドと話している雰囲気で理解</description>
-			<content type="html"><![CDATA[
-
-<p>いってきました。</p>
-
-<h3 id="english-devops-without-measurement-is-a-fail-erno-venäläinen-venalainene-https-twitter-com-venalainene">[English] DevOps without Measurement is a Fail (Erno Venäläinen) <a href="https://twitter.com/venalainene">@venalainene</a></h3>
-
+			<content type="html"><![CDATA[<p>いってきました。</p>
+<h3 id="english-devops-without-measurement-is-a-fail-erno-venäläinen-venalainenehttpstwittercomvenalainene">[English] DevOps without Measurement is a Fail (Erno Venäläinen) <a href="https://twitter.com/venalainene">@venalainene</a></h3>
 <p>英語聞き取れないマンだけど英語のセッションを選んだ。
 スライドと話している雰囲気で理解しようとしたが、ま－無理だった。</p>
-
 <p>これを選んだ理由はDevOpsは計測が無いと失敗するという強いお言葉だったので、じゃあ何を見てるのかとか気になった。なおDevOpsの理解はそこまで無い状態。</p>
-
 <p>とりあえずこの辺り。多分もっとある</p>
-
 <ul>
 <li>Shift Leftの考え方</li>
 <li>DevOpsをうまく進めるための5つのDriver
-
 <ul>
-<li>多分ここの話の内容に聞こえた。<a href="https://newrelic.com/resource/how-to-measure-the-success-of-devops">https://newrelic.com/resource/how-to-measure-the-success-of-devops</a></li>
-</ul></li>
+<li>多分ここの話の内容に聞こえた。https://newrelic.com/resource/how-to-measure-the-success-of-devops</li>
+</ul>
+</li>
 <li>監視のアンチパターン</li>
 <li>監視のデザインパターン</li>
 </ul>
-
 <p>監視の(アンチ|デザイン)パターンについては、<a href="https://www.oreilly.co.jp/books/9784873118642/">入門 監視</a> で触れているような内容だったと思う。良い本だぁ・・・</p>
-
 <p>そんな感じで単語しかわからずよく分からなかったので、スライドが出たら(機械)翻訳して読み直したい所</p>
-
-<h3 id="テストエンジニアが教える-junitを書き始める前に考えるべきテスト-風間裕也-nihonbuson-https-twitter-com-nihonbuson">テストエンジニアが教える JUnitを書き始める前に考えるべきテスト (風間裕也) <a href="https://twitter.com/nihonbuson">@nihonbuson</a></h3>
-
+<h3 id="テストエンジニアが教える-junitを書き始める前に考えるべきテスト-風間裕也-nihonbusonhttpstwittercomnihonbuson">テストエンジニアが教える JUnitを書き始める前に考えるべきテスト (風間裕也) <a href="https://twitter.com/nihonbuson">@nihonbuson</a></h3>
 <p>Slide: <a href="https://speakerdeck.com/nihonbuson/jjug-ccc-2019-spring">https://speakerdeck.com/nihonbuson/jjug-ccc-2019-spring</a></p>
-
 <p>開発者は（テストの文脈で）どんなことをすればよいかの話。軽いワークもあった。テスト技法は境界値分析のみの紹介。</p>
-
 <p><a href="http://jstqb.jp/dl/JSTQB-SyllabusFoundation_Version2011.J02.pdf#page=15">テストの7原則</a> はソフトウェア開発に関わる人の共通認識にしたいですね・・・</p>
-
 <p>コーディング前からテストの内容を話すことですれ違いを無くす話は納得感がある。結構思い込みでみんないい感じにやってくれると思いがち。ちゃんと言葉なり図なりで共有すると「そういえば」という気づきがあったりする。</p>
-
 <p>あとテストケースについて理由を説明させるのはよいですね。どういう観点のテストか理解しやすくなり、抜け漏れの観点も絞れる。テスト名にも使える。いいですね。</p>
-
 <p>おまけが本編。</p>
-
 <p>QAチーム何するの？開発者がしっかりテスト出来てるならQAエンジニアいらなくね？という質問が過去にあったそうで、その答えとしては「<strong>QAはCheckingではなくTestingを行いたい</strong>（だから要る）」という話。他のエンジニアのBlogの引用もあった。</p>
-
 <p>開発者が行うテスト（バリデーション、状態遷移とかの仕様が決まったものに対するテスト）はCheckingであり、そうでない部分（全体を通して明らかになっていなさそうな部分を組み合わせを見つけて挙動を見るテスト）を考えて行うのがTestingとなる。という理解。これ、かなり自分の中で納得感があった。システムテストを結合試験の焼き回しになりがちな所があったりするが、本当の操作で正常に通るのはもちろん、何か変な事が出来ないかを考えるきっかけはこのタイミングしかできない。</p>
-
-<h3 id="ソフトウェア設計の教育工学的な分析と育成へのアイデア-松下正嗣-masatsugumatsus-https-twitter-com-masatsugumatsus">ソフトウェア設計の教育工学的な分析と育成へのアイデア(松下正嗣) <a href="https://twitter.com/masatsugumatsus">@masatsugumatsus</a></h3>
-
+<h3 id="ソフトウェア設計の教育工学的な分析と育成へのアイデア松下正嗣-masatsugumatsushttpstwittercommasatsugumatsus">ソフトウェア設計の教育工学的な分析と育成へのアイデア(松下正嗣) <a href="https://twitter.com/masatsugumatsus">@masatsugumatsus</a></h3>
 <p>Slide: <a href="https://speakerdeck.com/deffence1776/jjug-2019-spring-fa-biao-zi-liao-sohutoueashe-ji-falsejiao-yu-gong-xue-de-nafen-xi-toyu-cheng-hefalseaidea">https://speakerdeck.com/deffence1776/jjug-2019-spring-fa-biao-zi-liao-sohutoueashe-ji-falsejiao-yu-gong-xue-de-nafen-xi-toyu-cheng-hefalseaidea</a></p>
-
 <p>思考実験レベルで実用レベルではないというお断りをしてた。中盤以降、時間が少なく駆け足になってた。(20分枠だったけどスライドを見ると40分枠で話そうとしてたように感じる)</p>
-
 <p>過去に新人教育的な事をやったので。後のセッションでも教育的な話を聞きに行ったけど、こちらは抽象的な話と理解している。</p>
-
 <p>設計スキルについて「研修で教えるの、正直難しい。センスや好み？」という問題提起があり、同じ問題を感じてるなぁ、と共感を持ってた。ただ「センス」で片付けたくないという思いはあった。</p>
-
 <p>そこで出てきた「インストラクショナルデザイン」という手法の話が良かった。漠然と探すよりはよっぽど良刺そうな感じは話を聞いてても思った。</p>
-
 <p>それ以降は私には難しかった・・・スライド見ながら勉強します。</p>
-
-<h3 id="スキマ分野で生き残るための戦略-すずきただし-tada-suzu-https-twitter-com-tada-suzu">スキマ分野で生き残るための戦略(すずきただし) <a href="https://twitter.com/tada_suzu">@tada_suzu</a></h3>
-
+<h3 id="スキマ分野で生き残るための戦略すずきただし-tada_suzuhttpstwittercomtada_suzu">スキマ分野で生き残るための戦略(すずきただし) <a href="https://twitter.com/tada_suzu">@tada_suzu</a></h3>
 <p>Slide: <a href="https://docs.google.com/presentation/d/1JN4hbvTe89G6pwlIndrC3192kh2XKrt51Yjc5Ievt4M/edit#slide=id.p">https://docs.google.com/presentation/d/1JN4hbvTe89G6pwlIndrC3192kh2XKrt51Yjc5Ievt4M/edit#slide=id.p</a></p>
-
 <p>完璧な開発現場はないからそのスキマを探して良くしていく戦略を取るとそれが評価や立ち位置に繋がり良いという話。</p>
-
 <p>まとめのほうで「自分が動きやすい位置を見つけて、あまり苦しまない開発人生を！」と話してて、本当にこれが大事だよなぁ、というのを感じてる。仕事が全部ではないけど、仕事はかなり人生の割を食うわけだし、苦しむのは損。</p>
-
 <p>ただ、今までやってなかったというのは、逆を返せば今までそれでやっていけていたので、その変化に価値を見出す人が上に居るかどうか、というのはあるんじゃないかなぁ。
 最近は仕事の楽しさがわからなくなっている。客は求めてないけど自分の興味があるツールやライブラリをぶち込みたい衝動があるけど。</p>
-
-<h3 id="jjug会長と一緒に考えたspring-boot-x-javascript-x-intellij-x-アジャイルというモダンな新人研修を今まさにやっている話-株式会社カサレアル-suke-masa-https-twitter-com-suke-masa-zer0-u-https-twitter-com-zer0-u">JJUG会長と一緒に考えたSpring Boot x JavaScript x IntelliJ x アジャイルというモダンな新人研修を今まさにやっている話 (株式会社カサレアル) <a href="https://twitter.com/suke_masa">@suke_masa</a> <a href="https://twitter.com/zer0_u">@zer0_u</a></h3>
-
+<h3 id="jjug会長と一緒に考えたspring-boot-x-javascript-x-intellij-x-アジャイルというモダンな新人研修を今まさにやっている話-株式会社カサレアル-suke_masahttpstwittercomsuke_masa-zer0_uhttpstwittercomzer0_u">JJUG会長と一緒に考えたSpring Boot x JavaScript x IntelliJ x アジャイルというモダンな新人研修を今まさにやっている話 (株式会社カサレアル) <a href="https://twitter.com/suke_masa">@suke_masa</a> <a href="https://twitter.com/zer0_u">@zer0_u</a></h3>
 <p>Slide: <a href="https://speakerdeck.com/masatoshitada/modern-new-employees-training-spring-boot-javascript-intellij-agile">https://speakerdeck.com/masatoshitada/modern-new-employees-training-spring-boot-javascript-intellij-agile</a></p>
-
 <p>上記のとおり、新人教育的な事をやったのでその延長で。こちらは実際の研修の進め方など具体的な話。
 15年(おそらく20年)同じ受動的なカリキュラムで、主体的に取り組めてモダンなカリキュラム（タイトル通り）に刷新したとのこと。去年から取り組んでいるらしい（今年はjQueryからReact+SPAにしたぐらいらしい？）</p>
-
 <p>Gitは開発研修初日からいれてて、GitLabを使いコード管理とCI、Docker環境を疑似クラウドに見立ててデプロイという感じ。演習はSprintも取り入れて約2ヵ月で。
 Servletを捨ててSpring Bootでやったが、多少整理がをしたものの実務上は問題がなかったらしい。</p>
-
 <p>質問もいくつか上がってて、「未経験の人はいたか」は「少数だけど居た」とか「研修を進めて技術レベルに差が出てきたときに一緒に進めるのが辛い」という点は「出来る子は出来ない子のフォローをすることで、出来る子はより深く理解でき、出来ない子は出来るようになる」というふうに進めたとか。</p>
-
 <p>ただ、企業様によってこのカリキュラムは合う合わないがあるとのこと。
 現場によるからうちはそんなもん(Spring Boot等)ないからもっと汎用的な技術(Servlet等)のほうがーって言う感じなんだと思う。両方やるってなると2か月じゃ全然足りないんだよなぁ。</p>
-
 <p>どこも同じだなぁ。</p>
-
-<h3 id="マイクロサービス-４つの分割アプローチの比較-増田-亨-masuda220-https-twitter-com-masuda220">マイクロサービス：４つの分割アプローチの比較(増田　亨) <a href="https://twitter.com/masuda220">@masuda220</a></h3>
-
+<h3 id="マイクロサービス４つの分割アプローチの比較増田亨-masuda220httpstwittercommasuda220">マイクロサービス：４つの分割アプローチの比較(増田　亨) <a href="https://twitter.com/masuda220">@masuda220</a></h3>
 <p>Slide: <a href="https://www.slideshare.net/masuda220/ss-146325870">https://www.slideshare.net/masuda220/ss-146325870</a></p>
-
 <p>難しかった（小並感）</p>
-
 <p>疲れちゃったのでこの辺で。</p>
 ]]></content>
 		</item>
@@ -571,40 +398,24 @@ Servletを捨ててSpring Bootでやったが、多少整理がをしたもの�
 			<description>Apache Httpdのツールとして提供されているhtpasswdコマンドを使うのが良い。 （最初はpythonで自前で計算しようとしたが、思っていた以</description>
 			<content type="html"><![CDATA[<p>Apache Httpdのツールとして提供されている<code>htpasswd</code>コマンドを使うのが良い。
 （最初はpythonで自前で計算しようとしたが、<a href="https://svn.apache.org/viewvc/apr/apr/trunk/crypto/">思っていた以上に面倒だった</a>ので諦めた&hellip;）</p>
-
 <pre><code>yum install httpd-tools
-</code></pre>
-
-<p><code>htpasswd</code>の利用法は以下のドキュメント。</p>
-
+</code></pre><p><code>htpasswd</code>の利用法は以下のドキュメント。</p>
 <p><a href="https://httpd.apache.org/docs/2.4/misc/password_encryptions.html">https://httpd.apache.org/docs/2.4/misc/password_encryptions.html</a></p>
-
 <p>こんな感じに作る。新規作成時は<code>-c</code>をつける</p>
-
 <pre><code>$ sudo htpasswd -c -m /etc/nginx/.htpasswd testuser
 New password:
 Re-type new password:
 Adding password for user testuser
-</code></pre>
-
-<p>ただ、出来上がるファイルは誰でも読める状態になっており、nginxユーザ(グループ)から読める必要があるため、<code>644</code>から<code>640</code>に変え、グループを<code>nginx</code>に変更する。</p>
-
+</code></pre><p>ただ、出来上がるファイルは誰でも読める状態になっており、nginxユーザ(グループ)から読める必要があるため、<code>644</code>から<code>640</code>に変え、グループを<code>nginx</code>に変更する。</p>
 <pre><code>sudo chmod 0640 /etc/nginx/.htpasswd
 sudo chown :nginx /etc/nginx/.htpasswd
-</code></pre>
-
-<p>最後にnginx.confの設定を変える。設定のドキュメントは以下。</p>
-
+</code></pre><p>最後にnginx.confの設定を変える。設定のドキュメントは以下。</p>
 <p><a href="https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html">https://nginx.org/en/docs/http/ngx_http_auth_basic_module.html</a></p>
-
 <p>以下をhttp,server,locationのいずれかのディレクティブに追加する。
 locationなら特定のpathなら認証不要といった事ができる。</p>
-
 <pre><code>    auth_basic           &quot;need authenticate&quot;;
     auth_basic_user_file /etc/nginx/.htpasswd;
-</code></pre>
-
-<p>後はnginxをreloadして反映。</p>
+</code></pre><p>後はnginxをreloadして反映。</p>
 ]]></content>
 		</item>
 		
@@ -615,45 +426,34 @@ locationなら特定のpathなら認証不要といった事ができる。</p>
 			
 			<guid>https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/</guid>
 			<description>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。 ただ、このとき、証明書の設定箇所</description>
-			<content type="html"><![CDATA[
-
-<p>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。</p>
-
+			<content type="html"><![CDATA[<p>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。</p>
 <p>ただ、このとき、証明書の設定箇所は1か所にしたい（増やすときに面倒なので）</p>
-
 <p>まさしくな手順はnginxのドキュメントにある。</p>
-
 <p><a href="https://nginx.org/en/docs/http/configuring_https_servers.html#certificate_with_several_names">https://nginx.org/en/docs/http/configuring_https_servers.html#certificate_with_several_names</a></p>
-
-<h3 id="etc-nginx-nginx-conf-の修正"><code>/etc/nginx/nginx.conf</code>の修正</h3>
-
+<h3 id="etcnginxnginxconfの修正"><code>/etc/nginx/nginx.conf</code>の修正</h3>
 <p>/etc/nginx/nginx.confのSSLの設定を、<code>server</code>ディレクティブではなく、<strong><code>http</code>ディレクティブに移動する。</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nginx" data-lang="nginx">   <span style="color:#75715e"># certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_certificate</span> <span style="color:#e6db74">/etc/letsencrypt/live/fukasawah.dev/fullchain.pem</span>;
+    <span style="color:#66d9ef">ssl_certificate_key</span> <span style="color:#e6db74">/etc/letsencrypt/live/fukasawah.dev/privkey.pem</span>;
+    <span style="color:#66d9ef">ssl_session_timeout</span> <span style="color:#e6db74">1d</span>;
+    <span style="color:#66d9ef">ssl_session_cache</span> <span style="color:#e6db74">shared:SSL:50m</span>;
+    <span style="color:#66d9ef">ssl_session_tickets</span> <span style="color:#66d9ef">off</span>;
+        <span style="color:#75715e"># modern configuration. tweak to your needs.
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_protocols</span> <span style="color:#e6db74">TLSv1.2</span>;
+    <span style="color:#66d9ef">ssl_ciphers</span> <span style="color:#e6db74">&#39;ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256&#39;</span>;
+    <span style="color:#66d9ef">ssl_prefer_server_ciphers</span> <span style="color:#66d9ef">on</span>;
 
-<pre><code class="language-nginx">   # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
-    ssl_certificate /etc/letsencrypt/live/fukasawah.dev/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/fukasawah.dev/privkey.pem;
-    ssl_session_timeout 1d;
-    ssl_session_cache shared:SSL:50m;
-    ssl_session_tickets off;
-        # modern configuration. tweak to your needs.
-    ssl_protocols TLSv1.2;
-    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
-    ssl_prefer_server_ciphers on;
+    <span style="color:#75715e"># HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">add_header</span> <span style="color:#e6db74">Strict-Transport-Security</span> <span style="color:#e6db74">max-age=15768000</span>;
 
-    # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
-    add_header Strict-Transport-Security max-age=15768000;
+    <span style="color:#75715e"># OCSP Stapling ---
+</span><span style="color:#75715e"></span>    <span style="color:#75715e"># fetch OCSP records from URL in ssl_certificate and cache them
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_stapling</span> <span style="color:#66d9ef">on</span>;
+    <span style="color:#66d9ef">ssl_stapling_verify</span> <span style="color:#66d9ef">on</span>;
 
-    # OCSP Stapling ---
-    # fetch OCSP records from URL in ssl_certificate and cache them
-    ssl_stapling on;
-    ssl_stapling_verify on;
-
-    ## verify chain of trust of OCSP response using Root CA and Intermediate certs
-    ssl_trusted_certificate /etc/letsencrypt/live/fukasawah.dev/chain.pem;
-</code></pre>
-
-<p>次にserver_nameをちゃんと与える。</p>
-
+    <span style="color:#75715e">## verify chain of trust of OCSP response using Root CA and Intermediate certs
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">ssl_trusted_certificate</span> <span style="color:#e6db74">/etc/letsencrypt/live/fukasawah.dev/chain.pem</span>;
+</code></pre></div><p>次にserver_nameをちゃんと与える。</p>
 <pre><code>    server {
         listen 443 ssl http2;
         listen [::]:443 ssl http2;
@@ -667,49 +467,32 @@ locationなら特定のpathなら認証不要といった事ができる。</p>
         location / {
         }
     # 省略
-</code></pre>
-
-<h3 id="etc-nginx-conf-d-virtualhost-test-conf-を作成する"><code>/etc/nginx/conf.d/virtualhost-test.conf</code> を作成する</h3>
-
+</code></pre><h3 id="etcnginxconfdvirtualhost-testconf-を作成する"><code>/etc/nginx/conf.d/virtualhost-test.conf</code> を作成する</h3>
 <p>httpディレクティブにある<code>include /etc/nginx/conf.d/*.conf</code>の設定で読むだけなので、<code>.conf</code>で終われば何でも良い。<code>virtualhost-サブドメイン名.conf</code>がわかりやすいんじゃないでしょうか。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-nginx" data-lang="nginx"><span style="color:#66d9ef">server</span> {
+    <span style="color:#f92672">listen</span> <span style="color:#ae81ff">443</span> <span style="color:#e6db74">ssl</span> <span style="color:#e6db74">http2</span>;
+    <span style="color:#f92672">listen</span> <span style="color:#e6db74">[::]:443</span> <span style="color:#e6db74">ssl</span> <span style="color:#e6db74">http2</span>;
 
-<pre><code class="language-nginx">server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
-
-    server_name test.fukasawah.dev; # server_nameをちゃんと変える
-
-    root /usr/share/nginx/html/test; # 試しにテスト用のディレクトリをrootにする
-    index index.html;
+    <span style="color:#f92672">server_name</span> <span style="color:#e6db74">test.fukasawah.dev</span>; <span style="color:#75715e"># server_nameをちゃんと変える
+</span><span style="color:#75715e"></span>
+    <span style="color:#f92672">root</span> <span style="color:#e6db74">/usr/share/nginx/html/test</span>; <span style="color:#75715e"># 試しにテスト用のディレクトリをrootにする
+</span><span style="color:#75715e"></span>    <span style="color:#f92672">index</span> <span style="color:#e6db74">index.html</span>;
 }
-</code></pre>
-
-<p>見ての通り、SSLの設定はないが、同じhttpディレクティブに存在するserverディレクティブなので、httpディレクティブで設定したSSL設定が引き継がれている。これで追加するときも楽になる。</p>
-
+</code></pre></div><p>見ての通り、SSLの設定はないが、同じhttpディレクティブに存在するserverディレクティブなので、httpディレクティブで設定したSSL設定が引き継がれている。これで追加するときも楽になる。</p>
 <p>動作確認用にテスト用のファイルを配置する。</p>
-
-<pre><code class="language-bash">sudo mkdir -p /usr/share/nginx/html/test
-sudo tee /usr/share/nginx/html/test/index.html &lt;&lt; __EOF__
-&lt;!DOCTYPE html&gt;
-&lt;body&gt;
-  &lt;p&gt;Hello World&lt;/p&gt;
-&lt;/body&gt;
-__EOF__
-</code></pre>
-
-<h3 id="サーバに設定を反映">サーバに設定を反映</h3>
-
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mkdir -p /usr/share/nginx/html/test
+sudo tee /usr/share/nginx/html/test/index.html <span style="color:#e6db74">&lt;&lt; __EOF__
+</span><span style="color:#e6db74">&lt;!DOCTYPE html&gt;
+</span><span style="color:#e6db74">&lt;body&gt;
+</span><span style="color:#e6db74">  &lt;p&gt;Hello World&lt;/p&gt;
+</span><span style="color:#e6db74">&lt;/body&gt;
+</span><span style="color:#e6db74">__EOF__</span>
+</code></pre></div><h3 id="サーバに設定を反映">サーバに設定を反映</h3>
 <pre><code>sudo systemctl reload nginx
-</code></pre>
-
-<p><a href="https://fukasawah.dev">https://fukasawah.dev</a> と <a href="http://test.fukasawah.dev">http://test.fukasawah.dev</a> で見え方が変わっていることを確認する。（同じHTMLが返ってきていないこと）</p>
-
+</code></pre><p><a href="https://fukasawah.dev">https://fukasawah.dev</a> と <a href="http://test.fukasawah.dev">http://test.fukasawah.dev</a> で見え方が変わっていることを確認する。（同じHTMLが返ってきていないこと）</p>
 <p>また証明書も確認して同じものを使っていることも確認しておく。</p>
-
 <p>以上。</p>
-
 <p>あと内々で公開するとき用に、Digest認証をかけたい所だが、標準ではないモジュールなのでちょっと手間そう。Basic認証で妥協しようかな。TLSの上で通信されてるから大丈夫だ！大丈夫！</p>
-
 <p>どうでもよいが、SSL証明書はもはやTLS証明書である・・・。</p>
 ]]></content>
 		</item>
@@ -721,37 +504,23 @@ __EOF__
 			
 			<guid>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</guid>
 			<description>PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの</description>
-			<content type="html"><![CDATA[
-
-<ul>
+			<content type="html"><![CDATA[<ul>
 <li>PostgreSQL 11の導入</li>
 <li>pg_bigmの導入</li>
 </ul>
-
 <p>最新版はPostgreSQLのページから得られるリポジトリからインストールできる。</p>
-
 <p><a href="https://yum.postgresql.org/repopackages.php#pg11">https://yum.postgresql.org/repopackages.php#pg11</a></p>
-
 <h2 id="postgresql-11の導入">PostgreSQL 11の導入</h2>
-
 <h3 id="リポジトリの登録とインストール">リポジトリの登録とインストール</h3>
-
 <pre><code># リポジトリ追加
 sudo yum install https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
 
 # クライアントとサーバと拡張機能のインストール
 sudo yum install -y postgresql11 postgresql11-server postgresql11-contrib 
-</code></pre>
-
-<p><code>/usr/pgsql-11</code>辺りに色々導入される</p>
-
+</code></pre><p><code>/usr/pgsql-11</code>辺りに色々導入される</p>
 <h3 id="データベースの領域作成">データベースの領域作成</h3>
-
 <pre><code>sudo /usr/pgsql-11/bin/initdb --encoding=UTF-8 --no-locale -D /var/lib/pgsql/11/data
-</code></pre>
-
-<h3 id="サーバ起動">サーバ起動</h3>
-
+</code></pre><h3 id="サーバ起動">サーバ起動</h3>
 <pre><code># 起動
 sudo systemctl start postgresql-11
 
@@ -760,10 +529,7 @@ sudo systemctl enable postgresql-11
 
 # 確認
 sudo systemctl status postgresql-11
-</code></pre>
-
-<p>statusで確認すると、<code>active (running)</code>になっていたり、<code>/var/lib/pgsql/11/data/</code>を使っていることが確認できる。</p>
-
+</code></pre><p>statusで確認すると、<code>active (running) </code>になっていたり、<code>/var/lib/pgsql/11/data/</code>を使っていることが確認できる。</p>
 <pre><code>● postgresql-11.service - PostgreSQL 11 database server
    Loaded: loaded (/usr/lib/systemd/system/postgresql-11.service; enabled; vendor preset: disabled)
    Active: active (running) since 火 2019-03-26 02:29:53 JST; 41s ago
@@ -772,77 +538,47 @@ sudo systemctl status postgresql-11
    CGroup: /system.slice/postgresql-11.service
            ├─30183 /usr/pgsql-11/bin/postmaster -D /var/lib/pgsql/11/data/
            ...
-</code></pre>
-
-<h2 id="pg-bigmの導入">pg_bigmの導入</h2>
-
+</code></pre><h2 id="pg_bigmの導入">pg_bigmの導入</h2>
 <p>1~2文字に強い全文検索の機能拡張。</p>
-
 <p><a href="http://pgbigm.osdn.jp/">http://pgbigm.osdn.jp/</a></p>
-
 <p>CentOS7 + PostgreSQL 11向けのバイナリは配布されていないので、ソースコードからビルドして導入する。</p>
-
 <h3 id="依存ソフトウェアのインストール">依存ソフトウェアのインストール</h3>
-
 <p>postgresqlのソースコードやビルド・インストール時に必要な依存を入手する</p>
-
-<pre><code class="language-bash"># ビルドに必要
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># ビルドに必要</span>
 sudo yum install -y postgresql11-devel
 
-# llvm-toolset-7のパッケージがあるリポジトリ
+<span style="color:#75715e"># llvm-toolset-7のパッケージがあるリポジトリ</span>
 sudo yum install -y centos-release-scl
-# ビルドに必要(llvm)
+<span style="color:#75715e"># ビルドに必要(llvm)</span>
 sudo yum install -y llvm-toolset-7 llvm5.0
-</code></pre>
-
-<p>llvm-toolset-7はビルド時に<code>/opt/rh/llvm-toolset-7/root/usr/bin/clang</code>を使うため、llvm5.0はinstall時に<code>/usr/lib64/llvm5.0/bin/llvm-lto</code>を使うため。</p>
-
+</code></pre></div><p>llvm-toolset-7はビルド時に<code>/opt/rh/llvm-toolset-7/root/usr/bin/clang</code>を使うため、llvm5.0はinstall時に<code>/usr/lib64/llvm5.0/bin/llvm-lto</code>を使うため。</p>
 <h3 id="ソースコードの入手">ソースコードの入手</h3>
-
 <p>ソースコードをダウンロードして展開。
 URLが存在しない場合、公式のダウンロードから適宜置き換える。</p>
-
 <pre><code>mkdir src
 cd src
 curl -LO http://iij.dl.osdn.jp/pgbigm/66565/pg_bigm-1.2-20161011.tar.gz
 tar xzvf pg_bigm-1.2-20161011.tar.gz
 cd pg_bigm-1.2-20161011
-</code></pre>
-
-<h3 id="ビルドとインストール">ビルドとインストール</h3>
-
+</code></pre><h3 id="ビルドとインストール">ビルドとインストール</h3>
 <p>この辺りは<a href="http://pgbigm.osdn.jp/pg_bigm-1-2.html">pg_bigmのドキュメント</a>に書かれている。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># ビルド</span>
+make USE_PGXS<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> PG_CONFIG<span style="color:#f92672">=</span>/usr/pgsql-11/bin/pg_config
 
-<pre><code class="language-bash"># ビルド
-make USE_PGXS=1 PG_CONFIG=/usr/pgsql-11/bin/pg_config
-
-# install
-sudo make USE_PGXS=1 PG_CONFIG=/usr/pgsql-11/bin/pg_config install
-</code></pre>
-
-<h3 id="postgresql-confの修正">postgresql.confの修正</h3>
-
+<span style="color:#75715e"># install</span>
+sudo make USE_PGXS<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> PG_CONFIG<span style="color:#f92672">=</span>/usr/pgsql-11/bin/pg_config install
+</code></pre></div><h3 id="postgresqlconfの修正">postgresql.confの修正</h3>
 <pre><code>sudo vi /var/lib/pgsql/11/data/postgresql.conf
 
 # 以下を足す
 shared_preload_libraries = 'pg_bigm'
-</code></pre>
-
-<p>再起動</p>
-
-<pre><code class="language-bash">sudo systemctl restart postgresql-11
-</code></pre>
-
-<h3 id="dbの作成とpsqlによるdbアクセス">DBの作成とpsqlによるDBアクセス</h3>
-
-<pre><code class="language-bash">sudo -u postgres createdb --locale=C --encoding=UTF8 testdb
+</code></pre><p>再起動</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo systemctl restart postgresql-11
+</code></pre></div><h3 id="dbの作成とpsqlによるdbアクセス">DBの作成とpsqlによるDBアクセス</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo -u postgres createdb --locale<span style="color:#f92672">=</span>C --encoding<span style="color:#f92672">=</span>UTF8 testdb
 sudo -u postgres psql -d testdb
-</code></pre>
-
-<h3 id="拡張機能の有効化">拡張機能の有効化</h3>
-
+</code></pre></div><h3 id="拡張機能の有効化">拡張機能の有効化</h3>
 <p><strong><code>CREATE EXTENSION pg_bigm;</code>はDatabase毎に行う必要がある点に注意</strong>。</p>
-
 <pre><code>testdb=# CREATE EXTENSION pg_bigm;
 CREATE EXTENSION
 
@@ -852,80 +588,26 @@ testdb=# \dx pg_bigm
 ---------+---------+--------+------------------------------------------------------------------
  pg_bigm | 1.2     | public | text similarity measurement and index searching based on bigrams
 (1 row)
-</code></pre>
+</code></pre><h3 id="テスト実行">テスト実行</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">
+<span style="color:#75715e">-- テーブル作成
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> pg_tools (tool text, description text);
 
-<h3 id="テスト実行">テスト実行</h3>
+<span style="color:#75715e">-- レコード作成
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_hint_plan</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLでHINT句を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
+<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_dbms_stats</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLの統計情報を固定化するツール</span><span style="color:#e6db74">&#39;</span>);
+<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_bigm</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLで2-gramの全文検索を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
+<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_trgm</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLで3-gramの全文検索を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
 
-<pre><code class="language-sql">
--- テーブル作成
-CREATE TABLE pg_tools (tool text, description text);
+<span style="color:#75715e">-- インデックス作成
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> pg_tools_idx <span style="color:#66d9ef">ON</span> pg_tools <span style="color:#66d9ef">USING</span> gin (description gin_bigm_ops);
 
--- レコード作成
-INSERT INTO pg_tools VALUES ('pg_hint_plan', 'PostgreSQLでHINT句を使えるようにするツール');
-INSERT INTO pg_tools VALUES ('pg_dbms_stats', 'PostgreSQLの統計情報を固定化するツール');
-INSERT INTO pg_tools VALUES ('pg_bigm', 'PostgreSQLで2-gramの全文検索を使えるようにするツール');
-INSERT INTO pg_tools VALUES ('pg_trgm', 'PostgreSQLで3-gramの全文検索を使えるようにするツール');
+<span style="color:#75715e">-- 全文検索 =&gt; 2件ヒットすること
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> pg_tools <span style="color:#66d9ef">WHERE</span> description <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%全文検索%</span><span style="color:#e6db74">&#39;</span>;
 
--- インデックス作成
-CREATE INDEX pg_tools_idx ON pg_tools USING gin (description gin_bigm_ops);
-
--- 全文検索 =&gt; 2件ヒットすること
-SELECT * FROM pg_tools WHERE description LIKE '%全文検索%';
-
--- テーブル削除
-DROP TABLE pg_tools;
-</code></pre>
-]]></content>
-		</item>
-		
-		<item>
-			<title>PostgreSQLのユーザ管理</title>
-			<link>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</link>
-			<pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/03/26/postgresql-11-usermanagement/</guid>
-			<description>sudo -u postgres createuser --no-createdb --login --pwprompt --no-createrole --no-superuser --pwprompt testuser psqlで接続できるか確認する。 psql -U testuser testdb DBに関しては特に指定は無くても、存在すればアクセスできる。テーブルも作れる。</description>
-			<content type="html"><![CDATA[<pre><code>sudo -u postgres createuser --no-createdb --login --pwprompt --no-createrole --no-superuser --pwprompt testuser
-</code></pre>
-
-<p>psqlで接続できるか確認する。</p>
-
-<pre><code>psql -U testuser testdb
-</code></pre>
-
-<p>DBに関しては特に指定は無くても、存在すればアクセスできる。テーブルも作れる。</p>
-
-<p>このようにDB作成直後はユーザが割と何でもできるので、一旦権限を取り上げて特定のDBに対してのみ権限を与える。</p>
-
-<pre><code>sudo -u postgres psql  &lt;&lt; '__EOF__'
-REVOKE CONNECT ON DATABASE testdb FROM PUBLIC; -- 指定したDBから接続権限を取り上げる
-REVOKE ALL ON SCHEMA public FROM PUBLIC; -- 全てのpublicスキーマからすべての権限を取り上げる
-__EOF__
-</code></pre>
-
-<p>上記のpsqlコマンドで接続できなくなったことを確認する。</p>
-
-<pre><code>sudo -u postgres psql  &lt;&lt; '__EOF__'
-GRANT CONNECT ON DATABASE testdb TO testuser; -- 指定したDBへ指定したユーザの接続を許可
-GRANT USAGE ON SCHEMA public TO testuser;-- 指定したユーザへpublicスキーマの操作の許可
-__EOF__
-</code></pre>
-
-<p>該当DBのpublicスキーマを使ったテーブルの作成・削除などはできるようになる。</p>
-
-<p>TODO: これで大丈夫な根拠について、ソース探す</p>
-
-<p>今回は行わないが、リモートからアクセスする場合、<code>pg_hba.conf</code>も編集が必要。</p>
-
-<p><a href="https://www.postgresql.jp/document/10/html/auth-pg-hba-conf.html">https://www.postgresql.jp/document/10/html/auth-pg-hba-conf.html</a></p>
-
-<p>今時ならhostsslでしょう。</p>
-
-<p>認証方式の<a href="https://www.postgresql.jp/document/10/html/auth-methods.html#AUTH-PASSWORD">ドキュメントはこの辺り</a>。<code>scram-sha-256&gt;md5&gt;&gt;&gt;&gt;password</code> といったところ。</p>
-
-<pre><code>hostssl testdb testuser 0.0.0.0/0 md5
-</code></pre>
-]]></content>
+<span style="color:#75715e">-- テーブル削除
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> pg_tools;
+</code></pre></div>]]></content>
 		</item>
 		
 		<item>
@@ -935,16 +617,10 @@ __EOF__
 			
 			<guid>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</guid>
 			<description>まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする</description>
-			<content type="html"><![CDATA[
-
-<p>まずは入っているパッケージを適当に最新化</p>
-
+			<content type="html"><![CDATA[<p>まずは入っているパッケージを適当に最新化</p>
 <pre><code>yum update
 reboot
-</code></pre>
-
-<p>ユーザを作る</p>
-
+</code></pre><p>ユーザを作る</p>
 <pre><code># ユーザ作成
 useradd fukasawah
 # パスワード設定
@@ -959,12 +635,8 @@ su - fukasawah
 
 # sudoが使えるか確認。パスワード設定した時のパスワードが必要
 sudo ls -l /
-</code></pre>
-
-<h3 id="ssh鍵の生成">SSH鍵の生成</h3>
-
+</code></pre><h3 id="ssh鍵の生成">SSH鍵の生成</h3>
 <p>作成したユーザに対して行う。既に公開鍵の準備がある場合は、後述のauthorized_keysに追記する手順まで飛ばす。</p>
-
 <pre><code>$ ssh-keygen -t rsa -b 4096
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/fukasawah/.ssh/id_rsa):
@@ -987,41 +659,24 @@ The key's randomart image is:
 |                 |
 |                 |
 +-----------------+
-</code></pre>
-
-<p>信頼できる公開鍵として登録しておく</p>
-
+</code></pre><p>信頼できる公開鍵として登録しておく</p>
 <pre><code>cat .ssh/id_rsa.pub &gt;&gt; .ssh/authorized_keys
 chmod 0600 .ssh/authorized_keys
-</code></pre>
-
-<p>秘密鍵はSSH接続時に必要になるので内容をコピーして手元に持ってきておく</p>
-
+</code></pre><p>秘密鍵はSSH接続時に必要になるので内容をコピーして手元に持ってきておく</p>
 <pre><code>cat .ssh/id_rsa
-</code></pre>
-
-<p>表示された <code>-----BEGIN RSA PRIVATE KEY-----</code>から<code>-----END RSA PRIVATE KEY-----</code>までの間の内容が秘密鍵なので、これをSSH接続したい端末にコピーする。</p>
-
+</code></pre><p>表示された <code>-----BEGIN RSA PRIVATE KEY-----</code>から<code>-----END RSA PRIVATE KEY-----</code>までの間の内容が秘密鍵なので、これをSSH接続したい端末にコピーする。</p>
 <p>以降は必要ないので削除しておく</p>
-
 <h3 id="sshサーバのセキュリティを高める">SSHサーバのセキュリティを高める</h3>
-
 <p>rootユーザで行う。</p>
-
 <p>SSHサーバに以下の設定を施す。</p>
-
 <ul>
 <li>パスワード認証を無効（公開鍵認証）</li>
 <li>rootのログイン無効（作成したユーザからsuでログインする）</li>
 <li>空のパスワードログインを無効（必ずパスワード設定しないとログインできないようにする）</li>
 </ul>
-
 <pre><code>cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 vi /etc/ssh/sshd_config
-</code></pre>
-
-<p>diffでバックアップとの差分を出して以下のように変更されたことを確認</p>
-
+</code></pre><p>diffでバックアップとの差分を出して以下のように変更されたことを確認</p>
 <pre><code>#diff /etc/ssh/sshd_config.bak /etc/ssh/sshd_config
 55c55
 &lt; #PubkeyAuthentication yes
@@ -1033,149 +688,94 @@ vi /etc/ssh/sshd_config
 ---
 &gt; PermitEmptyPasswords no
 &gt; PasswordAuthentication no
-</code></pre>
-
-<pre><code>問題がなければsshdを再起動
+</code></pre><pre><code>問題がなければsshdを再起動
 systemctl restart sshd
-</code></pre>
-
-<p>以下を確認する</p>
-
+</code></pre><p>以下を確認する</p>
 <ul>
 <li>root＋パスワード認証でログインできないこと</li>
 <li>作成したユーザ＋パスワード認証でログインできないこと</li>
 <li>作成したユーザ＋公開鍵認証でログインできること</li>
 </ul>
-
 <h3 id="ロケールとタイムゾーンの変更">ロケールとタイムゾーンの変更</h3>
-
 <p>OS設定のロケールとタイムゾーンを日本に合わせる</p>
-
 <pre><code># ロケールの確認
 locale
 # タイムゾーンの確認
 date
-</code></pre>
-
-<p>以下のコマンドで変更する。</p>
-
+</code></pre><p>以下のコマンドで変更する。</p>
 <pre><code># ロケール変更
 sudo localectl set-locale LANG=ja_JP.UTF-8
 
 # タイムゾーン変更
 sudo timedatectl set-timezone Asia/Tokyo
-</code></pre>
-
-<p>ロケールは再接続後に反映される。</p>
-
+</code></pre><p>ロケールは再接続後に反映される。</p>
 <pre><code># ロケールの確認
 locale
 # タイムゾーンの変更の確認
 date
-</code></pre>
-
-<h2 id="let-s-encryptでssl証明書を作る">Let&rsquo;s EncryptでSSL証明書を作る</h2>
-
+</code></pre><h2 id="lets-encryptでssl証明書を作る">Let's EncryptでSSL証明書を作る</h2>
 <p>ドメインは Google Domainsで管理しており、ワイルドカード証明書を発行したい。</p>
-
 <p>ワイルドカード証明書の場合、DNS-01認証が必須でありDNSサーバに対してTXTレコードを書き込む必要がある。
 一般的なドメインレジストリ（お名前.com、Value-Domain等）でも手動で行えば可能ではあるが、90日の有効期間しかないため、この作業は自動化したい。</p>
-
 <p>もちろん、スクレイピングなどを駆使すれば出来なくはないがデザイン変更などでスクレイピングプログラムが動かなくなるリスクも考えられる。そのあたりを考えると大変。
 そこで、DNSをAPIで操作できるサービスを利用する。こちらならAPIが変わらない限り動かなくなることもなく、失敗時の動作もわかりやすい。</p>
-
 <p>ただ、そのためには、ドメインレジストリで管理しているネームサーバではなく、サービス提供のネームサーバに転送し、解決させるようにする必要がある</p>
-
 <p>今回はCoocle Cloud Platformで提供されているGoogle Cloud DNS Serviceを使う。ちなみに、Azure DNSでも同じ要領で出来る。
 LetsEncryptによる証明書の作成・更新を行うためのプログラムには、certbot+certbot-dns-google プラグインを使う。</p>
-
 <ul>
 <li>Google Cloud DNS Serviceへゾーンを作成する</li>
 <li>ネームサーバを変更(Google domains -&gt; Google Cloud DNS Service)</li>
 <li>Google Cloud DNS Serviceの認可情報を作る</li>
 </ul>
-
 <h3 id="google-cloud-dns-serviceへゾーンを作成する">Google Cloud DNS Serviceへゾーンを作成する</h3>
-
 <p><a href="https://cloud.google.com/dns/">https://cloud.google.com/dns/</a></p>
-
 <p>ゾーンはドメインに対してDNSレコードを管理する単位で、1ドメインにつき1ゾーンを作ることになる。</p>
-
 <p>以下を進めて、Google Cloud DNS Serviceを有効化にする。</p>
-
 <p><a href="https://console.cloud.google.com/net-services/dns/zones">https://console.cloud.google.com/net-services/dns/zones</a></p>
-
 <p>ゾーンを作成する。</p>
-
 <ul>
 <li>ゾーンタイプ: 公開</li>
 <li>ゾーン名: 自由</li>
 <li>DNS名: 取得したドメイン名</li>
 <li>DNSSEC: オン</li>
 </ul>
-
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-14-23.png" alt="" /></p>
-
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-14-23.png" alt=""></p>
 <p>作成出来たらゾーンについてネームサーバが割り当たる。ゾーンで登録したレコードの情報はこのネームサーバに設定される。</p>
-
-<h3 id="ネームサーバを変更-google-domains-google-cloud-dns-service">ネームサーバを変更(Google domains -&gt; Google Cloud DNS Service)</h3>
-
+<h3 id="ネームサーバを変更google-domains---google-cloud-dns-service">ネームサーバを変更(Google domains -&gt; Google Cloud DNS Service)</h3>
 <p>Google Cloud DNS Serviceでゾーンを作成した時に得られたネームサーバをGoogle Domainsに登録する。</p>
-
 <p>まず、<a href="https://domains.google.com/">Google Domains</a>を開き、ネームサーバを変更する。</p>
-
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-20-14.png" alt="" /></p>
-
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-20-14.png" alt=""></p>
 <p>この変更は最長1日ぐらいかかる。結構時間がかかった。</p>
-
 <h3 id="google-cloud-dns-serviceの認可情報を作る">Google Cloud DNS Serviceの認可情報を作る</h3>
-
 <p>次にGoogle DNSでDNS登録をプログラムが行えるようにOAuth2認証の準備をする</p>
-
 <p><a href="https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount">https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount</a></p>
-
 <ul>
 <li>プロジェクトを作る(fukasawah-devとした)</li>
 <li>サービスアカウントを作る（certbotとした）</li>
 <li>サービスアカウントの権限を設定する（DNS管理者とした。おそらくこれが必要最小限の権限）</li>
 <li>キーの作成を行い、JSONファイルで出力する。これがクレデンシャル情報となる。</li>
 </ul>
-
 <p>ここで生成したJSONファイルはこの後使う。</p>
-
 <p>クレデンシャル情報は自分の代わりに操作を許すための認証情報という扱いなので、絶対に人に見せてはいけない。
 また、もし漏れた場合でも影響を抑えるため、権限は必要最小限に設定する。</p>
-
 <h3 id="certbotでssl証明書を発行する">certbotでSSL証明書を発行する</h3>
-
 <p><a href="https://docs.docker.com/install/linux/docker-ce/centos/">https://docs.docker.com/install/linux/docker-ce/centos/</a></p>
-
 <p>今回はdockerとcertbotを使う。dockerのほうが環境が汚れなくて精神衛生上よいため。</p>
-
 <pre><code>yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install docker-ce docker-ce-cli containerd.io
 
 systemctl start docker
 systemctl enable docker
-</code></pre>
-
-<p>dockerのインストールが終わったら作業ディレクトリを用意する</p>
-
+</code></pre><p>dockerのインストールが終わったら作業ディレクトリを用意する</p>
 <pre><code>groupadd letsencrypt
 mkdir -p /etc/letsencrypt /var/lib/letsencrypt /var/log/letsencrypt
 chmod 0770 /etc/letsencrypt /var/lib/letsencrypt /var/log/letsencrypt
 chown root:letsencrypt /etc/letsencrypt /var/lib/letsencrypt /var/log/letsencrypt
-</code></pre>
-
-<p>実行前にGoogle Cloud DNSを操作するための認証情報をJSONファイルで与える必要があるので、先ほどダウンロードしたJSONファイルを送る。</p>
-
+</code></pre><p>実行前にGoogle Cloud DNSを操作するための認証情報をJSONファイルで与える必要があるので、先ほどダウンロードしたJSONファイルを送る。</p>
 <pre><code>vi /etc/letsencrypt/google.json
 chmod 0600 /etc/letsencrypt/google.json
-</code></pre>
-
-<p>ドメインはよしなに置き換える</p>
-
+</code></pre><p>ドメインはよしなに置き換える</p>
 <pre><code>sudo docker run -it --rm --name certbot \
             -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; \
             -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; \
@@ -1186,16 +786,12 @@ chmod 0600 /etc/letsencrypt/google.json
   --dns-google-propagation-seconds 120 \
   -d fukasawah.dev \
   -d *.fukasawah.dev
-</code></pre>
-
-<p>実行すると3つほど尋ねられる。</p>
-
+</code></pre><p>実行すると3つほど尋ねられる。</p>
 <ul>
 <li>再発行やセキュリティの通知先のEmail</li>
 <li>利用規約とその同意</li>
 <li>非営利組織Electronic Frontier Foundationの活動を伝えるため、メールアドレスを共有してよいか？（Noでよい）</li>
 </ul>
-
 <pre><code>Enter email address (used for urgent renewal and security notices) (Enter 'c' to
 cancel): メールアドレスを入力
 
@@ -1215,13 +811,9 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (Y)es/(N)o: N
 
-</code></pre>
-
-<p>実行後、Cloud DNS上をみると、以下のようにレコードを登録していることが分かる。
-<img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-22-59-38.png" alt="" /></p>
-
+</code></pre><p>実行後、Cloud DNS上をみると、以下のようにレコードを登録していることが分かる。
+<img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-22-59-38.png" alt=""></p>
 <p>うまくいくと以下のような形になる。</p>
-
 <pre><code>IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
    /etc/letsencrypt/live/fukasawah.dev/fullchain.pem
@@ -1236,29 +828,19 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
    Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
    Donating to EFF:                    https://eff.org/donate-le
 
-</code></pre>
-
-<p>以下の場所に生成される。<code>fukasawah.dev</code>はドメイン名なので実行する環境で変わる。</p>
-
+</code></pre><p>以下の場所に生成される。<code>fukasawah.dev</code>はドメイン名なので実行する環境で変わる。</p>
 <ul>
 <li>証明書（CAのみ）: <code>/etc/letsencrypt/live/fukasawah.dev/chain.pem</code></li>
 <li>証明書（ドメインのみ）: <code>/etc/letsencrypt/live/fukasawah.dev/cert.pem</code></li>
 <li>証明書（CA+ドメイン）: <code>/etc/letsencrypt/live/fukasawah.dev/fullchain.pem</code></li>
 <li>秘密鍵: <code>/etc/letsencrypt/live/fukasawah.dev/privkey.pem</code></li>
 </ul>
-
 <p>fullchainとprivkeyを良く使うことになるはず。</p>
-
 <p>opensslコマンドで証明書の内容を覗くことができる。</p>
-
 <pre><code>openssl x509 -text /etc/letsencrypt/live/fukasawah.dev/fullchain.pem
-</code></pre>
-
-<p>なお、ファイルパスはシンボリックリンクされており、再発行(renew)してもファイルパスが変わらないように配慮されている。</p>
-
+</code></pre><p>なお、ファイルパスはシンボリックリンクされており、再発行(renew)してもファイルパスが変わらないように配慮されている。</p>
 <p>ちなみに<code>certbot</code>実行時、TXTレコードが反映されるまでデフォルト60秒待つのだけど、それが間に合わなかったのか以下のように失敗することがあった。
 なので、<code>--dns-google-propagation-seconds 120</code>オプションを足している。</p>
-
 <pre><code>IMPORTANT NOTES:
  - The following errors were reported by the server:
 
@@ -1275,59 +857,34 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
    also contain certificates and private keys obtained by Certbot so
    making regular backups of this folder is ideal.
 
-</code></pre>
-
-<h3 id="再発行を試す">再発行を試す</h3>
-
+</code></pre><h3 id="再発行を試す">再発行を試す</h3>
 <p>期限が近付いてきたときにちゃんと証明書が更新されるか確認する。</p>
-
 <p>通常はLetsEncryptのAPIのリミットにかからないように、手元の証明書が本当に更新が必要かどうか検証してから行うようになっている。
 ただ、それだと再試行まで時間がかかってしまうので、<code>--force-renew</code>オプションで無理やり再発行する。</p>
-
 <pre><code>sudo docker run -it --rm --name certbot \
             -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; \
             -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; \
             -v &quot;/var/log/letsencrypt:/var/log/letsencrypt&quot; \
             certbot/dns-google renew --force-renew
-</code></pre>
-
-<p>うまくいけば、<code>ls -l /etc/letsencrypt/archive/*</code>で証明書と秘密鍵が増えているはず。</p>
-
+</code></pre><p>うまくいけば、<code>ls -l /etc/letsencrypt/archive/*</code>で証明書と秘密鍵が増えているはず。</p>
 <h3 id="cronで自動実行する">cronで自動実行する</h3>
-
 <p>自動化するまでがお仕事です。今回はCronを使う。</p>
-
 <p>cronでrootユーザでrenewを定期的に実行する</p>
-
 <pre><code>sudo crontab -e
-</code></pre>
-
-<p>毎日午前3時12分に実行する。（時間はずらす）</p>
-
+</code></pre><p>毎日午前3時12分に実行する。（時間はずらす）</p>
 <pre><code>12 3 * * * docker run --rm --name certbot -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; -v &quot;/var/log/letsencrypt:/var/log/letsencrypt&quot; certbot/dns-google renew 
-</code></pre>
-
-<h2 id="nginxの導入とssl証明書の利用">nginxの導入とSSL証明書の利用</h2>
-
+</code></pre><h2 id="nginxの導入とssl証明書の利用">nginxの導入とSSL証明書の利用</h2>
 <p>nginxの導入は手抜き</p>
-
 <pre><code>sudo yum install nginx
-</code></pre>
-
-<p><code>sudo vi /etc/nginx/nginx.conf</code></p>
-
+</code></pre><p><code>sudo vi /etc/nginx/nginx.conf</code></p>
 <p>HTTP(tcp/80)は使わないので、この部分を上書きしていく。「</p>
-
 <pre><code>    server {
         listen       80 default_server;
         listen       [::]:80 default_server;
 
         ...
     }
-</code></pre>
-
-<p>以下のように置き換える。</p>
-
+</code></pre><p>以下のように置き換える。</p>
 <pre><code>    server {
         listen 443 ssl http2;
         listen [::]:443 ssl http2;
@@ -1371,44 +928,28 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
             location = /50x.html {
         }
     }
-</code></pre>
-
-<p>なお、この元ネタは以下から生成している。
+</code></pre><p>なお、この元ネタは以下から生成している。
 <a href="https://mozilla.github.io/server-side-tls/ssl-config-generator/">https://mozilla.github.io/server-side-tls/ssl-config-generator/</a></p>
-
 <p>以下の行が違うだけで、<code>fukasawah.dev</code>を自ドメインに置き換えればよい。</p>
-
 <ul>
 <li><code>ssl_certificate</code></li>
 <li><code>ssl_certificate_key</code></li>
 <li><code>ssl_trusted_certificate</code></li>
 </ul>
-
 <p>設定が終わったら、サーバの起動・自動起動</p>
-
 <pre><code>systemctl start nginx
 systemctl enable nginx
 
 systemctl status nginx
-</code></pre>
-
-<p>https(tcp/443)のポートはファイアウォールで塞がれているので、firewalldの設定を変更し、https(tcp/443)からのアクセスを許可する</p>
-
+</code></pre><p>https(tcp/443)のポートはファイアウォールで塞がれているので、firewalldの設定を変更し、https(tcp/443)からのアクセスを許可する</p>
 <pre><code>firewall-cmd --add-service=https --zone=public 
 firewall-cmd --add-service=https --zone=public --permanent
-</code></pre>
-
-<p>Chrome等のブラウザでアクセスして表示されればOK</p>
-
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-35-31.png" alt="" /></p>
-
+</code></pre><p>Chrome等のブラウザでアクセスして表示されればOK</p>
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-35-31.png" alt=""></p>
 <p>SSLの妥当性もテストしてくれるサービスがあるので、これも試す。
 <a href="https://www.ssllabs.com/ssltest/">https://www.ssllabs.com/ssltest/</a></p>
-
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png" alt="" /></p>
-
+<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png" alt=""></p>
 <p>いいですね。</p>
-
 <p>ちなみに、証明書を更新し終わったらnginxもreloadを行わないと反映されない。ので、<code>systemctl reload nginx</code>をcronに入れておくなりすると良いでしょう。</p>
 ]]></content>
 		</item>
@@ -1420,29 +961,16 @@ firewall-cmd --add-service=https --zone=public --permanent
 			
 			<guid>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</guid>
 			<description>tl;dr gccなら-Wl,...でリンク時のオプション(==ldコマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。 ldのオ</description>
-			<content type="html"><![CDATA[
-
-<h2 id="tl-dr">tl;dr</h2>
-
+			<content type="html"><![CDATA[<h2 id="tldr">tl;dr</h2>
 <p><code>gcc</code>なら<code>-Wl,...</code>でリンク時のオプション(==<code>ld</code>コマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。</p>
-
 <p><code>ld</code>のオプションで動的(<code>-Bdynamic</code>)と静的(<code>-Bstatic</code>)を選ぶことができ、これは混在させることができる。</p>
-
 <p>例: glibc以外をstatic linkしたい</p>
-
 <pre><code>g++ -o a.out main.o -static-libgcc -static-libstdc++ -Wl,-Bdynamic,-lc,-ldl,-lpthread,-Bstatic,-lboost_program_options,-lboost_filesystem,-lboost_system,-lssl,-lcrypto,-lz
-</code></pre>
-
-<p><code>-lc,-ldl,-lpthread</code>あたりがglibcのライブラリ。</p>
-
+</code></pre><p><code>-lc,-ldl,-lpthread</code>あたりがglibcのライブラリ。</p>
 <h2 id="背景">背景</h2>
-
 <p>時代はコンテナや！シングルバイナリのほうが扱い楽やで！！「実行する環境によっては～」なんて考える必要なくなるで！！</p>
-
 <p>という雑な認識で、static linkしていくぞという感じです。詳細は伏せますが、C++でBoost等を扱ってるネットワークアプリケーションです。</p>
-
 <p>最初は軽くググって<code>-static</code>とか<code>-static-libgcc -static-libstdc++</code>辺りをつけておけばそうなるんでしょ？と思っていて、以下のようにやっていた。</p>
-
 <pre><code># g++ -o a.out main.o -lboost_program_options -lboost_filesystem -lboost_system -lpthread -lssl -lcrypto -lz -ldl -static -static-libstdc
 
 ...中略
@@ -1452,74 +980,43 @@ warning: Using 'gethostbyname' in statically linked applications requires at run
 
 # ldd a.out
         not a dynamic executable
-</code></pre>
-
-<p>警告が出ながらも実行ファイルが出来てしまう。私は愚かなので「これでうまく動くぞ！」と思った。
+</code></pre><p>警告が出ながらも実行ファイルが出来てしまう。私は愚かなので「これでうまく動くぞ！」と思った。
 しかし、いざコンテナにコピーして実行してみると、通信時に名前解決が出来ずハマった。具体的には、docker-composeで実行した時にコンテナの名前解決ができなかった。
 名前解決できていないようなので「/etc/resolve.confかなぁ？」とか「でも中に入ってcurlは実行できたから違いそうだし・・・」とか1日中悩んでた。警告嫁。</p>
-
 <p>原因はglibcのNSS回りだった。</p>
-
 <h3 id="glibcのnssの壁">glibcのNSSの壁</h3>
-
 <p>glibcをstatic linkすると、Name Service Switch(NSS)の都合で名前解決に支障が出るバイナリになる。</p>
-
 <p>調べてみると、<a href="https://sourceware.org/glibc/wiki/FAQ#Even_statically_linked_programs_need_some_shared_libraries_which_is_not_acceptable_for_me.__What_can_I_do.3F">glibcはNSSの都合上、static linkは推奨していないようだ。</a>
 （glibcはNSSはリンク時ではなく実行時に解決できるほうが良いとしている。ただ、これでstatic linkは事実上出来ないようなものなので、static linkしようとしたら警告じゃなくてエラーにしてほしい・・・）</p>
-
 <p>NSSをstatic linkで扱う機能はオプショナルで、Fedoraのyumで入れられるglibcパッケージは対応していない。</p>
-
 <p>なので、取れる手は以下の3つらしい。</p>
-
 <ol>
 <li>glibcを動的リンクして使う（従来通り）</li>
 <li>glibcを<code>--enable-static-nss</code>をつけてrebuildし、必要なサービスを静的リンクする</li>
 <li>glibcを辞めてlibc互換ライブラリに置き換える（musl等）</li>
 </ol>
-
 <p>今回は(1)の方法を取った。</p>
-
 <p>でも、それだけなら<code>-ldl -static -static-libstdc</code>を外して動的リンクすればよい。</p>
-
 <p>これでは何も新しい事をしていない。なので、glibc以外をstatic linkにしようと考えた。</p>
-
 <p>本来の目的のシングルバイナリ化をするなら(2)と(3)なので、そのうち試したい所&hellip;</p>
-
 <h3 id="リンカーとは">リンカーとは</h3>
-
 <p>ふわっと理解しているつもりで説明すると、C言語、C++ではコンパイル→リンクという流れで成果物（実行ファイル・ライブラリ等）が出来上がる。</p>
-
 <p>例えば「ライブラリの関数を呼ぼうとしたときに、その関数がどこにあるのか？」というのを、コンパイル後に行っている「リンク」のタイミングで解決している。
 具体例で言えば、printfはおまじない的に<code>#include &lt;stdio.h&gt;</code>と書いていると使えるが、じゃあ実際にprintfに該当する処理はどこにあるんだ？というのを「リンク」のタイミングで解決する。</p>
-
 <p>「リンク」の作業を行うのが「リンカー」でリンクのやり方は大きく分けてDynamic LinkとStatic Linkがある。</p>
-
 <p>Dynamic Linkなら、ライブラリが実在すればそれでよしとして、成果物に含まれている「実行時に読み込むライブラリ一覧」みたいなものにライブラリ名を記録しておき、実行時に読みに行くような形を取る。成果物には実行時に読むという処理は含まれておらず、<code>ld.so</code>等の「プログラム実行時にライブラリを探すプログラム（動的リンカー）」の力を借りる必要がある。（ちなみにどの動的リンカーを使うかは成果物に含まれている情報から読み取る）</p>
-
 <p>Static Linkなら、ライブラリが持つ実際の処理(関数等)を探して成果物に含める。</p>
-
 <p>実際はもっと複雑な事をやってると思いますが、多分あってるんじゃないかな・・・</p>
-
 <h3 id="リンカーのオプション">リンカーのオプション</h3>
-
 <p><code>gcc</code>はコンパイルのあと、必要であればリンクも（<code>ld</code>コマンドを呼び出して）行う。
 この時に<code>ld</code>コマンドのオプションを<code>-Wl,[OPTION],[OPTION],...</code>という感じに渡せる。オプションが複数ある場合はカンマ(<code>,</code>)で繋げる。</p>
-
 <p><code>ld</code>のオプションで動的(<code>-Bdynamic</code>)と静的(<code>-Bstatic</code>)を選ぶことができ、混在させることができる。</p>
-
 <p><code>ld</code>の実行内容が気になる場合、<code>-v,--verbose</code>辺りをつけると少し見えます。どうやってライブラリを探しているのか等が気になる場合につける。</p>
-
 <p>例: glibc以外をstatic linkしたい</p>
-
 <pre><code>g++ -o a.out main.o -static-libgcc -static-libstdc++ -Wl,-Bdynamic,-lc,-ldl,-lpthread,-Bstatic,-lboost_program_options,-lboost_filesystem,-lboost_system,-lssl,-lcrypto,-lz
-</code></pre>
-
-<p><code>-lc,-ldl,-lpthread</code>辺りはglibcに含まれるライブラリでべったり依存しているので、ここら辺は動的リンクにします。</p>
-
+</code></pre><p><code>-lc,-ldl,-lpthread</code>辺りはglibcに含まれるライブラリでべったり依存しているので、ここら辺は動的リンクにします。</p>
 <h3 id="成果">成果</h3>
-
 <p>通常時</p>
-
 <pre><code># g++ -o a.out main.o -Wl,-lpthread,-lboost_program_options,-lboost_filesystem,-lboost_system,-lssl,-lcrypto,-lz
 # ldd a.out | sort
         /lib64/ld-linux-x86-64.so.2 (0x00007f9f7d619000)
@@ -1537,10 +1034,7 @@ warning: Using 'gethostbyname' in statically linked applications requires at run
         libstdc++.so.6 =&gt; /lib64/libstdc++.so.6 (0x00007f9f7d022000)
         libz.so.1 =&gt; /lib64/libz.so.1 (0x00007f9f7d1ba000)
         linux-vdso.so.1 (0x00007ffdf87b5000)
-</code></pre>
-
-<p>一部を静的リンク</p>
-
+</code></pre><p>一部を静的リンク</p>
 <pre><code># g++ -o a.out main.o -static-libgcc -static-libstdc++ -Wl,-Bdynamic,-lc,-ldl,-lpthread,-Bstatic,-lboost_program_options,-lboost_filesystem,-lboost_system,-lssl,-lcrypto,-lz
 # ldd a.out | sort
         /lib64/ld-linux-x86-64.so.2 (0x00007fa5d1ed4000)
@@ -1549,47 +1043,28 @@ warning: Using 'gethostbyname' in statically linked applications requires at run
         libm.so.6 =&gt; /lib64/libm.so.6 (0x00007fa5d1b58000)
         libpthread.so.0 =&gt; /lib64/libpthread.so.0 (0x00007fa5d1cdc000)
         linux-vdso.so.1 (0x00007ffcf53cd000)
-</code></pre>
-
-<p>boost等が消えて、4つのライブラリにしか依存していないように見える。良いですね。</p>
-
-<h3 id="おまけ-nssを考慮する">（おまけ）NSSを考慮する</h3>
-
+</code></pre><p>boost等が消えて、4つのライブラリにしか依存していないように見える。良いですね。</p>
+<h3 id="おまけnssを考慮する">（おまけ）NSSを考慮する</h3>
 <p>が、glibcのNSSの都合で、一部はリンク時ではなく実行時に解決される。実行時のものはlddでも表示されない。</p>
-
 <p>ソースコードを<a href="https://sourceware.org/git/?p=glibc.git;a=blob;f=nss/nsswitch.c;h=ee46f24424bc1ca2085f4fd7f1060ae330ee5bae;hb=437faa9675dd916ac7b239d4584b932a11fbb984#l363"><code>nss/nsswitch.c</code>のこの辺り</a>で<code>/etc/nsswitch.conf</code>に書かれたサービス名(dns等)を使って、ライブラリ名を構築して、ライブラリを読みに行こうとしているのがわかる。</p>
-
 <p>なので、もし、<code>/etc/nsswitch.conf</code>の内容が以下の場合、</p>
-
 <pre><code>hosts: files dns
-</code></pre>
-
-<p>さらに以下を加える必要がある。</p>
-
+</code></pre><p>さらに以下を加える必要がある。</p>
 <ul>
 <li>/lib64/libnss_files-2.28.so</li>
 <li>/lib64/libnss_dns-2.28.so</li>
 <li>/lib64/libresolv-2.28.so (dnsの依存)</li>
 </ul>
-
 <p>もちろん、libresolvといった依存ライブラリがあるモノは一緒に含めないといけない。
 あと、ファイルパスは実行環境やglibcのバージョンなどで変わるはずなので、<code>ldd /lib64/libnss_dns-2.28.so</code>等で、いい感じに見極めてください。</p>
-
 <p>依存ライブラリも洗い出せたのでコンテナに持ち込むぞー！となったが、これもまた苦労した。</p>
-
-<h3 id="おまけ-コンテナを作る">（おまけ）コンテナを作る</h3>
-
+<h3 id="おまけコンテナを作る">（おまけ）コンテナを作る</h3>
 <p>単純にライブラリをコピーしてお終いというわけにはいかなかった。</p>
-
 <p>持ち込み先のコンテナに動的リンカーがない。そんな事があるのか？と思ったらコンテナ界隈では良く知られているらしい。</p>
-
 <p>busyboxはそもそも<code>ld.so</code>が無い。(これは動的リンクが必要なプログラムは実行できない・・・ということ？)</p>
-
 <p>alpineはmuslベースなので<code>ld-musl-x86_64.so.1</code>で<code>ld-linux-x86-64.so.2</code>が無い。</p>
-
 <p>alpineで<code>apk add libc6-compat</code> すればよい、という記事をいくつか見かけて試したが、
 これはただ<code>ld-musl-x86_64.so.1</code>へのシンボリックリンクを作るだけであり、私の環境では実行時に以下のようなエラーになってしまう。</p>
-
 <pre><code>/ # /path/to/a.out
 Error relocating /path/to/a.out: __fprintf_chk: symbol not found
 Error relocating /path/to/a.out: makecontext: symbol not found
@@ -1602,73 +1077,48 @@ Error relocating /path/to/a.out: __vfprintf_chk: symbol not found
 Error relocating /path/to/a.out: __memset_chk: symbol not found
 Error relocating /path/to/a.out: getcontext: symbol not found
 Error relocating /path/to/a.out: __sprintf_chk: symbol not found
-</code></pre>
-
-<p><code>__memset_chk</code>辺りはglibc固有の実装なので、そんなものは当然muslにはない。</p>
-
+</code></pre><p><code>__memset_chk</code>辺りはglibc固有の実装なので、そんなものは当然muslにはない。</p>
 <p><a href="https://hub.docker.com/r/frolvlad/alpine-glibc/">alpine-glibc</a>というイメージを使う手もあるが、オフィシャルではないので使用は避けたい。</p>
-
 <p>色々悩んだけど、そもそもビルド環境からコピーすれば良いよね、という考えに至った。</p>
-
 <p>ということで、dockerfileはこんな感じ。</p>
-
-<pre><code class="language-dockerfile">FROM mydev:latest as build
-
-# ... プログラムのビルドを行う
-
-FROM busybox
-# nsswitch.confを作る(glibcがこれを読みに来る)
-RUN echo 'hosts: files dns' &gt;&gt; /etc/nsswitch.conf
-
-# ld-linux-x86-64.so.2とプログラムの依存ライブラリ
-COPY --from=build /lib64/ld-linux-x86-64.so.2 /lib64/libc.so.6 /lib64/libdl.so.2 /lib64/libm.so.6 /lib64/libpthread.so.0 /lib64
-
-# glibcが/etc/nsswitch.confを参照して利用する依存ライブラリ
-COPY --from=build /lib64/libresolv-2.28.so /lib64/lib/libresolv.so.2
-COPY --from=build /lib64/libnss_dns-2.28.so /lib64/libnss_dns.so.2
-COPY --from=build /lib64/libnss_files-2.28.so /lib64/libnss_files.so.2
-
-# プログラム
-COPY --from=build /usr/local/src/a.out /usr/local/bin/a.out
-
-CMD [&quot;/usr/local/bin/a.out&quot;]
-</code></pre>
-
-<p>蛇足だが、プログラム内部で<code>ld.so</code>の場所を持っているので、コマンドを実行するとちゃんと<code>ld.so</code>を使って動的リンクを行ってくれる。(lddで<code>/lib64/ld-linux-x86-64.so.2</code>と出るなら、これを動的リンカーに使おうとする。この場所に動的リンカーが無い場合はエラーになる)
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mydev:latest as build</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># ... プログラムのビルドを行う</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># nsswitch.confを作る(glibcがこれを読みに来る)</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> echo <span style="color:#e6db74">&#39;hosts: files dns&#39;</span> &gt;&gt; /etc/nsswitch.conf<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># ld-linux-x86-64.so.2とプログラムの依存ライブラリ</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/ld-linux-x86-64.so.2 /lib64/libc.so.6 /lib64/libdl.so.2 /lib64/libm.so.6 /lib64/libpthread.so.0 /lib64<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># glibcが/etc/nsswitch.confを参照して利用する依存ライブラリ</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/libresolv-2.28.so /lib64/lib/libresolv.so.2<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/libnss_dns-2.28.so /lib64/libnss_dns.so.2<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/libnss_files-2.28.so /lib64/libnss_files.so.2<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># プログラム</span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /usr/local/src/a.out /usr/local/bin/a.out<span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;/usr/local/bin/a.out&#34;</span>]<span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>蛇足だが、プログラム内部で<code>ld.so</code>の場所を持っているので、コマンドを実行するとちゃんと<code>ld.so</code>を使って動的リンクを行ってくれる。(lddで<code>/lib64/ld-linux-x86-64.so.2</code>と出るなら、これを動的リンカーに使おうとする。この場所に動的リンカーが無い場合はエラーになる)
 また、今回のように目的の場所に無い場合は、直接<code>ld.so</code>からプログラムを実行することもできます。もし<code>/lib64</code>ではなく、<code>/usr/local/lib</code>に全部配置した場合はこんな感じ。</p>
-
 <pre><code>CMD [&quot;/usr/local/lib/ld-linux-x86-64.so.2&quot;, &quot;--inhibit-cache&quot;, &quot;--library-path&quot;, &quot;/usr/local/lib&quot;, &quot;/usr/local/bin/a.out&quot;]
-</code></pre>
-
-<h3 id="一部とか中途半端">一部とか中途半端</h3>
-
+</code></pre><h3 id="一部とか中途半端">一部とか中途半端</h3>
 <p>はい・・・</p>
-
 <p><code>--enable-static-nss</code>を入れたglibcでstatic linkしたりmuslの置き換えもやってみたい・・・特にmuslはlibstdc++のリビルドが必要そうなのでしんどそう。</p>
-
 <p>glibcはLGPLなので、Static Linkすると都合悪い場合もあるはずなので、使えるのではないかなと思う。</p>
-
 <h2 id="static化で遭遇したエラーたち">static化で遭遇したエラーたち</h2>
-
-<h3 id="cannot-find-lgcc-s"><code>cannot find -lgcc_s</code></h3>
-
+<h3 id="cannot-find--lgcc_s"><code>cannot find -lgcc_s</code></h3>
 <pre><code>/usr/bin/ld: cannot find -lgcc_s
 /usr/bin/ld: cannot find -lgcc_s
-</code></pre>
-
-<p>g++オプションに<code>-static-libgcc</code>をつける。</p>
-
-<h3 id="undefined-reference-to-symbol-tls-get-addr-glibc-2-3"><code>undefined reference to symbol '__tls_get_addr@@GLIBC_2.3'</code></h3>
-
+</code></pre><p>g++オプションに<code>-static-libgcc</code>をつける。</p>
+<h3 id="undefined-reference-to-symbol-__tls_get_addrglibc_23"><code>undefined reference to symbol '__tls_get_addr@@GLIBC_2.3'</code></h3>
 <pre><code>/usr/bin/ld: /usr/lib/gcc/x86_64-redhat-linux/8/libstdc++.a(eh_globals.o): undefined reference to symbol '__tls_get_addr@@GLIBC_2.3'
 /usr/bin/ld: //lib64/ld-linux-x86-64.so.2: error adding symbols: DSO missing from command line
 collect2: error: ld returned 1 exit status
-</code></pre>
-
-<p>g++オプションに<code>-static-libstdc++</code>をつける。</p>
-
+</code></pre><p>g++オプションに<code>-static-libstdc++</code>をつける。</p>
 <h3 id="undefined-reference-to-dlopen"><code>undefined reference to 'dlopen'</code></h3>
-
 <pre><code>/usr/bin/ld: /usr/lib/gcc/x86_64-redhat-linux/8/../../../../lib64/libcrypto.a(fips.o): in function `verify_checksums':
 (.text+0x524): undefined reference to `dlopen'
 /usr/bin/ld: (.text+0x53f): undefined reference to `dlsym'
@@ -1677,11 +1127,8 @@ collect2: error: ld returned 1 exit status
 /usr/bin/ld: (.text+0x5b2): undefined reference to `dlclose'
 /usr/bin/ld: (.text+0x62c): undefined reference to `dlclose'
 
-</code></pre>
-
-<p>dlopen等はライブラリを実行時に読み込む仕組み。
+</code></pre><p>dlopen等はライブラリを実行時に読み込む仕組み。
 リンカーオプションに<code>-ldl</code>をつける。これは動的リンクにしないといけない。静的リンクしようとすると、以下のようになりうまくいかない。</p>
-
 <pre><code>
 /usr/bin/ld: /usr/lib/gcc/x86_64-redhat-linux/8/../../../../lib64/libcrypto.a(fips.o): in function `verify_checksums':
 (.text+0x524): warning: Using 'dlopen' in statically linked applications requires at runtime the shared libraries from the glibc version used for linking
@@ -1695,11 +1142,8 @@ collect2: error: ld returned 1 exit status
 (.text+0x5): undefined reference to `__dlerror'
 /usr/bin/ld: /usr/lib/gcc/x86_64-redhat-linux/8/../../../../lib64/libdl.a(dladdr.o): in function `dladdr':
 (.text+0x5): undefined reference to `__dladdr'
-</code></pre>
-
-<p><code>libdl.a</code>ではdlopenなどは定義されているが、内部で使われている<code>__dlopen</code>などはglibcに依存している。
+</code></pre><p><code>libdl.a</code>ではdlopenなどは定義されているが、内部で使われている<code>__dlopen</code>などはglibcに依存している。
 なので、glibcをstatic linkするか、同バージョンのglibcライブラリを合わせて持ち込む必要がある。</p>
-
 <p>ここらでglibcがLGPLと知ったり、NSS周りの扱いを知ったり、muslの置き換えがうまくいかなかったり、等々を理由に「めんどくさそう」と判断して、一部static linkを目指すことにした。</p>
 ]]></content>
 		</item>
@@ -1711,58 +1155,31 @@ collect2: error: ld returned 1 exit status
 			
 			<guid>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</guid>
 			<description>HUGO HUGO - https://gohugo.io/ 静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。 また、記事の公開には、Github Pagesを使う。Netl</description>
-			<content type="html"><![CDATA[
-
-<h2 id="hugo">HUGO</h2>
-
+			<content type="html"><![CDATA[<h2 id="hugo">HUGO</h2>
 <p>HUGO - <a href="https://gohugo.io/">https://gohugo.io/</a></p>
-
 <p>静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。</p>
-
 <p>また、記事の公開には、<a href="https://pages.github.com/">Github Pages</a>を使う。Netlifyも試したいが、こちらの方が手軽そうだったので。</p>
-
 <p>導入のモチベーションとしては、簡単なBlogがほしい、広告嫌、という場合に、これならいい感じに公開できるかも、と思い使い始めた。</p>
-
 <h2 id="導入">導入</h2>
-
 <h3 id="hugoのダウンロード">HUGOのダウンロード</h3>
-
 <p>Windowsの場合、<a href="https://discourse.gohugo.io/t/error-failed-to-create-file-caches-from-configuration-file-exists/15635/18">0.52でcachedir周りのバグがあるらしく使えない模様</a>
 そのため、0.51を使用した。</p>
-
 <p>1個のバイナリファイルになっているのでそのまま扱う。
 PATHは適当に通す。</p>
-
 <h3 id="サイトを作る">サイトを作る</h3>
-
 <pre><code>hugo new site blog
-</code></pre>
-
-<p>以降は作成したサイトのディレクトリで作業をする</p>
-
+</code></pre><p>以降は作成したサイトのディレクトリで作業をする</p>
 <pre><code>cd blog
-</code></pre>
-
-<h3 id="gitで管理を始める">Gitで管理を始める</h3>
-
+</code></pre><h3 id="gitで管理を始める">Gitで管理を始める</h3>
 <p>作ったサイトごとにGitリポジトリを作る。</p>
-
 <pre><code>git init
-</code></pre>
-
-<h3 id="テーマを決める">テーマを決める</h3>
-
+</code></pre><h3 id="テーマを決める">テーマを決める</h3>
 <p>1から作るのは手間なので、 <a href="https://themes.gohugo.io/">https://themes.gohugo.io/</a> を見ていい感じのを探す。今回は<a href="https://themes.gohugo.io/hermit/">hermit</a>にした。</p>
-
 <pre><code>git submodule add -b v1.1.0 https://github.com/Track3/hermit.git themes/hermit
 echo 'theme = &quot;hermit&quot;' &gt;&gt; config.toml
-</code></pre>
-
-<p>hermitはいくつか設定が必要なので、追記する。
+</code></pre><p>hermitはいくつか設定が必要なので、追記する。
 <a href="https://github.com/Track3/hermit/blob/master/exampleSite/config.toml">hermitのサンプルのconfig.toml</a>を参考に以下のようにした。</p>
-
 <p><code>dateform*</code>辺りは必須。<code>/posts/</code>のmenuもあったほうがよい。</p>
-
 <pre><code>cat &lt;&lt; '__EOF__' &gt;&gt; config.toml
 [Params]
   dateform        = &quot;Jan 2, 2006&quot;
@@ -1781,53 +1198,27 @@ echo 'theme = &quot;hermit&quot;' &gt;&gt; config.toml
     weight = 10
 
 __EOF__
-</code></pre>
-
-<p>テーマは色々設定がある場合があるため、テーマを使う場合はこの辺りを注意する（dateform当たりの設定がないせいで後述のローカル起動で失敗して困っていた）</p>
-
+</code></pre><p>テーマは色々設定がある場合があるため、テーマを使う場合はこの辺りを注意する（dateform当たりの設定がないせいで後述のローカル起動で失敗して困っていた）</p>
 <p>下地はここまで。</p>
-
 <h2 id="github-pages用のリポジトリを作る">GitHub Pages用のリポジトリを作る</h2>
-
 <p>*.github.ioというリポジトリを作っておくと、<a href="https://pages.github.com/">Github Pages</a>で見ることができるようになる。</p>
-
 <p>このリポジトリにHTMLなどで作られたファイルを管理するだけで、Github Pagesの機能でホスティングされ、インターネット上に公開される。</p>
-
 <p>今回はHUGOで出来た成果物を、このGitHub Pagesで公開するようにする。</p>
-
 <h3 id="リポジトリを作成する">リポジトリを作成する</h3>
-
 <p><code>ユーザ名.github.io</code>という形を取る必要がある。fukasawahというidなら<code>fukasawah.github.io</code>という感じ。</p>
-
 <p>1個はcommitが無いとsubmodule登録できないので、index.html辺りを作っておく。</p>
-
 <p>README.md でもよいが、その場合は後で削除する必要がある。github.ioはREADME.md &gt; index.htmlの順でトップを表示するため。</p>
-
 <p>README.mdかindex.htmlが作成できたら、<code>https://ユーザ名.github.io</code>という形でアクセスできるか一度ブラウザで確認する。</p>
-
 <p>反映までタイムラグがあるので、1分ほど待って確認する。</p>
-
 <h3 id="リポジトリをサブモジュールとして登録する">リポジトリをサブモジュールとして登録する</h3>
-
 <pre><code>git submodule add https://github.com/fukasawah/ユーザ名.github.io.git public
-</code></pre>
-
-<h3 id="config-tomlのbaseurlを修正する">config.tomlのbaseURLを修正する</h3>
-
+</code></pre><h3 id="configtomlのbaseurlを修正する">config.tomlのbaseURLを修正する</h3>
 <p>テーマによってはこの変数を元に作る場合があるので、直す。</p>
-
 <pre><code>baseURL = &quot;https://ユーザ名.github.io/&quot;
-</code></pre>
-
-<h2 id="記事を作成">記事を作成</h2>
-
+</code></pre><h2 id="記事を作成">記事を作成</h2>
 <h3 id="記事を作成-1">記事を作成</h3>
-
 <pre><code>hugo new posts/using-hugo.md
-</code></pre>
-
-<p><code>content/posts/using-hugo.md</code> が出来上がるので、MarkDowkで書いていく。</p>
-
+</code></pre><p><code>content/posts/using-hugo.md</code> が出来上がるので、MarkDowkで書いていく。</p>
 <pre><code>---
 title: &quot;Using HUGO&quot;
 date: 2018-12-24T04:48:16+09:00
@@ -1844,38 +1235,22 @@ HUGO - https://gohugo.io/
 
 サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。
 
-</code></pre>
-
-<p>というかんじで。最初の数行はメタ情報でなんとなく何を意味するかわかるはず。</p>
-
+</code></pre><p>というかんじで。最初の数行はメタ情報でなんとなく何を意味するかわかるはず。</p>
 <ul>
 <li><code>draft</code>がtrueの場合、デフォルトだと対象にならない(HTMLが生成されない)なので、適宜手でfalseにする必要がありそう。</li>
 </ul>
-
 <h3 id="表示確認">表示確認</h3>
-
 <p><code>hugo server</code>により、手元で簡単に表示の確認を行える。</p>
-
 <p><code>http://localhost:1313/</code> にアクセスすると見れる。</p>
-
 <p><code>draft:true</code>の記事も含めたい場合は、<code>hugo server -D</code>という形に<code>-D</code>オプションを付け足す。</p>
-
 <p>なお、デフォルトで保存を検知してブラウザ側で自動リロードをかけてくれる。</p>
-
 <h3 id="ビルドを行う">ビルドを行う</h3>
-
 <pre><code>hugo
-</code></pre>
-
-<p><code>public</code>ディレクトリの下に生成されたファイルが並ぶ。</p>
-
-<h3 id="ビルドを行い-github-ioのリモートリポジトリに反映する">ビルドを行い、github.ioのリモートリポジトリに反映する</h3>
-
+</code></pre><p><code>public</code>ディレクトリの下に生成されたファイルが並ぶ。</p>
+<h3 id="ビルドを行いgithubioのリモートリポジトリに反映する">ビルドを行い、github.ioのリモートリポジトリに反映する</h3>
 <p><code>hugo</code>を実行すると、draftになっていないものを対象に、<code>public</code>ディレクトリの下にファイルが生成される。</p>
-
 <p>後は生成されたpublicの中身をcommit&amp;pushする。
 submoduleとはいえ、中身はGitリポジトリなので、普通にGitの操作でよい。</p>
-
 <pre><code>(
   hugo &amp;&amp; \
   cd public &amp;&amp; \
@@ -1883,60 +1258,35 @@ submoduleとはいえ、中身はGitリポジトリなので、普通にGitの�
   git commit -m &quot;Update&quot; &amp;&amp; \
   git push
 )
-</code></pre>
-
-<p>反映までタイムラグがあるので、その時は少し待って確認する。</p>
-
+</code></pre><p>反映までタイムラグがあるので、その時は少し待って確認する。</p>
 <p>良く使うはずなので、<code>.bash_profile</code>等にaliasを作っておくと良い。</p>
-
 <pre><code>alias hugo-publish='(hugo &amp;&amp; cd public &amp;&amp; git add . &amp;&amp; git commit -m &quot;Update&quot; &amp;&amp; git push)'
-</code></pre>
-
-<h3 id="元の記事もローカルリポジトリにコミットする">元の記事もローカルリポジトリにコミットする</h3>
-
+</code></pre><h3 id="元の記事もローカルリポジトリにコミットする">元の記事もローカルリポジトリにコミットする</h3>
 <p>元のMarkdownや設定が管理されていないので、このタイミングで管理する。publicも含めてしまってよい。</p>
-
 <pre><code>git add .
 git commit -m &quot;Update&quot;
-</code></pre>
-
-<p>（不明点: resources配下に生成されたファイルも含まれてしまうがこれは良いのか？）</p>
-
+</code></pre><p>（不明点: resources配下に生成されたファイルも含まれてしまうがこれは良いのか？）</p>
 <p>後は、必要に応じてリモートリポジトリを作りPushしておくと、他の端末からでもHUGOがあれば同じ環境を使うことができるようになる。</p>
-
 <h3 id="おわり">おわり</h3>
-
 <p>これでHUGO+GitHub Pagesで簡単なBlogを書くことができるようになった。</p>
-
 <p>今回の成果物は以下。</p>
-
 <ul>
 <li>HUGO以外の完全なコード: <a href="https://github.com/fukasawah/blog">https://github.com/fukasawah/blog</a></li>
 <li>GitHub Pages用リポジトリ: <a href="https://github.com/fukasawah/fukasawah.github.io">https://github.com/fukasawah/fukasawah.github.io</a></li>
 <li>GitHub Pages: <a href="https://fukasawah.github.io">https://fukasawah.github.io</a></li>
 </ul>
-
 <h2 id="おまけ">おまけ</h2>
-
 <h3 id="投稿に画像の貼り付けを行いたい">投稿に画像の貼り付けを行いたい</h3>
-
 <p>hugoはデフォルトで<code>static</code>配下のディレクトリとファイルを、そのまま<code>public</code>に配置する模様。</p>
-
 <p>なので、<code>static/foo/image.jpg</code>とおいておけば、<code>![](/foo/image.jpg)</code>で表示ができるようになる。</p>
-
 <p>また、VSCode で <a href="https://marketplace.visualstudio.com/items?itemName=mushan.vscode-paste-image">Paste Imageという拡張機能</a>を使っている場合、以下の設定を行っておくと、ファイルは<code>static/images/Postのファイル名/タイムスタンプ.png</code>、Markdownには<code>![](/images/ファイル名/タイムスタンプ.png)</code>が張り付けられるようになり、良い感じになる。（絶対パスになっているので、URLの構造に注意）</p>
-
 <p>設定はWorkspace毎に設定できるので、hugoを使っている環境にだけ適用したい、という事もできる。（ディレクトリのルートの<code>.vscode/settings.json</code>に書くだけ）</p>
-
 <pre><code>{
     &quot;pasteImage.path&quot;: &quot;${projectRoot}/static/images/${currentFileNameWithoutExt}&quot;,
     &quot;pasteImage.insertPattern&quot;: &quot;${imageSyntaxPrefix}/images/${currentFileNameWithoutExt}/${imageFileName}${imageSyntaxSuffix}&quot;
 }
-</code></pre>
-
-<p>以下は画像。貼り付けのお試し。</p>
-
-<p><img src="/images/using-hugo/2018-12-25-16-45-13.png" alt="" /></p>
+</code></pre><p>以下は画像。貼り付けのお試し。</p>
+<p><img src="/images/using-hugo/2018-12-25-16-45-13.png" alt=""></p>
 ]]></content>
 		</item>
 		
