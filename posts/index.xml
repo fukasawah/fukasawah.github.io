@@ -1,21 +1,4 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-	<channel>
-		<title>Posts on fukasawah.github.io</title>
-		<link>https://fukasawah.github.io/posts/</link>
-		<description>Recent content in Posts on fukasawah.github.io</description>
-		<generator>Hugo -- gohugo.io</generator>
-		<language>ja-JP</language>
-		<lastBuildDate>Mon, 24 Jun 2019 00:58:49 +0900</lastBuildDate>
-		<atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
-		
-		<item>
-			<title>PulumiでAzureのリソースを構成する</title>
-			<link>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</link>
-			<pubDate>Mon, 24 Jun 2019 00:58:49 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid>
-			<description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description>
-			<content type="html"><![CDATA[<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Mon, 24 Jun 2019 00:58:49 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>PulumiでAzureのリソースを構成する</title><link>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</link><pubDate>Mon, 24 Jun 2019 00:58:49 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid><description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description><content type="html"><![CDATA[<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
 Azure Resource Manager(Template)やTerraformで出来ることと同じだが、特定の言語(JavaScript,TypeScript,Python)で記述できるのが強み。</p>
 <p>Azure Resource Manager Templateに嫌気がさしつつ、terraformでやろうかな、と思っていたらPulumi見かけたのでクイックスタートを走ってみた。</p>
 <h3 id="pulumiのインストール">Pulumiのインストール</h3>
@@ -212,17 +195,7 @@ Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
 そこで他のバックエンドを使えないか調べたところ、一応AWS,GCP,Azureをサポートしているようだ。</p>
 <p>内部的にはgo-cloudで抽象化しているので、<a href="https://gocloud.dev/howto/blob/open-bucket/">go-cloudのopenBucketのドキュメント</a>を見ると、どのような環境変数が必要かは分かる。</p>
 <p>細かいところは「<a href="https://qiita.com/fukasawah/items/7c793ab8b08d19cd9376">Qiita - Pulumiの状態管理にクラウドストレージバックエンドを使う</a>」に書いた。</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>MCP資格のAZ-103に不合格しました</title>
-			<link>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</link>
-			<pubDate>Sat, 25 May 2019 14:20:19 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</guid>
-			<description>700点で合格、結果530点でダメでした。かすりもしねえ・・・ 気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えて</description>
-			<content type="html"><![CDATA[<p>700点で合格、結果530点でダメでした。かすりもしねえ・・・</p>
+]]></content></item><item><title>MCP資格のAZ-103に不合格しました</title><link>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</link><pubDate>Sat, 25 May 2019 14:20:19 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/05/25/fail-an-examination-az-103/</guid><description>700点で合格、結果530点でダメでした。かすりもしねえ・・・ 気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えて</description><content type="html"><![CDATA[<p>700点で合格、結果530点でダメでした。かすりもしねえ・・・</p>
 <p>気になってたことがわかったり、問題形式とかわかったのでメモしておく。あと考えてる対策も・・・</p>
 <p>問題内容はほとんどないです。書こうにも<a href="https://www.microsoft.com/ja-jp/learning/certification-exam-policies.aspx">ポリシーの秘密保持契約</a>に引っかかりそうなのでビビってる。</p>
 <blockquote>
@@ -322,17 +295,7 @@ Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
 逆を言えば「そんなこと覚えている必要ある？」という内容でもある。</p>
 <p>あとExpressRouteの問題は辛い。そんな高価なもん気軽にハンズオンできるわけないだろ！いい加減にしろ！</p>
 <p>愚痴ばかりになってしまった。正直もう受けたくないがお仕事だからね・・・</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>JJUG CCC 2019 Spring いってきた</title>
-			<link>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</link>
-			<pubDate>Sat, 18 May 2019 20:36:00 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</guid>
-			<description>いってきました。 [English] DevOps without Measurement is a Fail (Erno Venäläinen) @venalainene 英語聞き取れないマンだけど英語のセッションを選んだ。 スライドと話している雰囲気で理解</description>
-			<content type="html"><![CDATA[<p>いってきました。</p>
+]]></content></item><item><title>JJUG CCC 2019 Spring いってきた</title><link>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</link><pubDate>Sat, 18 May 2019 20:36:00 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/05/18/report-jjug-ccc-2019-spring/</guid><description>いってきました。 [English] DevOps without Measurement is a Fail (Erno Venäläinen) @venalainene 英語聞き取れないマンだけど英語のセッションを選んだ。 スライドと話している雰囲気で理解</description><content type="html"><![CDATA[<p>いってきました。</p>
 <h3 id="english-devops-without-measurement-is-a-fail-erno-venäläinen-venalainenehttpstwittercomvenalainene">[English] DevOps without Measurement is a Fail (Erno Venäläinen) <a href="https://twitter.com/venalainene">@venalainene</a></h3>
 <p>英語聞き取れないマンだけど英語のセッションを選んだ。
 スライドと話している雰囲気で理解しようとしたが、ま－無理だった。</p>
@@ -386,17 +349,7 @@ Servletを捨ててSpring Bootでやったが、多少整理がをしたもの�
 <p>Slide: <a href="https://www.slideshare.net/masuda220/ss-146325870">https://www.slideshare.net/masuda220/ss-146325870</a></p>
 <p>難しかった（小並感）</p>
 <p>疲れちゃったのでこの辺で。</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>Basic Authentication on Nginx</title>
-			<link>https://fukasawah.github.io/posts/2019/03/27/basic-authentication-on-nginx/</link>
-			<pubDate>Wed, 27 Mar 2019 02:08:03 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/03/27/basic-authentication-on-nginx/</guid>
-			<description>Apache Httpdのツールとして提供されているhtpasswdコマンドを使うのが良い。 （最初はpythonで自前で計算しようとしたが、思っていた以</description>
-			<content type="html"><![CDATA[<p>Apache Httpdのツールとして提供されている<code>htpasswd</code>コマンドを使うのが良い。
+]]></content></item><item><title>Basic Authentication on Nginx</title><link>https://fukasawah.github.io/posts/2019/03/27/basic-authentication-on-nginx/</link><pubDate>Wed, 27 Mar 2019 02:08:03 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/03/27/basic-authentication-on-nginx/</guid><description>Apache Httpdのツールとして提供されているhtpasswdコマンドを使うのが良い。 （最初はpythonで自前で計算しようとしたが、思っていた以</description><content type="html"><![CDATA[<p>Apache Httpdのツールとして提供されている<code>htpasswd</code>コマンドを使うのが良い。
 （最初はpythonで自前で計算しようとしたが、<a href="https://svn.apache.org/viewvc/apr/apr/trunk/crypto/">思っていた以上に面倒だった</a>ので諦めた&hellip;）</p>
 <pre><code>yum install httpd-tools
 </code></pre><p><code>htpasswd</code>の利用法は以下のドキュメント。</p>
@@ -416,17 +369,7 @@ locationなら特定のpathなら認証不要といった事ができる。</p>
 <pre><code>    auth_basic           &quot;need authenticate&quot;;
     auth_basic_user_file /etc/nginx/.htpasswd;
 </code></pre><p>後はnginxをreloadして反映。</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>NginxのVirtualhost設定～WildcardSSL証明書を添えて～</title>
-			<link>https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/</link>
-			<pubDate>Tue, 26 Mar 2019 04:10:14 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/</guid>
-			<description>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。 ただ、このとき、証明書の設定箇所</description>
-			<content type="html"><![CDATA[<p>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。</p>
+]]></content></item><item><title>NginxのVirtualhost設定～WildcardSSL証明書を添えて～</title><link>https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/</link><pubDate>Tue, 26 Mar 2019 04:10:14 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/</guid><description>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。 ただ、このとき、証明書の設定箇所</description><content type="html"><![CDATA[<p>以前の手順でWildcardなSSL証明書ができたので、これを使ってvirtualhost運用をしてみたい。</p>
 <p>ただ、このとき、証明書の設定箇所は1か所にしたい（増やすときに面倒なので）</p>
 <p>まさしくな手順はnginxのドキュメントにある。</p>
 <p><a href="https://nginx.org/en/docs/http/configuring_https_servers.html#certificate_with_several_names">https://nginx.org/en/docs/http/configuring_https_servers.html#certificate_with_several_names</a></p>
@@ -494,17 +437,7 @@ sudo tee /usr/share/nginx/html/test/index.html <span style="color:#e6db74">&lt;&
 <p>以上。</p>
 <p>あと内々で公開するとき用に、Digest認証をかけたい所だが、標準ではないモジュールなのでちょっと手間そう。Basic認証で妥協しようかな。TLSの上で通信されてるから大丈夫だ！大丈夫！</p>
 <p>どうでもよいが、SSL証明書はもはやTLS証明書である・・・。</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>Install PostgreSQL 11 on CentOS 7</title>
-			<link>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</link>
-			<pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</guid>
-			<description>PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの</description>
-			<content type="html"><![CDATA[<ul>
+]]></content></item><item><title>Install PostgreSQL 11 on CentOS 7</title><link>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</link><pubDate>Tue, 26 Mar 2019 03:23:23 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/</guid><description>PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの</description><content type="html"><![CDATA[<ul>
 <li>PostgreSQL 11の導入</li>
 <li>pg_bigmの導入</li>
 </ul>
@@ -607,17 +540,7 @@ testdb=# \dx pg_bigm
 
 <span style="color:#75715e">-- テーブル削除
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> pg_tools;
-</code></pre></div>]]></content>
-		</item>
-		
-		<item>
-			<title>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</title>
-			<link>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</link>
-			<pubDate>Mon, 25 Mar 2019 02:16:16 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</guid>
-			<description>まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする</description>
-			<content type="html"><![CDATA[<p>まずは入っているパッケージを適当に最新化</p>
+</code></pre></div>]]></content></item><item><title>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</title><link>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</link><pubDate>Mon, 25 Mar 2019 02:16:16 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/</guid><description>まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする</description><content type="html"><![CDATA[<p>まずは入っているパッケージを適当に最新化</p>
 <pre><code>yum update
 reboot
 </code></pre><p>ユーザを作る</p>
@@ -951,17 +874,7 @@ firewall-cmd --add-service=https --zone=public --permanent
 <p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png" alt=""></p>
 <p>いいですね。</p>
 <p>ちなみに、証明書を更新し終わったらnginxもreloadを行わないと反映されない。ので、<code>systemctl reload nginx</code>をcronに入れておくなりすると良いでしょう。</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>GNU ldで一部をスタティックリンクにする</title>
-			<link>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</link>
-			<pubDate>Mon, 07 Jan 2019 03:15:17 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</guid>
-			<description>tl;dr gccなら-Wl,...でリンク時のオプション(==ldコマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。 ldのオ</description>
-			<content type="html"><![CDATA[<h2 id="tldr">tl;dr</h2>
+]]></content></item><item><title>GNU ldで一部をスタティックリンクにする</title><link>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</link><pubDate>Mon, 07 Jan 2019 03:15:17 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</guid><description>tl;dr gccなら-Wl,...でリンク時のオプション(==ldコマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。 ldのオ</description><content type="html"><![CDATA[<h2 id="tldr">tl;dr</h2>
 <p><code>gcc</code>なら<code>-Wl,...</code>でリンク時のオプション(==<code>ld</code>コマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。</p>
 <p><code>ld</code>のオプションで動的(<code>-Bdynamic</code>)と静的(<code>-Bstatic</code>)を選ぶことができ、これは混在させることができる。</p>
 <p>例: glibc以外をstatic linkしたい</p>
@@ -1145,17 +1058,7 @@ collect2: error: ld returned 1 exit status
 </code></pre><p><code>libdl.a</code>ではdlopenなどは定義されているが、内部で使われている<code>__dlopen</code>などはglibcに依存している。
 なので、glibcをstatic linkするか、同バージョンのglibcライブラリを合わせて持ち込む必要がある。</p>
 <p>ここらでglibcがLGPLと知ったり、NSS周りの扱いを知ったり、muslの置き換えがうまくいかなかったり、等々を理由に「めんどくさそう」と判断して、一部static linkを目指すことにした。</p>
-]]></content>
-		</item>
-		
-		<item>
-			<title>Using HUGO</title>
-			<link>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</link>
-			<pubDate>Mon, 24 Dec 2018 04:48:16 +0900</pubDate>
-			
-			<guid>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</guid>
-			<description>HUGO HUGO - https://gohugo.io/ 静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。 また、記事の公開には、Github Pagesを使う。Netl</description>
-			<content type="html"><![CDATA[<h2 id="hugo">HUGO</h2>
+]]></content></item><item><title>Using HUGO</title><link>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</link><pubDate>Mon, 24 Dec 2018 04:48:16 +0900</pubDate><guid>https://fukasawah.github.io/posts/2018/12/24/using-hugo/</guid><description>HUGO HUGO - https://gohugo.io/ 静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。 また、記事の公開には、Github Pagesを使う。Netl</description><content type="html"><![CDATA[<h2 id="hugo">HUGO</h2>
 <p>HUGO - <a href="https://gohugo.io/">https://gohugo.io/</a></p>
 <p>静的サイトジェネレータ。Markdownを書けばHTMLを作ってくれる。</p>
 <p>また、記事の公開には、<a href="https://pages.github.com/">Github Pages</a>を使う。Netlifyも試したいが、こちらの方が手軽そうだったので。</p>
@@ -1287,8 +1190,4 @@ git commit -m &quot;Update&quot;
 }
 </code></pre><p>以下は画像。貼り付けのお試し。</p>
 <p><img src="/images/using-hugo/2018-12-25-16-45-13.png" alt=""></p>
-]]></content>
-		</item>
-		
-	</channel>
-</rss>
+]]></content></item></channel></rss>

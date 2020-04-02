@@ -1,89 +1,11 @@
-<!DOCTYPE html>
-<html lang="ja-JP">
-
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge"><meta itemprop="name" content="Install PostgreSQL 11 on CentOS 7">
-<meta itemprop="description" content="PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの">
-<meta itemprop="datePublished" content="2019-03-26T03:23:23&#43;09:00" />
-<meta itemprop="dateModified" content="2020-04-02T09:25:41&#43;09:00" />
-<meta itemprop="wordCount" content="1164">
-
-
-
-<meta itemprop="keywords" content="Server,PostgreSQL," /><meta property="og:title" content="Install PostgreSQL 11 on CentOS 7" />
-<meta property="og:description" content="PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの" />
-<meta property="og:type" content="article" />
-<meta property="og:url" content="https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/" />
-<meta property="article:published_time" content="2019-03-26T03:23:23+09:00" />
-<meta property="article:modified_time" content="2020-04-02T09:25:41+09:00" />
-<meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Install PostgreSQL 11 on CentOS 7"/>
-<meta name="twitter:description" content="PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの"/>
-	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-	<link rel="manifest" href="/site.webmanifest">
-	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
-	<link rel="shortcut icon" href="/favicon.ico">
-
-	<title>Install PostgreSQL 11 on CentOS 7</title>
-	<link rel="stylesheet" href="https://fukasawah.github.io/css/style.min.013cece40d8270df4082e0a1182c603ee7035c87e962ff83c71c1aa506d9b0e8.css" integrity="sha256-ATzs5A2CcN9AguChGCxgPucDXIfpYv+DxxwapQbZsOg=">
-	
-</head>
-
-<body id="page">
-	
-	<header id="site-header" class="animated slideInUp faster">
-		<div class="hdr-wrapper section-inner">
-			<div class="hdr-left">
-				<div class="site-branding">
-					<a href="https://fukasawah.github.io/">fukasawah.github.io</a>
-				</div>
-				<nav class="site-nav hide-in-mobile">
-					<a href="https://fukasawah.github.io/posts/">Posts</a>
-					<a href="https://fukasawah.github.io/about/">About</a>
-				</nav>
-			</div>
-			<div class="hdr-right hdr-icons">
-				<span class="hdr-social hide-in-mobile"><a href="https://twitter.com/fukasawah" target="_blank" rel="noopener" title="Twitter"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg></a><a href="https://github.com/fukasawah" target="_blank" rel="noopener" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg></a></span><button id="menu-btn" class="hdr-btn" title="Menu"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
-			</div>
-		</div>
-	</header>
-	<div id="mobile-menu" class="animated fast">
-		<ul>
-			<li><a href="https://fukasawah.github.io/posts/">Posts</a></li>
-			<li><a href="https://fukasawah.github.io/about/">About</a></li>
-		</ul>
-	</div>
-
-
-	<main class="site-main section-inner animated fadeIn faster">
-		<article class="thin">
-			<header class="post-header">
-				<div class="post-meta"><span>Mar 26, 2019</span></div>
-				<h1>Install PostgreSQL 11 on CentOS 7</h1>
-			</header>
-			<div class="content">
-				<ul>
-<li>PostgreSQL 11の導入</li>
-<li>pg_bigmの導入</li>
-</ul>
-<p>最新版はPostgreSQLのページから得られるリポジトリからインストールできる。</p>
-<p><a href="https://yum.postgresql.org/repopackages.php#pg11">https://yum.postgresql.org/repopackages.php#pg11</a></p>
-<h2 id="postgresql-11の導入">PostgreSQL 11の導入</h2>
-<h3 id="リポジトリの登録とインストール">リポジトリの登録とインストール</h3>
-<pre><code># リポジトリ追加
+<!doctype html><html lang=ja-jp><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><meta itemprop=name content="Install PostgreSQL 11 on CentOS 7"><meta itemprop=description content="PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの"><meta itemprop=datePublished content="2019-03-26T03:23:23+09:00"><meta itemprop=dateModified content="2019-03-26T04:23:57+09:00"><meta itemprop=wordCount content="1164"><meta itemprop=keywords content="Server,PostgreSQL,"><meta property="og:title" content="Install PostgreSQL 11 on CentOS 7"><meta property="og:description" content="PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの"><meta property="og:type" content="article"><meta property="og:url" content="https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/"><meta property="article:published_time" content="2019-03-26T03:23:23+09:00"><meta property="article:modified_time" content="2019-03-26T04:23:57+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="Install PostgreSQL 11 on CentOS 7"><meta name=twitter:description content="PostgreSQL 11の導入 pg_bigmの導入 最新版はPostgreSQLのページから得られるリポジトリからインストールできる。 https://yum.postgresql.org/repopackages.php#pg11 PostgreSQL 11の導入 リポジトリの"><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color><link rel="shortcut icon" href=/favicon.ico><title>Install PostgreSQL 11 on CentOS 7</title><link rel=stylesheet href=https://fukasawah.github.io/css/style.min.013cece40d8270df4082e0a1182c603ee7035c87e962ff83c71c1aa506d9b0e8.css integrity="sha256-ATzs5A2CcN9AguChGCxgPucDXIfpYv+DxxwapQbZsOg="></head><body id=page><header id=site-header class="animated slideInUp faster"><div class="hdr-wrapper section-inner"><div class=hdr-left><div class=site-branding><a href=https://fukasawah.github.io/>fukasawah.github.io</a></div><nav class="site-nav hide-in-mobile"><a href=https://fukasawah.github.io/posts/>Posts</a>
+<a href=https://fukasawah.github.io/about/>About</a></nav></div><div class="hdr-right hdr-icons"><span class="hdr-social hide-in-mobile"><a href=https://twitter.com/fukasawah target=_blank rel=noopener title=Twitter><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></a><a href=https://github.com/fukasawah target=_blank rel=noopener title=Github><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-github"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77a5.44 5.44.0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></a></span><button id=menu-btn class=hdr-btn title=Menu><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button></div></div></header><div id=mobile-menu class="animated fast"><ul><li><a href=https://fukasawah.github.io/posts/>Posts</a></li><li><a href=https://fukasawah.github.io/about/>About</a></li></ul></div><main class="site-main section-inner animated fadeIn faster"><article class=thin><header class=post-header><div class=post-meta><span>Mar 26, 2019</span></div><h1>Install PostgreSQL 11 on CentOS 7</h1></header><div class=content><ul><li>PostgreSQL 11の導入</li><li>pg_bigmの導入</li></ul><p>最新版はPostgreSQLのページから得られるリポジトリからインストールできる。</p><p><a href=https://yum.postgresql.org/repopackages.php#pg11>https://yum.postgresql.org/repopackages.php#pg11</a></p><h2 id=postgresql-11の導入>PostgreSQL 11の導入</h2><h3 id=リポジトリの登録とインストール>リポジトリの登録とインストール</h3><pre><code># リポジトリ追加
 sudo yum install https://download.postgresql.org/pub/repos/yum/11/redhat/rhel-7-x86_64/pgdg-centos11-11-2.noarch.rpm
 
 # クライアントとサーバと拡張機能のインストール
 sudo yum install -y postgresql11 postgresql11-server postgresql11-contrib 
-</code></pre><p><code>/usr/pgsql-11</code>辺りに色々導入される</p>
-<h3 id="データベースの領域作成">データベースの領域作成</h3>
-<pre><code>sudo /usr/pgsql-11/bin/initdb --encoding=UTF-8 --no-locale -D /var/lib/pgsql/11/data
-</code></pre><h3 id="サーバ起動">サーバ起動</h3>
-<pre><code># 起動
+</code></pre><p><code>/usr/pgsql-11</code>辺りに色々導入される</p><h3 id=データベースの領域作成>データベースの領域作成</h3><pre><code>sudo /usr/pgsql-11/bin/initdb --encoding=UTF-8 --no-locale -D /var/lib/pgsql/11/data
+</code></pre><h3 id=サーバ起動>サーバ起動</h3><pre><code># 起動
 sudo systemctl start postgresql-11
 
 # 自動起動の有効化
@@ -91,8 +13,7 @@ sudo systemctl enable postgresql-11
 
 # 確認
 sudo systemctl status postgresql-11
-</code></pre><p>statusで確認すると、<code>active (running) </code>になっていたり、<code>/var/lib/pgsql/11/data/</code>を使っていることが確認できる。</p>
-<pre><code>● postgresql-11.service - PostgreSQL 11 database server
+</code></pre><p>statusで確認すると、<code>active (running) </code>になっていたり、<code>/var/lib/pgsql/11/data/</code>を使っていることが確認できる。</p><pre><code>● postgresql-11.service - PostgreSQL 11 database server
    Loaded: loaded (/usr/lib/systemd/system/postgresql-11.service; enabled; vendor preset: disabled)
    Active: active (running) since 火 2019-03-26 02:29:53 JST; 41s ago
      Docs: https://www.postgresql.org/docs/11/static/
@@ -100,48 +21,32 @@ sudo systemctl status postgresql-11
    CGroup: /system.slice/postgresql-11.service
            ├─30183 /usr/pgsql-11/bin/postmaster -D /var/lib/pgsql/11/data/
            ...
-</code></pre><h2 id="pg_bigmの導入">pg_bigmの導入</h2>
-<p>1~2文字に強い全文検索の機能拡張。</p>
-<p><a href="http://pgbigm.osdn.jp/">http://pgbigm.osdn.jp/</a></p>
-<p>CentOS7 + PostgreSQL 11向けのバイナリは配布されていないので、ソースコードからビルドして導入する。</p>
-<h3 id="依存ソフトウェアのインストール">依存ソフトウェアのインストール</h3>
-<p>postgresqlのソースコードやビルド・インストール時に必要な依存を入手する</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># ビルドに必要</span>
+</code></pre><h2 id=pg_bigmの導入>pg_bigmの導入</h2><p>1~2文字に強い全文検索の機能拡張。</p><p><a href=http://pgbigm.osdn.jp/>http://pgbigm.osdn.jp/</a></p><p>CentOS7 + PostgreSQL 11向けのバイナリは配布されていないので、ソースコードからビルドして導入する。</p><h3 id=依存ソフトウェアのインストール>依存ソフトウェアのインストール</h3><p>postgresqlのソースコードやビルド・インストール時に必要な依存を入手する</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># ビルドに必要</span>
 sudo yum install -y postgresql11-devel
 
-<span style="color:#75715e"># llvm-toolset-7のパッケージがあるリポジトリ</span>
+<span style=color:#75715e># llvm-toolset-7のパッケージがあるリポジトリ</span>
 sudo yum install -y centos-release-scl
-<span style="color:#75715e"># ビルドに必要(llvm)</span>
+<span style=color:#75715e># ビルドに必要(llvm)</span>
 sudo yum install -y llvm-toolset-7 llvm5.0
-</code></pre></div><p>llvm-toolset-7はビルド時に<code>/opt/rh/llvm-toolset-7/root/usr/bin/clang</code>を使うため、llvm5.0はinstall時に<code>/usr/lib64/llvm5.0/bin/llvm-lto</code>を使うため。</p>
-<h3 id="ソースコードの入手">ソースコードの入手</h3>
-<p>ソースコードをダウンロードして展開。
-URLが存在しない場合、公式のダウンロードから適宜置き換える。</p>
-<pre><code>mkdir src
+</code></pre></div><p>llvm-toolset-7はビルド時に<code>/opt/rh/llvm-toolset-7/root/usr/bin/clang</code>を使うため、llvm5.0はinstall時に<code>/usr/lib64/llvm5.0/bin/llvm-lto</code>を使うため。</p><h3 id=ソースコードの入手>ソースコードの入手</h3><p>ソースコードをダウンロードして展開。
+URLが存在しない場合、公式のダウンロードから適宜置き換える。</p><pre><code>mkdir src
 cd src
 curl -LO http://iij.dl.osdn.jp/pgbigm/66565/pg_bigm-1.2-20161011.tar.gz
 tar xzvf pg_bigm-1.2-20161011.tar.gz
 cd pg_bigm-1.2-20161011
-</code></pre><h3 id="ビルドとインストール">ビルドとインストール</h3>
-<p>この辺りは<a href="http://pgbigm.osdn.jp/pg_bigm-1-2.html">pg_bigmのドキュメント</a>に書かれている。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># ビルド</span>
-make USE_PGXS<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> PG_CONFIG<span style="color:#f92672">=</span>/usr/pgsql-11/bin/pg_config
+</code></pre><h3 id=ビルドとインストール>ビルドとインストール</h3><p>この辺りは<a href=http://pgbigm.osdn.jp/pg_bigm-1-2.html>pg_bigmのドキュメント</a>に書かれている。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># ビルド</span>
+make USE_PGXS<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span> PG_CONFIG<span style=color:#f92672>=</span>/usr/pgsql-11/bin/pg_config
 
-<span style="color:#75715e"># install</span>
-sudo make USE_PGXS<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> PG_CONFIG<span style="color:#f92672">=</span>/usr/pgsql-11/bin/pg_config install
-</code></pre></div><h3 id="postgresqlconfの修正">postgresql.confの修正</h3>
-<pre><code>sudo vi /var/lib/pgsql/11/data/postgresql.conf
+<span style=color:#75715e># install</span>
+sudo make USE_PGXS<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span> PG_CONFIG<span style=color:#f92672>=</span>/usr/pgsql-11/bin/pg_config install
+</code></pre></div><h3 id=postgresqlconfの修正>postgresql.confの修正</h3><pre><code>sudo vi /var/lib/pgsql/11/data/postgresql.conf
 
 # 以下を足す
 shared_preload_libraries = 'pg_bigm'
-</code></pre><p>再起動</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo systemctl restart postgresql-11
-</code></pre></div><h3 id="dbの作成とpsqlによるdbアクセス">DBの作成とpsqlによるDBアクセス</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo -u postgres createdb --locale<span style="color:#f92672">=</span>C --encoding<span style="color:#f92672">=</span>UTF8 testdb
+</code></pre><p>再起動</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo systemctl restart postgresql-11
+</code></pre></div><h3 id=dbの作成とpsqlによるdbアクセス>DBの作成とpsqlによるDBアクセス</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>sudo -u postgres createdb --locale<span style=color:#f92672>=</span>C --encoding<span style=color:#f92672>=</span>UTF8 testdb
 sudo -u postgres psql -d testdb
-</code></pre></div><h3 id="拡張機能の有効化">拡張機能の有効化</h3>
-<p><strong><code>CREATE EXTENSION pg_bigm;</code>はDatabase毎に行う必要がある点に注意</strong>。</p>
-<pre><code>testdb=# CREATE EXTENSION pg_bigm;
+</code></pre></div><h3 id=拡張機能の有効化>拡張機能の有効化</h3><p><strong><code>CREATE EXTENSION pg_bigm;</code>はDatabase毎に行う必要がある点に注意</strong>。</p><pre><code>testdb=# CREATE EXTENSION pg_bigm;
 CREATE EXTENSION
 
 testdb=# \dx pg_bigm
@@ -150,79 +55,24 @@ testdb=# \dx pg_bigm
 ---------+---------+--------+------------------------------------------------------------------
  pg_bigm | 1.2     | public | text similarity measurement and index searching based on bigrams
 (1 row)
-</code></pre><h3 id="テスト実行">テスト実行</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-sql" data-lang="sql">
-<span style="color:#75715e">-- テーブル作成
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> pg_tools (tool text, description text);
+</code></pre><h3 id=テスト実行>テスト実行</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql>
+<span style=color:#75715e>-- テーブル作成
+</span><span style=color:#75715e></span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>TABLE</span> pg_tools (tool text, description text);
 
-<span style="color:#75715e">-- レコード作成
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_hint_plan</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLでHINT句を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
-<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_dbms_stats</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLの統計情報を固定化するツール</span><span style="color:#e6db74">&#39;</span>);
-<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_bigm</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLで2-gramの全文検索を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
-<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_trgm</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLで3-gramの全文検索を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
+<span style=color:#75715e>-- レコード作成
+</span><span style=color:#75715e></span><span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_hint_plan</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLでHINT句を使えるようにするツール</span><span style=color:#e6db74>&#39;</span>);
+<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_dbms_stats</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLの統計情報を固定化するツール</span><span style=color:#e6db74>&#39;</span>);
+<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_bigm</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLで2-gramの全文検索を使えるようにするツール</span><span style=color:#e6db74>&#39;</span>);
+<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_trgm</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLで3-gramの全文検索を使えるようにするツール</span><span style=color:#e6db74>&#39;</span>);
 
-<span style="color:#75715e">-- インデックス作成
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> pg_tools_idx <span style="color:#66d9ef">ON</span> pg_tools <span style="color:#66d9ef">USING</span> gin (description gin_bigm_ops);
+<span style=color:#75715e>-- インデックス作成
+</span><span style=color:#75715e></span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>INDEX</span> pg_tools_idx <span style=color:#66d9ef>ON</span> pg_tools <span style=color:#66d9ef>USING</span> gin (description gin_bigm_ops);
 
-<span style="color:#75715e">-- 全文検索 =&gt; 2件ヒットすること
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> pg_tools <span style="color:#66d9ef">WHERE</span> description <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%全文検索%</span><span style="color:#e6db74">&#39;</span>;
+<span style=color:#75715e>-- 全文検索 =&gt; 2件ヒットすること
+</span><span style=color:#75715e></span><span style=color:#66d9ef>SELECT</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>FROM</span> pg_tools <span style=color:#66d9ef>WHERE</span> description <span style=color:#66d9ef>LIKE</span> <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>%全文検索%</span><span style=color:#e6db74>&#39;</span>;
 
-<span style="color:#75715e">-- テーブル削除
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> pg_tools;
-</code></pre></div>
-			</div>
-			<hr class="post-end">
-			<footer class="post-info">
-				<p>
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://fukasawah.github.io/tags/server">Server</a></span><span class="tag"><a href="https://fukasawah.github.io/tags/postgresql">PostgreSQL</a></span>
-				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1164 Words</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-03-26 03:23 &#43;0900</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"></circle><line x1="1.05" y1="12" x2="7" y2="12"></line><line x1="17.01" y1="12" x2="22.96" y2="12"></line></svg><a href="https://github.com/fukasawah/blog/commit/694125fa2243f7ce68cc88e138b0f4e2c0ab4c8e" target="_blank" rel="noopener">694125f</a> @ 2020-04-02</p>
-			</footer>
-		</article>
-		<div class="post-nav thin">
-			<a class="next-post" href="https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/">
-				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;Newer</span><br><span>NginxのVirtualhost設定～WildcardSSL証明書を添えて～</span>
-			</a>
-			<a class="prev-post" href="https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/">
-				<span class="post-nav-label">Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</span>
-			</a>
-		</div>
-		<div id="comments" class="thin">
-<div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "fukasawah" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</div>
-	</main>
-
-	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2020 <a href="https://fukasawah.github.io/">fukasawah</a></p>
-		<p>
-			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://fukasawah.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
-		</p>
-	</footer>
-
-
-	<script src="https://fukasawah.github.io/js/main.min.8f39f24808e9d0a9b02da58c2d2838da859dc0b7bdfadbdb1883aae8b6adacfe.js" integrity="sha256-jznySAjp0KmwLaWMLSg42oWdwLe9+tvbGIOq6LatrP4="></script>
-
-</body>
-
-</html>
+<span style=color:#75715e>-- テーブル削除
+</span><span style=color:#75715e></span><span style=color:#66d9ef>DROP</span> <span style=color:#66d9ef>TABLE</span> pg_tools;
+</code></pre></div></div><hr class=post-end><footer class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://fukasawah.github.io/tags/server>Server</a></span><span class=tag><a href=https://fukasawah.github.io/tags/postgresql>PostgreSQL</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>1164 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>2019-03-26 03:23 +0900</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"/><line x1="1.05" y1="12" x2="7" y2="12"/><line x1="17.01" y1="12" x2="22.96" y2="12"/></svg><a href=https://github.com/fukasawah/blog/commit/1062d69d9cbbfc998f27186ca249b02e3f173907 target=_blank rel=noopener>1062d69</a> @ 2019-03-26</p></footer></article><div class="post-nav thin"><a class=next-post href=https://fukasawah.github.io/posts/2019/03/26/virtualhost-nginx-with-wildcard-ssl/><span class=post-nav-label><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>&nbsp;Newer</span><br><span>NginxのVirtualhost設定～WildcardSSL証明書を添えて～</span></a>
+<a class=prev-post href=https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/><span class=post-nav-label>Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span><br><span>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</span></a></div><div id=comments class=thin><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
+var d=document,s=d.createElement('script');s.async=true;s.src='//'+"fukasawah"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></main><footer id=site-footer class="section-inner thin animated fadeIn faster"><p>&copy; 2020 <a href=https://fukasawah.github.io/>fukasawah</a></p><p>Made with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> &#183; Theme <a href=https://github.com/Track3/hermit target=_blank rel=noopener>Hermit</a> &#183; <a href=https://fukasawah.github.io/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></p></footer><script src=https://fukasawah.github.io/js/main.min.8f39f24808e9d0a9b02da58c2d2838da859dc0b7bdfadbdb1883aae8b6adacfe.js integrity="sha256-jznySAjp0KmwLaWMLSg42oWdwLe9+tvbGIOq6LatrP4="></script></body></html>
