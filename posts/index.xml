@@ -1,4 +1,30 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Mon, 24 Jun 2019 00:58:49 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>PulumiでAzureのリソースを構成する</title><link>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</link><pubDate>Mon, 24 Jun 2019 00:58:49 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid><description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description><content type="html"><![CDATA[<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Thu, 02 Apr 2020 09:34:44 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>GitHub Actionsを使ってHugoのコンテンツをデプロイ</title><link>https://fukasawah.github.io/posts/2020/04/02/hugo-with-github-actions/</link><pubDate>Thu, 02 Apr 2020 09:34:44 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/04/02/hugo-with-github-actions/</guid><description>GitHub Actionsを使ってHugoをデプロイするのは以下を行えば簡単にできる。 https://github.com/peaceiris/actions-hugo 外部リポジトリにPushするためのデプロイキーの設定をした。こ</description><content type="html"><![CDATA[<p>GitHub Actionsを使ってHugoをデプロイするのは以下を行えば簡単にできる。</p>
+<p><a href="https://github.com/peaceiris/actions-hugo">https://github.com/peaceiris/actions-hugo</a></p>
+<p>外部リポジトリにPushするためのデプロイキーの設定をした。この手順もドキュメントにちゃんと書いてあった。</p>
+<ul>
+<li><a href="https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-deploy_key">https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-deploy_key</a></li>
+<li><a href="https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-create-ssh-deploy-key">https://github.com/peaceiris/actions-gh-pages#%EF%B8%8F-create-ssh-deploy-key</a></li>
+</ul>
+<p>というわけで、ワークフローはこんな感じになった。</p>
+<p><a href="https://github.com/fukasawah/blog/blob/master/.github/workflows/gh-pages.yml">https://github.com/fukasawah/blog/blob/master/.github/workflows/gh-pages.yml</a></p>
+<p>以下、ハマったところ。</p>
+<h3 id="タイムゾーンが違う">タイムゾーンが違う</h3>
+<p>Actionsでデプロイされた内容を見てみたら表示されてる日時のタイムゾーンがUTCになってた。</p>
+<p>原因はGitHub Actionsで動いているコンテナが日本のタイムゾーンではないため。考えてみれば当たり前という感じだった。</p>
+<p>以下を参考に <code>TZ</code> 環境変数を設定して実行するようにした。</p>
+<p><a href="https://discourse.gohugo.io/t/dateformat-force-a-specific-timezone/9860/2">https://discourse.gohugo.io/t/dateformat-force-a-specific-timezone/9860/2</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">      - name: Build
+        run: TZ=Asia/Tokyo hugo --minify
+</code></pre></div><h3 id="actioncheckoutが---depth-1-を使っている">action@checkoutが <code>--depth 1</code> を使っている</h3>
+<p>enableGitInfoでコミット時の情報を使う機能が機能しなかった。</p>
+<p>原因はaction@checkoutが <code>--depth 1</code> を使ってfetchしていたため。Hugoから見たら最新のコミットの日時しかないように見えてしまう。</p>
+<p>対応としては、<code>fetch-depth: 0</code> で全部のコミットをとる必要があった。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">      - uses: actions/checkout@v2
+        with:
+          submodules: <span style="color:#66d9ef">true</span>
+          fetch-depth: <span style="color:#ae81ff">0</span> <span style="color:#75715e"># for enableGitInfo</span>
+</code></pre></div><p>これ、チューニングオプションなんだから、デフォルトにするのやめてほしい。</p>
+]]></content></item><item><title>PulumiでAzureのリソースを構成する</title><link>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</link><pubDate>Mon, 24 Jun 2019 00:58:49 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid><description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description><content type="html"><![CDATA[<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
 Azure Resource Manager(Template)やTerraformで出来ることと同じだが、特定の言語(JavaScript,TypeScript,Python)で記述できるのが強み。</p>
 <p>Azure Resource Manager Templateに嫌気がさしつつ、terraformでやろうかな、と思っていたらPulumi見かけたのでクイックスタートを走ってみた。</p>
 <h3 id="pulumiのインストール">Pulumiのインストール</h3>
