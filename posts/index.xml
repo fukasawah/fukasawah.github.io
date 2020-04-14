@@ -1,4 +1,40 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Wed, 08 Apr 2020 01:41:16 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>テンプレートエンジン frep</title><link>https://fukasawah.github.io/posts/2020/04/08/frep/</link><pubDate>Wed, 08 Apr 2020 01:41:16 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/04/08/frep/</guid><description>frepというGolang製のテンプレートエンジンを見つけた。 https://github.com/subchen/frep 環境変数や引数、設定ファイルを元にテンプレート処理を行うというもの。テンプレ</description><content type="html"><![CDATA[<p>frepというGolang製のテンプレートエンジンを見つけた。</p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Tue, 14 Apr 2020 17:03:33 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Bashのtimeは複合コマンドにも使える</title><link>https://fukasawah.github.io/posts/2020/04/14/bash-time/</link><pubDate>Tue, 14 Apr 2020 17:03:33 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/04/14/bash-time/</guid><description>bashのtimeは実行に要した時間がわかる。 $ time seq 1 100 1 ... 100 real 0m0.045s user 0m0.000s sys 0m0.015s で、これはコマンドでもビルトインコマンドでもなく、パイプラインで使</description><content type="html"><![CDATA[<p>bashのtimeは実行に要した時間がわかる。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ time seq <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">100</span>
+<span style="color:#ae81ff">1</span>
+...
+<span style="color:#ae81ff">100</span>
+
+real    0m0.045s
+user    0m0.000s
+sys     0m0.015s
+</code></pre></div><p>で、これはコマンドでもビルトインコマンドでもなく、パイプラインで使う「予約語」であるらしく、timeの後ろには任意の<strong>bashのコマンド</strong>が書ける。</p>
+<p><a href="https://linuxjm.osdn.jp/html/GNU_bash/man1/bash.1.html#lbAM">https://linuxjm.osdn.jp/html/GNU_bash/man1/bash.1.html#lbAM</a></p>
+<p>例えば２つ以上のコマンドの実行にかかった時間が知りたいときを考える。</p>
+<p>timeがもし「普通のコマンド」であれば多分こうするしかない。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">time bash -c <span style="color:#e6db74">&#39;seq 1 100 | sed &#34;s#\(.*\)#\1.dat#&#34;&#39;</span>
+<span style="color:#75715e"># もしくは１回ファイルに書き出してから測る</span>
+echo <span style="color:#e6db74">&#39;seq 1 100 | sed &#34;s#\(.*\)#\1.dat#&#34;&#39;</span> &gt; test.sh
+time bash test.sh
+</code></pre></div><p>しかし、timeの後ろにはbashの複合コマンドも使えるのでこう書ける。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># サブシェルで実行</span>
+time <span style="color:#f92672">(</span>seq <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">100</span> | sed <span style="color:#e6db74">&#34;s#\(.*\)#\1.dat#&#34;</span><span style="color:#f92672">)</span>
+
+<span style="color:#75715e"># 同シェルで実行（末尾のセミコロンの付け忘れに注意）</span>
+time <span style="color:#f92672">{</span> seq <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">100</span> | sed <span style="color:#e6db74">&#34;s#\(.*\)#\1.dat#&#34;</span>; <span style="color:#f92672">}</span>
+
+<span style="color:#75715e"># forで</span>
+time <span style="color:#66d9ef">for</span> i in <span style="color:#e6db74">`</span>seq <span style="color:#ae81ff">1</span> 100<span style="color:#e6db74">`</span>; <span style="color:#66d9ef">do</span>
+  echo <span style="color:#e6db74">&#34;</span>$i<span style="color:#e6db74">.dat</span><span style="color:#e6db74">&#34;</span>
+<span style="color:#66d9ef">done</span>
+
+<span style="color:#75715e"># whileも</span>
+time <span style="color:#66d9ef">while</span> read line ; <span style="color:#66d9ef">do</span>
+  echo <span style="color:#e6db74">&#34;</span>$line<span style="color:#e6db74">.dat</span><span style="color:#e6db74">&#34;</span>
+<span style="color:#66d9ef">done</span> &lt; &lt;<span style="color:#f92672">(</span>seq <span style="color:#ae81ff">1</span> 100<span style="color:#f92672">)</span>
+
+</code></pre></div><p>これで思いつきでたくさんコマンドを組み合わせた場合でも簡単に時間が測れる。</p>
+<p>bashの予約語のtimeの話なので、<code>/usr/bin/time</code> を使う方法では当然ダメ。</p>
+]]></content></item><item><title>テンプレートエンジン frep</title><link>https://fukasawah.github.io/posts/2020/04/08/frep/</link><pubDate>Wed, 08 Apr 2020 01:41:16 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/04/08/frep/</guid><description>frepというGolang製のテンプレートエンジンを見つけた。 https://github.com/subchen/frep 環境変数や引数、設定ファイルを元にテンプレート処理を行うというもの。テンプレ</description><content type="html"><![CDATA[<p>frepというGolang製のテンプレートエンジンを見つけた。</p>
 <p><a href="https://github.com/subchen/frep">https://github.com/subchen/frep</a></p>
 <p>環境変数や引数、設定ファイルを元にテンプレート処理を行うというもの。テンプレート処理にはGolangのtext/templateを採用しているので、仕様もわかりやすい。</p>
 <p>Windows/Linuxで動作して一貫したテンプレートエンジンが欲しいなぁと思っていて、これは割といい感じがする。</p>
