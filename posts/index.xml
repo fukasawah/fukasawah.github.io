@@ -1,4 +1,198 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Tue, 14 Apr 2020 17:03:33 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Bashのtimeは複合コマンドにも使える</title><link>https://fukasawah.github.io/posts/2020/04/14/bash-time/</link><pubDate>Tue, 14 Apr 2020 17:03:33 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/04/14/bash-time/</guid><description>bashのtimeは実行に要した時間がわかる。 $ time seq 1 100 1 ... 100 real 0m0.045s user 0m0.000s sys 0m0.015s で、これはコマンドでもビルトインコマンドでもなく、パイプラインで使</description><content type="html"><![CDATA[<p>bashのtimeは実行に要した時間がわかる。</p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Mon, 04 May 2020 19:50:31 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>libgit2を使ってみる</title><link>https://fukasawah.github.io/posts/2020/05/04/hello-libgit2/</link><pubDate>Mon, 04 May 2020 19:50:31 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/05/04/hello-libgit2/</guid><description>https://github.com/libgit2/libgit2 WSL2 + Ubuntu 18.04 でどんな感じに使えるか試した。 ビルド sudo apt update sudo apt install gcc cmake libssl-dev zlib1g-dev libssh2-1-dev pkg-copnfig git clone https://github.com/libgit2/libgit2.git cd libgit2 git checkout v1.0.0 mkdir build &amp;amp;&amp;amp; cd build cmake .. make -j ビルドはただの趣味でお遊びなのでイン</description><content type="html"><![CDATA[<p><a href="https://github.com/libgit2/libgit2">https://github.com/libgit2/libgit2</a></p>
+<p>WSL2 + Ubuntu 18.04 でどんな感じに使えるか試した。</p>
+<h3 id="ビルド">ビルド</h3>
+<pre><code>sudo apt update
+sudo apt install gcc cmake libssl-dev zlib1g-dev libssh2-1-dev pkg-copnfig
+
+git clone https://github.com/libgit2/libgit2.git
+cd libgit2
+git checkout v1.0.0
+
+mkdir build &amp;&amp; cd build
+cmake ..
+make -j
+</code></pre><p>ビルドはただの趣味でお遊びなのでインストールはしない。</p>
+<p>pkg-copnfigを入れないとlibssh2を見つけてくれなかった。<a href="https://github.com/libgit2/libgit2/commit/0f62e4c7393366acd8ab0887c069d9929c358d07">関連コミット</a></p>
+<h2 id="libgit2をc言語で使う">libgit2をC言語で使う</h2>
+<p>サンプルをコピペしたりして書いた。</p>
+<ul>
+<li><a href="https://github.com/libgit2/libgit2/tree/master/examples">https://github.com/libgit2/libgit2/tree/master/examples</a></li>
+<li><a href="https://libgit2.org/libgit2/#v1.0.0">https://libgit2.org/libgit2/#v1.0.0</a></li>
+</ul>
+<p>サンプルの内容は、gitの良くあるコマンドをlibgi2を使って模倣するサンプルらしく、examples/lg2.cを起点にサブコマンドが実装されている（gitコマンドの細かい引数までサポートしているわけではない）。</p>
+<ul>
+<li><code> git_libgit2_init()</code> を最初に呼ぶ（忘れるとSegmentation Faultする）</li>
+<li>たいていの関数は戻り値が0未満ならエラーを表現しているので必要に応じてチェックする（<code>git_*_free</code>とか<code>git_oid_tostr</code>とか例外はある）</li>
+<li><code>git_*_free</code>は対応する型で呼ぶ必要がある。それ以外は動きは<code>free</code>と一緒で、NULLポインタは安全、2重開放するとSegmentation Faultになる</li>
+<li><code>git_oid_tostr_s</code>の戻り値はオブジェクトIDの文字列表現で、文字列のメモリ確保してるのか？となったがスレッドローカルで持ってるとドキュメントに書いてあった。</li>
+</ul>
+<p>バインディング無いとしんどいですね</p>
+<h2 id="cloneするだけ">cloneするだけ</h2>
+<p>実行するとcloneするだけの簡単なもの。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;git2.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+	git_repository <span style="color:#f92672">*</span>repo;
+  git_libgit2_init();
+
+  git_clone(<span style="color:#f92672">&amp;</span>repo, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">https://github.com/octocat/Hello-World.git</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">hello-world</span><span style="color:#e6db74">&#34;</span>, NULL);
+
+  <span style="color:#66d9ef">if</span>(repo){
+    git_repository_free(repo);
+  }
+
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><p>buildディレクトリにあるlibgit2を使ってビルド＆実行</p>
+<pre><code>gcc main.c -I ../include -L./ -lgit2
+LD_LIBRARY_PATH=./ ./a.out
+</code></pre><p><code>sudo apt install libgit2-dev</code> をしていれば&hellip;と思ったが、実際に試すとubuntu 18.04では<code>v0.26</code>の時点のlibgit2らしく、<code>git_error_last</code>が存在せずコンパイルできなかった。<a href="https://github.com/libgit2/libgit2/commit/f673e232afe22eb865cdc915e55a2df6493f0fbb">該当のコミット</a></p>
+<p>なので<code>giterr_last</code>に書き換えたうえであればコンパイルできた。</p>
+<pre><code>gcc main.c -l git2
+./a.out
+</code></pre><h2 id="空のコミットを重ねるだけリポジトリがあればそのまま使い無ければ作る">空のコミットを重ねるだけ（リポジトリがあればそのまま使い、無ければ作る）</h2>
+<p>コミット後にログも出す。
+変なマクロを書いたけど気にしない。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;git2.h&gt;</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">#</span><span style="color:#75715e">define ASSERT(expr) do { \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">  int ret = (expr); \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">  if (ret != 0) { \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">    fprintf(stderr, &#34;&#39;&#34; #expr &#34;&#39; was not return of zero (ret=%d).\n&#34;, ret); \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">    const git_error *err = giterr_last(); \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">		if (err) { \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">      fprintf(stderr, &#34;ERROR %d: %s\n&#34;, err-&gt;klass, err-&gt;message); \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">    } \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">    abort(); \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">  } \</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span><span style="color:#75715e">}while(0)</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>
+
+<span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print_commit</span>(<span style="color:#66d9ef">const</span> git_commit <span style="color:#f92672">*</span>commit){
+    <span style="color:#66d9ef">char</span> buf[GIT_OID_HEXSZ <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>];
+    <span style="color:#66d9ef">const</span> git_signature <span style="color:#f92672">*</span>parent_sig <span style="color:#f92672">=</span> git_commit_author(commit);
+
+    <span style="color:#75715e">// buf == bufptr だが、空文字列のptrが返る場合がある
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>bufptr <span style="color:#f92672">=</span> git_oid_tostr(buf, <span style="color:#66d9ef">sizeof</span>(buf), git_commit_id(commit));
+    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>message <span style="color:#f92672">=</span> git_commit_message(commit);
+
+    <span style="color:#75715e">// 1行出力するため終端を探す
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>eos <span style="color:#f92672">=</span> message;
+    <span style="color:#66d9ef">for</span>(; <span style="color:#f92672">*</span>eos <span style="color:#f92672">!</span><span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">&amp;</span><span style="color:#f92672">&amp;</span> <span style="color:#f92672">*</span>eos <span style="color:#f92672">!</span><span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">\0</span><span style="color:#e6db74">&#39;</span>; eos<span style="color:#f92672">+</span><span style="color:#f92672">+</span>);
+    printf(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%s (%s &lt;%s&gt;): %.*s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
+      bufptr,
+      parent_sig<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>name,
+      parent_sig<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>email,
+      (<span style="color:#66d9ef">int</span>)(eos <span style="color:#f92672">-</span> message),
+      message
+    );
+}
+
+<span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
+  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>repodir <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">hello-world</span><span style="color:#e6db74">&#34;</span>;
+	git_repository <span style="color:#f92672">*</span>repo <span style="color:#f92672">=</span> NULL;
+  
+  <span style="color:#75715e">// libgit2の初期化
+</span><span style="color:#75715e"></span>  git_libgit2_init();
+
+  <span style="color:#75715e">// &#34;hello-world&#34; リポジトリがあるかチェック
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">if</span>(git_repository_open_ext(<span style="color:#f92672">&amp;</span>repo, repodir, <span style="color:#ae81ff">0</span>, NULL) <span style="color:#f92672">&lt;</span> <span style="color:#ae81ff">0</span>){
+    <span style="color:#75715e">// 無い場合はhello-worldリポジトリをcloneして使う
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//ASSERT(git_clone(&amp;repo, &#34;https://github.com/octocat/Hello-World.git&#34;, repodir, NULL));
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// リポジトリを作成する
+</span><span style="color:#75715e"></span>    ASSERT(git_repository_init(<span style="color:#f92672">&amp;</span>repo, repodir, <span style="color:#ae81ff">0</span>));
+  }
+
+  <span style="color:#75715e">// コミット時の名前とEmailの情報を得る
+</span><span style="color:#75715e"></span>	git_signature <span style="color:#f92672">*</span>sig <span style="color:#f92672">=</span> NULL;
+  ASSERT(git_signature_default(<span style="color:#f92672">&amp;</span>sig, repo));
+
+  <span style="color:#75715e">// インデックスを用意する
+</span><span style="color:#75715e"></span>	git_index <span style="color:#f92672">*</span>index <span style="color:#f92672">=</span> NULL;
+  ASSERT(git_repository_index(<span style="color:#f92672">&amp;</span>index, repo));
+
+  <span style="color:#75715e">// インデックスにあるファイルの内容をツリーに書き込み、そのツリーオブジェクトを得る
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// （インデックスは変化していないので、空の状態）
+</span><span style="color:#75715e"></span>	git_oid tree_id;
+  ASSERT(git_index_write_tree(<span style="color:#f92672">&amp;</span>tree_id, index));
+
+  <span style="color:#75715e">// インデックスを書き込む
+</span><span style="color:#75715e"></span>  ASSERT(git_index_write(index));
+
+  <span style="color:#75715e">// ツリーオブジェクトからツリーを得る
+</span><span style="color:#75715e"></span>	git_tree <span style="color:#f92672">*</span>tree <span style="color:#f92672">=</span> NULL;
+  ASSERT(git_tree_lookup(<span style="color:#f92672">&amp;</span>tree, repo, <span style="color:#f92672">&amp;</span>tree_id));
+
+  <span style="color:#75715e">// &#34;HEAD&#34; の最新のコミットを得る
+</span><span style="color:#75715e"></span>  <span style="color:#75715e">// これを親のコミットに使う（もしコミットが無い状態であればparentはNULLのままになる）
+</span><span style="color:#75715e"></span>	git_object <span style="color:#f92672">*</span>parent <span style="color:#f92672">=</span> NULL;
+	git_reference <span style="color:#f92672">*</span>ref <span style="color:#f92672">=</span> NULL;
+  git_revparse_ext(<span style="color:#f92672">&amp;</span>parent, <span style="color:#f92672">&amp;</span>ref, repo, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">HEAD</span><span style="color:#e6db74">&#34;</span>);
+
+  <span style="color:#75715e">// コミットオブジェクトを作成
+</span><span style="color:#75715e"></span>  git_oid commit_id;
+  ASSERT(git_commit_create_v(
+			<span style="color:#f92672">&amp;</span>commit_id, repo, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">HEAD</span><span style="color:#e6db74">&#34;</span>, sig, sig,
+			NULL, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Create empty commit</span><span style="color:#ae81ff">\n</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">hello hello</span><span style="color:#e6db74">&#34;</span>, tree,
+      <span style="color:#ae81ff">1</span>, parent));
+
+  <span style="color:#75715e">// コミットログを全部辿る（もう少しいい感じのやり方はあるかもしれない）
+</span><span style="color:#75715e"></span>  git_commit <span style="color:#f92672">*</span>commit;
+  ASSERT(git_commit_lookup(<span style="color:#f92672">&amp;</span>commit, repo, <span style="color:#f92672">&amp;</span>commit_id));
+  <span style="color:#66d9ef">while</span>(commit){
+    git_commit <span style="color:#f92672">*</span>tmp <span style="color:#f92672">=</span> NULL;
+    print_commit(commit);
+    git_commit_parent(<span style="color:#f92672">&amp;</span>tmp, commit, <span style="color:#ae81ff">0</span>); <span style="color:#75715e">// マージコミットを考慮していない
+</span><span style="color:#75715e"></span>    git_commit_free(commit);
+    commit <span style="color:#f92672">=</span> tmp;
+  }
+
+  <span style="color:#75715e">// 後始末
+</span><span style="color:#75715e"></span>  git_tree_free(tree);
+	git_index_free(index);
+	git_signature_free(sig);
+  git_object_free(parent);
+  git_reference_free(ref);
+  
+  git_repository_free(repo);
+
+  <span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+}
+</code></pre></div><h3 id="ファイルをインデックスに追加する">ファイルをインデックスに追加する</h3>
+<p>see: <a href="https://github.com/libgit2/libgit2/blob/v1.0.0/examples/add.c#L46">https://github.com/libgit2/libgit2/blob/v1.0.0/examples/add.c#L46</a></p>
+<p>(飽きた)</p>
+<h2 id="おわり">おわり</h2>
+<p>これだけで6時間ぐらいかけた。Gitの内部知識はあったが、実際にlibgit2での操作がイメージできずに非常に時間がかかってる。結局サンプルをつぎはぎしただけ。あと久々のC言語がちょっと辛かった。バインディングを使おうと思った（小並感）</p>
+<p>でも本当にやりたいのはこういうのではなくて、gitのデータの保存先にファイルシステム以外(DBとかクラウドストレージとか)が使えるかを知りたかった。
+実際、gitlabやgithubはどうやってるんだろう。さすがにファイルシステム1個を共有してるとは思えないし。</p>
+<p>調べた感じ、libgit2はバックエンド実装の差し替えができるらしく、以下にサンプルの実装がある。</p>
+<ul>
+<li><a href="https://github.com/libgit2/libgit2-backends">https://github.com/libgit2/libgit2-backends</a></li>
+</ul>
+<p>ちなみにJava実装のJGitがあり、バックエンドにCassandraを使った物もあるようだが、分散ファイルシステムに乗り換えたらしい。</p>
+<ul>
+<li><a href="https://www.eclipse.org/lists/jgit-dev/msg02818.html">https://www.eclipse.org/lists/jgit-dev/msg02818.html</a>
+<ul>
+<li>
+<blockquote>
+<p>Keep in mind that Shawn Pearce reached the conclusion that a distributed key-value store is not the right solution and moved to a DFS implementation.</p>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><a href="https://github.com/spearce/jgit_cassandra">https://github.com/spearce/jgit_cassandra</a></li>
+</ul>
+<p>以下は調べてみたいとこのメモ</p>
+<ul>
+<li>AWS S3を使ったODB実装の例があるか、その際RefDBをどうするか</li>
+<li>Azure Files（NFS）で実用性に耐えうるかどうか</li>
+</ul>
+]]></content></item><item><title>Bashのtimeは複合コマンドにも使える</title><link>https://fukasawah.github.io/posts/2020/04/14/bash-time/</link><pubDate>Tue, 14 Apr 2020 17:03:33 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/04/14/bash-time/</guid><description>bashのtimeは実行に要した時間がわかる。 $ time seq 1 100 1 ... 100 real 0m0.045s user 0m0.000s sys 0m0.015s で、これはコマンドでもビルトインコマンドでもなく、パイプラインで使</description><content type="html"><![CDATA[<p>bashのtimeは実行に要した時間がわかる。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ time seq <span style="color:#ae81ff">1</span> <span style="color:#ae81ff">100</span>
 <span style="color:#ae81ff">1</span>
 ...
