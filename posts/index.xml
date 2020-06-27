@@ -1,4 +1,216 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Mon, 04 May 2020 19:50:31 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>libgit2を使ってみる</title><link>https://fukasawah.github.io/posts/2020/05/04/hello-libgit2/</link><pubDate>Mon, 04 May 2020 19:50:31 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/05/04/hello-libgit2/</guid><description>https://github.com/libgit2/libgit2 WSL2 + Ubuntu 18.04 でどんな感じに使えるか試した。 ビルド sudo apt update sudo apt install gcc cmake libssl-dev zlib1g-dev libssh2-1-dev pkg-copnfig git clone https://github.com/libgit2/libgit2.git cd libgit2 git checkout v1.0.0 mkdir build &amp;amp;&amp;amp; cd build cmake .. make -j ビルドはただの趣味でお遊びなのでイン</description><content type="html"><![CDATA[<p><a href="https://github.com/libgit2/libgit2">https://github.com/libgit2/libgit2</a></p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Thu, 25 Jun 2020 19:24:37 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title> Raspberry Pi + ffmpegでライブカメラ</title><link>https://fukasawah.github.io/posts/2020/06/25/live-camera-on-the-raspberrypi-ffmpeg/</link><pubDate>Thu, 25 Jun 2020 19:24:37 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/06/25/live-camera-on-the-raspberrypi-ffmpeg/</guid><description>2019年8月ぐらいに書いて埃をかぶってたが発掘したので。 Rasberry Piとカメラモジュール届いたので、くっつけて起動する。 作業まとめ Rasberry Piの作業 https://www.raspberrypi.org/documentation/linux/usage/users.md で</description><content type="html"><![CDATA[<p>2019年8月ぐらいに書いて埃をかぶってたが発掘したので。</p>
+<hr>
+<p>Rasberry Piとカメラモジュール届いたので、くっつけて起動する。</p>
+<h2 id="作業まとめ">作業まとめ</h2>
+<h3 id="rasberry-piの作業">Rasberry Piの作業</h3>
+<ul>
+<li><a href="https://www.raspberrypi.org/documentation/linux/usage/users.md">https://www.raspberrypi.org/documentation/linux/usage/users.md</a> でユーザ名とパスワードを知る</li>
+<li>piユーザは消さないほうが良いらしい（先駆者からの助言、ソースは忘れた&hellip;）</li>
+<li>なるべく省力的に動かしたいので、 Raspbian Buster Lite にした。</li>
+</ul>
+<p>以下、SSH接続するまでにやったセットアップ。viがうまく動かなかったのでnanoを使っている。以下を行った。</p>
+<ul>
+<li>パスワード変更</li>
+<li>キーボード設定</li>
+<li>無線LAN接続</li>
+<li>固定IPを割り当たるようにする</li>
+<li>SSHサーバの起動</li>
+</ul>
+<pre><code># Password変更
+passwd
+# リポジトリを最新化し、パッケージも最新版を導入
+sudo apt update
+sudo apt upgrade
+
+# ロケールを日本語にしたかったが、language-pack-jaが無いので、意味がなかった
+# sudo localectl set-locale ja_JP.UTF-8
+# キーボードについて日本語配列のキーマップを使うよう変更
+sudo localectl set-keymap jp106
+# 一旦再起動
+sudo reboot
+
+# 無線LAN接続
+# refs: https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md
+wpa_passphrase SSID名 | sed '/#psk=/d' | sudo tee -a /etc/wpa_supplicant/wpa_supplicant.conf
+# &gt; ここでパスワードを入力
+
+# SSIDを隠している場合、追加したnetworkブロックへssid_scan=1を追加
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+
+# ダウンしているはずなので起動
+sudo ip link set wlan0 up
+
+# 固定IPで割り当たるよう修正
+# https://wiki.debian.org/NetworkConfiguration#Configuring_the_interface_manually にて、/etc/network/interfacesを使って割り当てるやり方が書かれているが、
+# /etc/network/interfaces に以下の記述があったので、dhcpcdで行う。
+#  # Please note that this file is written to be used with dhcpcd
+#  # For static IP, consult /etc/dhcpcd.conf and 'man dhcpcd.conf'
+# refs: https://qiita.com/momotaro98/items/fa94c0ed6e9e727fe15e
+sudo nano /etc/dhcpcd.conf
+
+# /etc/dhcpcd.confファイルの末端に以下を追加（IPやデフォルトゲートウェイ、ネームサーバは適宜変える）
+interface wlan0
+static ip_address=192.168.0.252
+static routers=192.168.1.254
+static domain_name_servers=192.168.1.254
+
+# 変更したら、dhcpcdを再起動（以降は固定IPになる）
+sudo systemctl restart dhcpcd
+
+# SSHサーバを自動起動設定、起動
+sudo systemctl enable ssh
+sudo systemctl start ssh
+</code></pre><p>ちなみにSSHはClient側のkeep-alive設定を入れて使った方がよい。60秒ぐらいで切れるので。</p>
+<h3 id="カメラモジュールの有効化と撮影テスト">カメラモジュールの有効化と撮影テスト</h3>
+<pre><code># refs: https://www.raspberrypi.org/documentation/configuration/camera.md
+sudo raspi-config
+# Interfacing Options -&gt; Camera を選んで有効か無効か選ぶ。もちろん有効を選ぶ
+# その後、再起動する
+</code></pre><p>カメラで撮影を試す。撮影したものはscpか何かで取得して眺める。</p>
+<pre><code>
+# 検出しているか確認する。「detected=1」となっていればOK。
+vcgencmd get_camera
+
+# 撮影確認（シャッターを切るまで5秒の待ち時間がある）
+raspistill -o capture.jpg
+</code></pre><p>デバイスを一応確認。ffmpegで入力デバイスの指定に使うので。</p>
+<pre><code>v4l2-ctl --list-devices
+</code></pre><pre><code>bcm2835-codec (platform:bcm2835-codec):
+        /dev/video10
+        /dev/video11
+        /dev/video12
+
+mmal service 16.1 (platform:bcm2835-v4l2):
+        /dev/video0
+</code></pre><h3 id="ffmpegのビルドハードウェアエンコードを使うため">ffmpegのビルド（ハードウェアエンコードを使うため）</h3>
+<p>ffmpeg入れるがaptで配布されているものではハードウェアエンコードが使えない。なのでソースを取得して再ビルドする。</p>
+<ul>
+<li><code>h264_omx</code>は入っているが、依存が解決できず使えない。</li>
+<li><code>--enable-omx-rpi</code> を付けて再ビルドする。see: <a href="https://github.com/FFmpeg/FFmpeg/blob/caabe1b4956d054bc3b077ae03a0d4205dbb843e/libavcodec/omx.c#L143">https://github.com/FFmpeg/FFmpeg/blob/caabe1b4956d054bc3b077ae03a0d4205dbb843e/libavcodec/omx.c#L143</a></li>
+</ul>
+<pre><code>sudo sed -i.bak 's/#deb-src /deb-src /g' /etc/apt/sources.list
+sudo apt update
+
+sudo apt build-dep ffmpeg
+apt source ffmpeg
+cd ffmpeg-*
+./configure --prefix=/usr --extra-version=1 --toolchain=hardened --libdir=/usr/lib/arm-linux-gnueabihf --incdir=/usr/include/arm-linux-gnueabihf --arch=arm --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared --enable-mmal --enable-omx-rpi
+make -j5
+sudo make install
+</code></pre><p>バージョンを確認する</p>
+<pre><code>pi@raspberrypi:~ $ ffmpeg -version
+ffmpeg version 4.1.3-1 Copyright (c) 2000-2019 the FFmpeg developers
+built with gcc 8 (Raspbian 8.3.0-6+rpi1)
+configuration: --prefix=/usr --extra-version=1 --toolchain=hardened --libdir=/usr/lib/arm-linux-gnueabihf --incdir=/usr/include/arm-linux-gnueabihf --arch=arm --enable-gpl --disable-stripping --enable-avresample --disable-filter=resample --enable-avisynth --enable-gnutls --enable-ladspa --enable-libaom --enable-libass --enable-libbluray --enable-libbs2b --enable-libcaca --enable-libcdio --enable-libcodec2 --enable-libflite --enable-libfontconfig --enable-libfreetype --enable-libfribidi --enable-libgme --enable-libgsm --enable-libjack --enable-libmp3lame --enable-libmysofa --enable-libopenjpeg --enable-libopenmpt --enable-libopus --enable-libpulse --enable-librsvg --enable-librubberband --enable-libshine --enable-libsnappy --enable-libsoxr --enable-libspeex --enable-libssh --enable-libtheora --enable-libtwolame --enable-libvidstab --enable-libvorbis --enable-libvpx --enable-libwavpack --enable-libwebp --enable-libx265 --enable-libxml2 --enable-libxvid --enable-libzmq --enable-libzvbi --enable-lv2 --enable-omx --enable-openal --enable-opengl --enable-sdl2 --enable-libdc1394 --enable-libdrm --enable-libiec61883 --enable-chromaprint --enable-frei0r --enable-libx264 --enable-shared --enable-mmal --enable-omx-rpi
+libavutil      56. 22.100 / 56. 22.100
+libavcodec     58. 35.100 / 58. 35.100
+libavformat    58. 20.100 / 58. 20.100
+libavdevice    58.  5.100 / 58.  5.100
+libavfilter     7. 40.101 /  7. 40.101
+libavresample   4.  0.  0 /  4.  0.  0
+libswscale      5.  3.100 /  5.  3.100
+libswresample   3.  3.100 /  3.  3.100
+libpostproc    55.  3.100 / 55.  3.100
+</code></pre><h3 id="youtube-liveで配信を試す">Youtube Liveで配信を試す</h3>
+<p>（※2020/06/25: 最近はライブ配信の管理画面が変わったので若干違うかもしれない）</p>
+<p><a href="https://www.youtube.com/live_dashboard">https://www.youtube.com/live_dashboard</a></p>
+<p>エンコーダの設定にある<code>サーバー URL</code>と<code>ストリームキー</code>を控えておく。これは後で<code>サーバーURL/ストリームキー</code>とスラッシュで結合して使う。</p>
+<p>とりあえず動いた感じの設定。</p>
+<h3 id="gpuに割り当てるメモリサイズを変更">GPUに割り当てるメモリサイズを変更</h3>
+<pre><code>sudo nano /boot/config.txt
+</code></pre><p>この<code>[all]セクションのgpu_mem</code>の値を256になるように書き換える</p>
+<pre><code>[all]
+#dtoverlay=vc4-fkms-v3d
+start_x=1
+#gpu_mem=128
+gpu_mem=256
+</code></pre><h3 id="起動時にモジュールを指定したオプションで読ませる">起動時にモジュールを指定したオプションで読ませる</h3>
+<p>起動時にカメラのモジュールを指定したオプションで読ませるよう、所定のファイルを用意する。</p>
+<p><code>max_video_width=2592 max_video_height=1944</code> の部分は適宜書き換える。設定の仕方は後述。</p>
+<pre><code>echo &quot;bcm2835-v4l2&quot; | sudo tee /etc/modules-load.d/rpi-camera.conf
+echo &quot;options bcm2835-v4l2 max_video_width=2592 max_video_height=1944&quot; | sudo tee /etc/modprobe.d/rpi-camera.conf
+</code></pre><h3 id="ffmpegコマンド">ffmpegコマンド</h3>
+<pre><code>ffmpeg -f v4l2 -s 1920x1080 -framerate 30 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i /dev/zero -acodec aac -ab 16k -vcodec h264_omx -preset baseline -pix_fmt yuv420p -s 1920x1080 -b:v 3000k -threads 0 -f flv &quot;サーバーURL/ストリームキー&quot;
+</code></pre><p>Youtube Liveでは無音でも/dev/zeroを指定しないとダメだった。省略できなさそう。</p>
+<h2 id="トラブルシューティング">トラブルシューティング</h2>
+<h3 id="配信のfpsを上がらない問題">配信のFPSを上がらない問題</h3>
+<p>最初、適当にffmpegを実行しただけでは、FPSが出ない状態でカクカクになってしまった。
+入力が1920x1080だと5fpsと低い値に、1280x720は22fpsでちょっとマシになったがこれ以上でない状態だった。</p>
+<p>この現象で調べてみると以下のフォーラムを見つける。</p>
+<p><a href="https://www.raspberrypi.org/forums/viewtopic.php?t=190220">https://www.raspberrypi.org/forums/viewtopic.php?t=190220</a></p>
+<p>使えるフォーマットでベンチマークを取れるようなのでそれで見てみる。</p>
+<pre><code># オプションなしでモジュール読み込み
+sudo modprobe -r bcm2835-v4l2
+sudo modprobe bcm2835-v4l2
+
+# フォーマットの一覧
+v4l2-ctl --list-formats
+
+# 各フォーマットのベンチマーク
+for i in `seq  0 $(($(v4l2-ctl --list-formats | wc -l) - 4 ))`; do
+  echo &quot;&quot;
+  echo &quot;--- $i ---&quot;;
+  v4l2-ctl -v width=1920,height=1080,pixelformat=$i;
+  timeout 5 v4l2-ctl --stream-mmap=3 --stream-to=/dev/null --stream-count=100;
+done
+</code></pre><p>他は5fps程度だが、MJPGやH264を使うときだけ確かに30fps出ることがわかった。これをそのまま取り込めないかな？と設定をいじる。</p>
+<p>input_formatをmjpegにしたら配信は出来たけど、FPSが3でCPU使用率が25%でちょっと使い物にならない。（4CPUと認識しているので1CPUを使い切っている感じ）</p>
+<pre><code>ffmpeg -f v4l2 -input_format mjpeg -s 1920x1080 -framerate 30 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i /dev/zero -acodec aac -ab 16k -vcodec h264_omx -preset baseline -pix_fmt yuv420p -s 1920x1080 -b:v 3000k -threads 0 -f flv &quot;サーバー URL/ストリームキー&quot;
+</code></pre><p>入力をh264にしてみる。30fpsだとプログラムが死んだので15fpsに。配信できなくはないがCPU使用率が90%になってしまい非常に辛い様子だった。</p>
+<pre><code>ffmpeg -f v4l2 -input_format h264 -s 1920x1080 -framerate 15 -i /dev/video0 -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i /dev/zero -acodec aac -ab 16k -vcodec h264_omx -preset baseline -pix_fmt yuv420p -s 1920x1080 -b:v 3000k -threads 0 -f flv &quot;サーバー URL/ストリームキー&quot;
+</code></pre><p>他の方法を探ると以下のような情報を見つける。</p>
+<p><a href="https://wiki.archlinux.jp/index.php/Raspberry_Pi#Raspberry_Pi_%E3%82%AB%E3%83%A1%E3%83%A9%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB">https://wiki.archlinux.jp/index.php/Raspberry_Pi#Raspberry_Pi_%E3%82%AB%E3%83%A1%E3%83%A9%E3%83%A2%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB</a></p>
+<blockquote>
+<p>デフォルトでは V4L2 ドライバーを使って録画できる動画の解像度は 1280x720 が最大です。それ以上にしようとすると動画が 4 fps 以下にまで落ち込みます。</p>
+</blockquote>
+<p>この現象が本質っぽい。以下のようにしてオプションを与えてモジュールを有効化しなおす。</p>
+<p>カーネルのモジュールのオプションはこのコマンドで再起動なしで変更できるのでこれで試行錯誤できる。（が、起動時はオプション無しで起動するようなので後述）</p>
+<pre><code>sudo modprobe -r bcm2835-v4l2
+sudo modprobe bcm2835-v4l2 max_video_width=2592 max_video_height=1944
+</code></pre><p>なぜこれが影響するのかわからないがとりあえず設定してみる。設定をするとGPUメモリが少なすぎることで以下のようなエラーが出て使えなくなる。</p>
+<pre><code>[video4linux2,v4l2 @ 0x1fd5400] ioctl(VIDIOC_STREAMON): Operation not permitted
+/dev/video0: Operation not permitted
+</code></pre><pre><code>[h264_omx @ 0x17345b0] Using OMX.broadcom.video_encode
+[h264_omx @ 0x17345b0] OMX error 80001000
+[h264_omx @ 0x17345b0] err 80001000 (-2147479552) on line 561
+Error initializing output stream 0:0 -- Error while opening encoder for output stream #0:0 - maybe incorrect parameters such as bit_rate, rate, width or height
+</code></pre><p>なので、gpu_memを256MBぐらい割り当てる。</p>
+<pre><code>sudo nano /boot/config.txt
+</code></pre><p><code>[all]セクションのgpu_mem</code>の値を256に書き換える。再起動しないと反映されない。</p>
+<pre><code>[all]
+#dtoverlay=vc4-fkms-v3d
+start_x=1
+#gpu_mem=128
+gpu_mem=256
+</code></pre><p>起動時にカーネルモジュールを指定したオプションで実行するよう、所定のファイルを用意する。</p>
+<pre><code>echo &quot;bcm2835-v4l2&quot; | sudo tee /etc/modules-load.d/rpi-camera.conf
+echo &quot;options bcm2835-v4l2 max_video_width=2592 max_video_height=1944&quot; | sudo tee /etc/modprobe.d/rpi-camera.conf
+</code></pre><p>再起動し確かめてみる。</p>
+<pre><code>ffmpeg -f v4l2 -input_format yuv444p -s 1920x1080 -framerate 30 -i /dev/video0 \
+  -ar 44100 -ac 2 -acodec pcm_s16le -f s16le -ac 2 -i /dev/zero \
+  -acodec aac -ab 16k -vcodec h264_omx -preset baseline -pix_fmt yuv420p -s 1920x1080 -b:v 4000k -threads 0 -f flv &quot;サーバー URL/ストリームキー&quot;
+</code></pre><p>これで28fps付近で安定するようになったし、CPU使用率も5%ぐらいととても余裕ができた。</p>
+<h3 id="カメラモジュールのオプションについて">カメラモジュールのオプションについて</h3>
+<p>入力に合わせればいいじゃん、と<code>max_video_width=1920 max_video_height=1080</code>にすると性能が落ち込んだり、一部フォーマットが実行できなくなったりした。どうやら単純に取り込みたいサイズを指定するのではなく、カメラによって設定を合わせる必要があるらしい。</p>
+<p>参考にしたWikiでは<code>max_video_width=3240 max_video_height=2464</code>となっているが、これは800万画素(3240x2464)の設定なので、ここはカメラによって変わる。</p>
+<p>分からない場合は<code>ffmpeg -f video4linux2 -list_formats all -i /dev/video0</code>等から見ることができる模様。</p>
+<pre><code>[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :     yuv420p :     Planar YUV 4:2:0 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :     yuyv422 :           YUYV 4:2:2 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :       rgb24 :     24-bit RGB 8-8-8 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Compressed:       mjpeg :            JFIF JPEG : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Compressed:        h264 :                H.264 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Compressed:       mjpeg :          Motion-JPEG : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       : Unsupported :           YVYU 4:2:2 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       : Unsupported :           VYUY 4:2:2 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :     uyvy422 :           UYVY 4:2:2 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :        nv12 :         Y/CbCr 4:2:0 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :       bgr24 :     24-bit BGR 8-8-8 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :     yuv420p :     Planar YVU 4:2:0 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       : Unsupported :         Y/CrCb 4:2:0 : {32-2592, 2}x{32-1944, 2}
+[video4linux2,v4l2 @ 0x1cdb1c0] Raw       :        bgr0 : 32-bit BGRA/X 8-8-8-8 : {32-2592, 2}x{32-1944, 2}
+
+</code></pre><p><code>{32-2592, 2}x{32-1944, 2}</code> とあるので、最大2592x1944となる。</p>
+]]></content></item><item><title>libgit2を使ってみる</title><link>https://fukasawah.github.io/posts/2020/05/04/hello-libgit2/</link><pubDate>Mon, 04 May 2020 19:50:31 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/05/04/hello-libgit2/</guid><description>https://github.com/libgit2/libgit2 WSL2 + Ubuntu 18.04 でどんな感じに使えるか試した。 ビルド sudo apt update sudo apt install gcc cmake libssl-dev zlib1g-dev libssh2-1-dev pkg-copnfig git clone https://github.com/libgit2/libgit2.git cd libgit2 git checkout v1.0.0 mkdir build &amp;amp;&amp;amp; cd build cmake .. make -j ビルドはただの趣味でお遊びなのでイン</description><content type="html"><![CDATA[<p><a href="https://github.com/libgit2/libgit2">https://github.com/libgit2/libgit2</a></p>
 <p>WSL2 + Ubuntu 18.04 でどんな感じに使えるか試した。</p>
 <h3 id="ビルド">ビルド</h3>
 <pre><code>sudo apt update
