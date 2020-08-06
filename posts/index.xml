@@ -471,6 +471,7 @@ sys     0m0.015s
 </span><span class="w">          </span><span class="k">submodules</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
 </span><span class="w">          </span><span class="k">fetch-depth</span><span class="p">:</span><span class="w"> </span><span class="m">0</span><span class="w"> </span><span class="c"># for enableGitInfo</span><span class="w">
 </span></code></pre></div><p>これ、チューニングオプションなんだから、デフォルトにするのやめてほしい。</p>
+<p>追記: 気づいたらactions-hugoのREADME.mdに書かれてた(<a href="https://github.com/peaceiris/actions-hugo/commit/c55729fbd130889796da92d7859188dbbad0e32a">commit</a>)。これで詰まる人が減りますねえ。</p>
 ]]></content></item><item><title>PulumiでAzureのリソースを構成する</title><link>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</link><pubDate>Mon, 24 Jun 2019 00:58:49 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid><description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description><content type="html"><![CDATA[<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
 Azure Resource Manager(Template)やTerraformで出来ることと同じだが、特定の言語(JavaScript,TypeScript,Python)で記述できるのが強み。</p>
 <p>Azure Resource Manager Templateに嫌気がさしつつ、terraformでやろうかな、と思っていたらPulumi見かけたのでクイックスタートを走ってみた。</p>
