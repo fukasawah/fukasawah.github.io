@@ -30,26 +30,26 @@ Your new project is ready to go!
 To perform an initial deployment, run 'pulumi up'
 </code></pre><p>ローカルの場合はパスフレーズを使い暗号化を行う。これはプロジェクト毎に設定するようだ。
 次に、プロジェクトを作成した後、<code>dev</code>というstackが作られる。stackというのは環境みたいなもので、しばしば開発者が確認で使う「Development(開発環境)」や、お客様が遊んで使う「staging(検証環境)」ユーザが実際に使う「production(本番環境)」と呼んだりするが、Pulumiではこれらを1つ1つを<strong>stack</strong>と呼んで分けている。
-なので、プロジェクトの中には複数のstackがあり、stack毎に反映していくことになる。今回はデフォルトのstackとしてdevが作られたが、stackの操作はサブコマンドの<code>pulumi stack</code>で一通り操作できる。(<a href=https://pulumi.io/reference/stack/>doc</a>)</p><h3 id=pulumiのプログラムを書く>Pulumiのプログラムを書く</h3><p><code>index.ts</code>が実際のコードになる。デフォルトでリソースグループとストレージアカウントを作成するコードが用意されている。</p><p>少し改変する。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>pulumi</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;@pulumi/pulumi&#34;</span>;
-<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>azure</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;@pulumi/azure&#34;</span>;
+なので、プロジェクトの中には複数のstackがあり、stack毎に反映していくことになる。今回はデフォルトのstackとしてdevが作られたが、stackの操作はサブコマンドの<code>pulumi stack</code>で一通り操作できる。(<a href=https://pulumi.io/reference/stack/>doc</a>)</p><h3 id=pulumiのプログラムを書く>Pulumiのプログラムを書く</h3><p><code>index.ts</code>が実際のコードになる。デフォルトでリソースグループとストレージアカウントを作成するコードが用意されている。</p><p>少し改変する。</p><div class=highlight><pre class=chroma><code class=language-ts data-lang=ts><span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>pulumi</span> <span class=nx>from</span> <span class=s2>&#34;@pulumi/pulumi&#34;</span><span class=p>;</span>
+<span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>azure</span> <span class=nx>from</span> <span class=s2>&#34;@pulumi/azure&#34;</span><span class=p>;</span>
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>PROJECT_NAME</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;pulumi&#39;</span>
+<span class=kr>const</span> <span class=nx>PROJECT_NAME</span> <span class=o>=</span> <span class=s1>&#39;pulumi&#39;</span>
 
-<span style=color:#75715e>// Create an Azure Resource Group
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>resourceGroup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>azure</span>.<span style=color:#a6e22e>core</span>.<span style=color:#a6e22e>ResourceGroup</span>(<span style=color:#e6db74>`rg-</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>PROJECT_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>, {
-    <span style=color:#a6e22e>location</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;JapanEast&#34;</span>,
-});
+<span class=c1>// Create an Azure Resource Group
+</span><span class=c1></span><span class=kr>const</span> <span class=nx>resourceGroup</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>azure</span><span class=p>.</span><span class=nx>core</span><span class=p>.</span><span class=nx>ResourceGroup</span><span class=p>(</span><span class=sb>`rg-</span><span class=si>${</span><span class=nx>PROJECT_NAME</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span> <span class=p>{</span>
+    <span class=nx>location</span><span class=o>:</span> <span class=s2>&#34;JapanEast&#34;</span><span class=p>,</span>
+<span class=p>});</span>
 
-<span style=color:#75715e>// Create an Azure resource (Storage Account)
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>account</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>azure</span>.<span style=color:#a6e22e>storage</span>.<span style=color:#a6e22e>Account</span>(<span style=color:#e6db74>`storage</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>PROJECT_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>, {
-    <span style=color:#a6e22e>resourceGroupName</span>: <span style=color:#66d9ef>resourceGroup.name</span>,
-    <span style=color:#a6e22e>location</span>: <span style=color:#66d9ef>resourceGroup.location</span>,
-    <span style=color:#a6e22e>accountTier</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Standard&#34;</span>,
-    <span style=color:#a6e22e>accountReplicationType</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;LRS&#34;</span>,
-});
+<span class=c1>// Create an Azure resource (Storage Account)
+</span><span class=c1></span><span class=kr>const</span> <span class=nx>account</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>azure</span><span class=p>.</span><span class=nx>storage</span><span class=p>.</span><span class=nx>Account</span><span class=p>(</span><span class=sb>`storage</span><span class=si>${</span><span class=nx>PROJECT_NAME</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span> <span class=p>{</span>
+    <span class=nx>resourceGroupName</span>: <span class=kt>resourceGroup.name</span><span class=p>,</span>
+    <span class=nx>location</span>: <span class=kt>resourceGroup.location</span><span class=p>,</span>
+    <span class=nx>accountTier</span><span class=o>:</span> <span class=s2>&#34;Standard&#34;</span><span class=p>,</span>
+    <span class=nx>accountReplicationType</span><span class=o>:</span> <span class=s2>&#34;LRS&#34;</span><span class=p>,</span>
+<span class=p>});</span>
 
-<span style=color:#75715e>// Export the connection string for the storage account
-</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>connectionString</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>account</span>.<span style=color:#a6e22e>primaryConnectionString</span>;
+<span class=c1>// Export the connection string for the storage account
+</span><span class=c1></span><span class=kr>export</span> <span class=kr>const</span> <span class=nx>connectionString</span> <span class=o>=</span> <span class=nx>account</span><span class=p>.</span><span class=nx>primaryConnectionString</span><span class=p>;</span>
 </code></pre></div><h3 id=pulumi-upで反映する>Pulumi upで反映する</h3><pre><code>$ pulumi up
 Enter your passphrase to unlock config/secrets
     (set PULUMI_CONFIG_PASSPHRASE to remember): ********
@@ -80,11 +80,11 @@ Resources:
 Duration: 29s
 
 Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
-</code></pre><p>出来上がったが、実際に作られたリソース名は<code>rg-pulumided110d7</code>や<code>storagepulumi516909b7</code>という感じで後ろに8文字のサフィックスがくっつく形となった。これはPulumiが勝手につけているようだ。</p><p>storageはともかく、リソースグループは付けたくないと思うので、明示的に指定する方法を探る。</p><h3 id=リソース名を明示して変更を反映する>リソース名を明示して変更を反映する</h3><p>用意されているリソースには大抵nameプロパティがあり、これを明示的に設定すればよいらしい。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#75715e>// Create an Azure Resource Group
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>resourceGroup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>azure</span>.<span style=color:#a6e22e>core</span>.<span style=color:#a6e22e>ResourceGroup</span>(<span style=color:#e6db74>`rg-</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>PROJECT_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>, {
-    <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>`rg-</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>PROJECT_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>, <span style=color:#75715e>// この行を追記
-</span><span style=color:#75715e></span>    <span style=color:#a6e22e>location</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;JapanEast&#34;</span>,
-});
+</code></pre><p>出来上がったが、実際に作られたリソース名は<code>rg-pulumided110d7</code>や<code>storagepulumi516909b7</code>という感じで後ろに8文字のサフィックスがくっつく形となった。これはPulumiが勝手につけているようだ。</p><p>storageはともかく、リソースグループは付けたくないと思うので、明示的に指定する方法を探る。</p><h3 id=リソース名を明示して変更を反映する>リソース名を明示して変更を反映する</h3><p>用意されているリソースには大抵nameプロパティがあり、これを明示的に設定すればよいらしい。</p><div class=highlight><pre class=chroma><code class=language-ts data-lang=ts><span class=c1>// Create an Azure Resource Group
+</span><span class=c1></span><span class=kr>const</span> <span class=nx>resourceGroup</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>azure</span><span class=p>.</span><span class=nx>core</span><span class=p>.</span><span class=nx>ResourceGroup</span><span class=p>(</span><span class=sb>`rg-</span><span class=si>${</span><span class=nx>PROJECT_NAME</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span> <span class=p>{</span>
+    <span class=nx>name</span><span class=o>:</span> <span class=sb>`rg-</span><span class=si>${</span><span class=nx>PROJECT_NAME</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span> <span class=c1>// この行を追記
+</span><span class=c1></span>    <span class=nx>location</span><span class=o>:</span> <span class=s2>&#34;JapanEast&#34;</span><span class=p>,</span>
+<span class=p>});</span>
 </code></pre></div><p>Azureのリソースグループは通常名前変更ができないし、そもそも前のリソースの名前(<code>rg-pulumided110d7</code>)がわからなくなる。</p><p>しかしpulumiは前回実行後の状態を(現在は)ローカルで管理している。</p><p>今回は、使われなくなったリソースは削除し、再度新規作成する形で置き換わる。（この挙動は「IaCあるある」で既存のデータが吹っ飛ぶので注意が必要。）
 また、リソースグループに紐づくストレージアカウントも作り直しになっている。（リソースグループの移動は出来るはずだが、Pulumiはそこまで面倒見てないらしい。）</p><pre><code>$ pulumi up
 Previewing update (dev):
@@ -116,37 +116,37 @@ Resources:
 Duration: 1m14s
 
 Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
-</code></pre><h2 id=aciでnginxコンテナを立てる>ACIでnginxコンテナを立てる</h2><p>チュートリアルでは、ストレージアカウントを削除し、nginxのACI(Azure Container Instances)を立てる例に書き換えているので習う。</p><p><a href=https://pulumi.io/quickstart/azure/modify-program/>https://pulumi.io/quickstart/azure/modify-program/</a></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-ts data-lang=ts><span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>pulumi</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;@pulumi/pulumi&#34;</span>;
-<span style=color:#66d9ef>import</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>as</span> <span style=color:#a6e22e>azure</span> <span style=color:#a6e22e>from</span> <span style=color:#e6db74>&#34;@pulumi/azure&#34;</span>;
+</code></pre><h2 id=aciでnginxコンテナを立てる>ACIでnginxコンテナを立てる</h2><p>チュートリアルでは、ストレージアカウントを削除し、nginxのACI(Azure Container Instances)を立てる例に書き換えているので習う。</p><p><a href=https://pulumi.io/quickstart/azure/modify-program/>https://pulumi.io/quickstart/azure/modify-program/</a></p><div class=highlight><pre class=chroma><code class=language-ts data-lang=ts><span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>pulumi</span> <span class=nx>from</span> <span class=s2>&#34;@pulumi/pulumi&#34;</span><span class=p>;</span>
+<span class=kr>import</span> <span class=o>*</span> <span class=kr>as</span> <span class=nx>azure</span> <span class=nx>from</span> <span class=s2>&#34;@pulumi/azure&#34;</span><span class=p>;</span>
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>PROJECT_NAME</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;pulumi&#39;</span>
+<span class=kr>const</span> <span class=nx>PROJECT_NAME</span> <span class=o>=</span> <span class=s1>&#39;pulumi&#39;</span>
 
-<span style=color:#75715e>// Create an Azure Resource Group
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>resourceGroup</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>azure</span>.<span style=color:#a6e22e>core</span>.<span style=color:#a6e22e>ResourceGroup</span>(<span style=color:#e6db74>`rg-</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>PROJECT_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>, {
-    <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>`rg-</span><span style=color:#e6db74>${</span><span style=color:#a6e22e>PROJECT_NAME</span><span style=color:#e6db74>}</span><span style=color:#e6db74>`</span>,
-    <span style=color:#a6e22e>location</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;JapanEast&#34;</span>,
-});
+<span class=c1>// Create an Azure Resource Group
+</span><span class=c1></span><span class=kr>const</span> <span class=nx>resourceGroup</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>azure</span><span class=p>.</span><span class=nx>core</span><span class=p>.</span><span class=nx>ResourceGroup</span><span class=p>(</span><span class=sb>`rg-</span><span class=si>${</span><span class=nx>PROJECT_NAME</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span> <span class=p>{</span>
+    <span class=nx>name</span><span class=o>:</span> <span class=sb>`rg-</span><span class=si>${</span><span class=nx>PROJECT_NAME</span><span class=si>}</span><span class=sb>`</span><span class=p>,</span>
+    <span class=nx>location</span><span class=o>:</span> <span class=s2>&#34;JapanEast&#34;</span><span class=p>,</span>
+<span class=p>});</span>
 
-<span style=color:#75715e>// Create an Azure Container Group
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>container</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>azure</span>.<span style=color:#a6e22e>containerservice</span>.<span style=color:#a6e22e>Group</span>(<span style=color:#e6db74>&#34;aci-nginx&#34;</span>, {
-    <span style=color:#a6e22e>containers</span><span style=color:#f92672>:</span> [{
-        <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;nginx&#34;</span>,
-        <span style=color:#a6e22e>image</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;nginx&#34;</span>,
-        <span style=color:#a6e22e>memory</span>: <span style=color:#66d9ef>1</span>,
-        <span style=color:#a6e22e>cpu</span>: <span style=color:#66d9ef>1</span>,
-        <span style=color:#a6e22e>ports</span><span style=color:#f92672>:</span> [{
-            <span style=color:#a6e22e>port</span>: <span style=color:#66d9ef>80</span>,
-            <span style=color:#a6e22e>protocol</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;TCP&#34;</span>
-        }],
-    }],
-    <span style=color:#a6e22e>osType</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#34;Linux&#34;</span>,
-    <span style=color:#a6e22e>resourceGroupName</span>: <span style=color:#66d9ef>resourceGroup.name</span>,
-    <span style=color:#a6e22e>location</span>: <span style=color:#66d9ef>resourceGroup.location</span>,
-});
+<span class=c1>// Create an Azure Container Group
+</span><span class=c1></span><span class=kr>const</span> <span class=nx>container</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>azure</span><span class=p>.</span><span class=nx>containerservice</span><span class=p>.</span><span class=nx>Group</span><span class=p>(</span><span class=s2>&#34;aci-nginx&#34;</span><span class=p>,</span> <span class=p>{</span>
+    <span class=nx>containers</span><span class=o>:</span> <span class=p>[{</span>
+        <span class=nx>name</span><span class=o>:</span> <span class=s2>&#34;nginx&#34;</span><span class=p>,</span>
+        <span class=nx>image</span><span class=o>:</span> <span class=s2>&#34;nginx&#34;</span><span class=p>,</span>
+        <span class=nx>memory</span>: <span class=kt>1</span><span class=p>,</span>
+        <span class=nx>cpu</span>: <span class=kt>1</span><span class=p>,</span>
+        <span class=nx>ports</span><span class=o>:</span> <span class=p>[{</span>
+            <span class=nx>port</span>: <span class=kt>80</span><span class=p>,</span>
+            <span class=nx>protocol</span><span class=o>:</span> <span class=s2>&#34;TCP&#34;</span>
+        <span class=p>}],</span>
+    <span class=p>}],</span>
+    <span class=nx>osType</span><span class=o>:</span> <span class=s2>&#34;Linux&#34;</span><span class=p>,</span>
+    <span class=nx>resourceGroupName</span>: <span class=kt>resourceGroup.name</span><span class=p>,</span>
+    <span class=nx>location</span>: <span class=kt>resourceGroup.location</span><span class=p>,</span>
+<span class=p>});</span>
 
-<span style=color:#75715e>// Export the public IP of the container
-</span><span style=color:#75715e></span><span style=color:#66d9ef>export</span> <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>ip</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>container</span>.<span style=color:#a6e22e>ipAddress</span>;
-</code></pre></div><p>その後、<code>pulumi up</code>すると、ストレージアカウントが消えて、ACIが作成されたことが分かる。</p><p>作成後、nginxにアクセスする。接続先のIPは以下のようにして取れる。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl <span style=color:#66d9ef>$(</span>pulumi stack output ip<span style=color:#66d9ef>)</span>
+<span class=c1>// Export the public IP of the container
+</span><span class=c1></span><span class=kr>export</span> <span class=kr>const</span> <span class=nx>ip</span> <span class=o>=</span> <span class=nx>container</span><span class=p>.</span><span class=nx>ipAddress</span><span class=p>;</span>
+</code></pre></div><p>その後、<code>pulumi up</code>すると、ストレージアカウントが消えて、ACIが作成されたことが分かる。</p><p>作成後、nginxにアクセスする。接続先のIPは以下のようにして取れる。</p><div class=highlight><pre class=chroma><code class=language-bash data-lang=bash>curl <span class=k>$(</span>pulumi stack output ip<span class=k>)</span>
 </code></pre></div><p><code>pulumi stack output ip</code>の<code>ip</code>はindex.tsでexportしている変数<code>ip</code>のことで、これを参照することが出来るらしい。便利。</p><h3 id=リソースの削除>リソースの削除</h3><pre><code>pulumi destroy
 </code></pre><h3 id=次のステップ>次のステップ</h3><p>ドキュメントにはgithubのサンプルコードを案内している。</p><p><a href=https://pulumi.io/quickstart/azure/next-steps/>https://pulumi.io/quickstart/azure/next-steps/</a></p><p><a href=https://github.com/pulumi/examples>https://github.com/pulumi/examples</a></p><p>他のクラウドと比べると少し少ないが、Azureのサンプルがいくつか載っている。書き方の参考になるかもしれない。</p><h2 id=感想>感想</h2><p>TypeScriptとVSCodeの書き味が最高だった。TypeScriptのモジュールシステムを使えるはずなので、共通化もしやすそう。</p><p>欠点は後発なのでまだまだプラクティスが少ないこと。公式がサポートに入っていないのでリソースの追加・修正があった時に追従するのが遅いだろう、という所かな。</p><p>ただ後者は<a href=https://pulumi.io/reference/pkg/nodejs/pulumi/azure/core/#TemplateDeployment>TemplateDeployment</a>リソースがあるので、部分的にARM Templateでカバーできそうだ。ちゃんとoutputも扱える。</p><h2 id=その他>その他</h2><h3 id=バックエンドは他にないのか>バックエンドは他にないのか？</h3><p>ローカルは何かイマイチ（git反映忘れそう）だし、PulumiのWebサーバに依存したくないなぁ、と思っていた。
 そこで他のバックエンドを使えないか調べたところ、一応AWS,GCP,Azureをサポートしているようだ。</p><p>内部的にはgo-cloudで抽象化しているので、<a href=https://gocloud.dev/howto/blob/open-bucket/>go-cloudのopenBucketのドキュメント</a>を見ると、どのような環境変数が必要かは分かる。</p><p>細かいところは「<a href=https://qiita.com/fukasawah/items/7c793ab8b08d19cd9376>Qiita - Pulumiの状態管理にクラウドストレージバックエンドを使う</a>」に書いた。</p></div><hr class=post-end><footer class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://fukasawah.github.io/tags/infrastracture-as-code>Infrastracture as Code</a></span><span class=tag><a href=https://fukasawah.github.io/tags/azure>Azure</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>2635 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Created at: 2019-06-24 00:58 +0900</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Updated at: 2019-06-24 02:33 +0900</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"/><line x1="1.05" y1="12" x2="7" y2="12"/><line x1="17.01" y1="12" x2="22.96" y2="12"/></svg><a href=https://github.com/fukasawah/blog/commit/5e9f258d2d3f8958799cbf05c1fe3b2ebf986a83 target=_blank rel=noopener>5e9f258</a> @ 2019-06-24</p></footer></article><div class="post-nav thin"><a class=next-post href=https://fukasawah.github.io/posts/2020/04/02/hugo-with-github-actions/><span class=post-nav-label><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>&nbsp;Newer</span><br><span>GitHub Actionsを使ってHugoのコンテンツをデプロイ</span></a>

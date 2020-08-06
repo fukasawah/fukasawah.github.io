@@ -55,26 +55,26 @@ Error relocating /path/to/a.out: __vfprintf_chk: symbol not found
 Error relocating /path/to/a.out: __memset_chk: symbol not found
 Error relocating /path/to/a.out: getcontext: symbol not found
 Error relocating /path/to/a.out: __sprintf_chk: symbol not found
-</code></pre><p><code>__memset_chk</code>辺りはglibc固有の実装なので、そんなものは当然muslにはない。</p><p><a href=https://hub.docker.com/r/frolvlad/alpine-glibc/>alpine-glibc</a>というイメージを使う手もあるが、オフィシャルではないので使用は避けたい。</p><p>色々悩んだけど、そもそもビルド環境からコピーすれば良いよね、という考えに至った。</p><p>ということで、dockerfileはこんな感じ。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-dockerfile data-lang=dockerfile><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> mydev:latest as build</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># ... プログラムのビルドを行う</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> busybox</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># nsswitch.confを作る(glibcがこれを読みに来る)</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> echo <span style=color:#e6db74>&#39;hosts: files dns&#39;</span> &gt;&gt; /etc/nsswitch.conf<span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># ld-linux-x86-64.so.2とプログラムの依存ライブラリ</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> --from<span style=color:#f92672>=</span>build /lib64/ld-linux-x86-64.so.2 /lib64/libc.so.6 /lib64/libdl.so.2 /lib64/libm.so.6 /lib64/libpthread.so.0 /lib64<span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># glibcが/etc/nsswitch.confを参照して利用する依存ライブラリ</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> --from<span style=color:#f92672>=</span>build /lib64/libresolv-2.28.so /lib64/lib/libresolv.so.2<span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> --from<span style=color:#f92672>=</span>build /lib64/libnss_dns-2.28.so /lib64/libnss_dns.so.2<span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> --from<span style=color:#f92672>=</span>build /lib64/libnss_files-2.28.so /lib64/libnss_files.so.2<span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># プログラム</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>COPY</span> --from<span style=color:#f92672>=</span>build /usr/local/src/a.out /usr/local/bin/a.out<span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010>
-</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>CMD</span> [<span style=color:#e6db74>&#34;/usr/local/bin/a.out&#34;</span>]<span style=color:#960050;background-color:#1e0010>
+</code></pre><p><code>__memset_chk</code>辺りはglibc固有の実装なので、そんなものは当然muslにはない。</p><p><a href=https://hub.docker.com/r/frolvlad/alpine-glibc/>alpine-glibc</a>というイメージを使う手もあるが、オフィシャルではないので使用は避けたい。</p><p>色々悩んだけど、そもそもビルド環境からコピーすれば良いよね、という考えに至った。</p><p>ということで、dockerfileはこんな感じ。</p><div class=highlight><pre class=chroma><code class=language-dockerfile data-lang=dockerfile><span class=k>FROM</span><span class=s> mydev:latest as build</span><span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=c># ... プログラムのビルドを行う</span><span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=k>FROM</span><span class=s> busybox</span><span class=err>
+</span><span class=err></span><span class=c># nsswitch.confを作る(glibcがこれを読みに来る)</span><span class=err>
+</span><span class=err></span><span class=k>RUN</span> <span class=nb>echo</span> <span class=s1>&#39;hosts: files dns&#39;</span> &gt;&gt; /etc/nsswitch.conf<span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=c># ld-linux-x86-64.so.2とプログラムの依存ライブラリ</span><span class=err>
+</span><span class=err></span><span class=k>COPY</span> --from<span class=o>=</span>build /lib64/ld-linux-x86-64.so.2 /lib64/libc.so.6 /lib64/libdl.so.2 /lib64/libm.so.6 /lib64/libpthread.so.0 /lib64<span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=c># glibcが/etc/nsswitch.confを参照して利用する依存ライブラリ</span><span class=err>
+</span><span class=err></span><span class=k>COPY</span> --from<span class=o>=</span>build /lib64/libresolv-2.28.so /lib64/lib/libresolv.so.2<span class=err>
+</span><span class=err></span><span class=k>COPY</span> --from<span class=o>=</span>build /lib64/libnss_dns-2.28.so /lib64/libnss_dns.so.2<span class=err>
+</span><span class=err></span><span class=k>COPY</span> --from<span class=o>=</span>build /lib64/libnss_files-2.28.so /lib64/libnss_files.so.2<span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=c># プログラム</span><span class=err>
+</span><span class=err></span><span class=k>COPY</span> --from<span class=o>=</span>build /usr/local/src/a.out /usr/local/bin/a.out<span class=err>
+</span><span class=err>
+</span><span class=err></span><span class=k>CMD</span> <span class=p>[</span><span class=s2>&#34;/usr/local/bin/a.out&#34;</span><span class=p>]</span><span class=err>
 </span></code></pre></div><p>蛇足だが、プログラム内部で<code>ld.so</code>の場所を持っているので、コマンドを実行するとちゃんと<code>ld.so</code>を使って動的リンクを行ってくれる。(lddで<code>/lib64/ld-linux-x86-64.so.2</code>と出るなら、これを動的リンカーに使おうとする。この場所に動的リンカーが無い場合はエラーになる)
 また、今回のように目的の場所に無い場合は、直接<code>ld.so</code>からプログラムを実行することもできます。もし<code>/lib64</code>ではなく、<code>/usr/local/lib</code>に全部配置した場合はこんな感じ。</p><pre><code>CMD [&quot;/usr/local/lib/ld-linux-x86-64.so.2&quot;, &quot;--inhibit-cache&quot;, &quot;--library-path&quot;, &quot;/usr/local/lib&quot;, &quot;/usr/local/bin/a.out&quot;]
 </code></pre><h3 id=一部とか中途半端>一部とか中途半端</h3><p>はい・・・</p><p><code>--enable-static-nss</code>を入れたglibcでstatic linkしたりmuslの置き換えもやってみたい・・・特にmuslはlibstdc++のリビルドが必要そうなのでしんどそう。</p><p>glibcはLGPLなので、Static Linkすると都合悪い場合もあるはずなので、使えるのではないかなと思う。</p><h2 id=static化で遭遇したエラーたち>static化で遭遇したエラーたち</h2><h3 id=cannot-find--lgcc_s><code>cannot find -lgcc_s</code></h3><pre><code>/usr/bin/ld: cannot find -lgcc_s
