@@ -60,16 +60,16 @@ testdb=# \dx pg_bigm
 </span><span style=color:#75715e></span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>TABLE</span> pg_tools (tool text, description text);
 
 <span style=color:#75715e>-- レコード作成
-</span><span style=color:#75715e></span><span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_hint_plan</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLでHINT句を使えるようにするツール</span><span style=color:#e6db74>&#39;</span>);
-<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_dbms_stats</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLの統計情報を固定化するツール</span><span style=color:#e6db74>&#39;</span>);
-<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_bigm</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLで2-gramの全文検索を使えるようにするツール</span><span style=color:#e6db74>&#39;</span>);
-<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;</span><span style=color:#e6db74>pg_trgm</span><span style=color:#e6db74>&#39;</span>, <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>PostgreSQLで3-gramの全文検索を使えるようにするツール</span><span style=color:#e6db74>&#39;</span>);
+</span><span style=color:#75715e></span><span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;pg_hint_plan&#39;</span>, <span style=color:#e6db74>&#39;PostgreSQLでHINT句を使えるようにするツール&#39;</span>);
+<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;pg_dbms_stats&#39;</span>, <span style=color:#e6db74>&#39;PostgreSQLの統計情報を固定化するツール&#39;</span>);
+<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;pg_bigm&#39;</span>, <span style=color:#e6db74>&#39;PostgreSQLで2-gramの全文検索を使えるようにするツール&#39;</span>);
+<span style=color:#66d9ef>INSERT</span> <span style=color:#66d9ef>INTO</span> pg_tools <span style=color:#66d9ef>VALUES</span> (<span style=color:#e6db74>&#39;pg_trgm&#39;</span>, <span style=color:#e6db74>&#39;PostgreSQLで3-gramの全文検索を使えるようにするツール&#39;</span>);
 
 <span style=color:#75715e>-- インデックス作成
 </span><span style=color:#75715e></span><span style=color:#66d9ef>CREATE</span> <span style=color:#66d9ef>INDEX</span> pg_tools_idx <span style=color:#66d9ef>ON</span> pg_tools <span style=color:#66d9ef>USING</span> gin (description gin_bigm_ops);
 
 <span style=color:#75715e>-- 全文検索 =&gt; 2件ヒットすること
-</span><span style=color:#75715e></span><span style=color:#66d9ef>SELECT</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>FROM</span> pg_tools <span style=color:#66d9ef>WHERE</span> description <span style=color:#66d9ef>LIKE</span> <span style=color:#e6db74>&#39;</span><span style=color:#e6db74>%全文検索%</span><span style=color:#e6db74>&#39;</span>;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>SELECT</span> <span style=color:#f92672>*</span> <span style=color:#66d9ef>FROM</span> pg_tools <span style=color:#66d9ef>WHERE</span> description <span style=color:#66d9ef>LIKE</span> <span style=color:#e6db74>&#39;%全文検索%&#39;</span>;
 
 <span style=color:#75715e>-- テーブル削除
 </span><span style=color:#75715e></span><span style=color:#66d9ef>DROP</span> <span style=color:#66d9ef>TABLE</span> pg_tools;

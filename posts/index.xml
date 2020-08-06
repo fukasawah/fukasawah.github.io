@@ -241,15 +241,15 @@ make -j
 <p>バインディング無いとしんどいですね</p>
 <h2 id="cloneするだけ">cloneするだけ</h2>
 <p>実行するとcloneするだけの簡単なもの。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;git2.h&gt;</span><span style="color:#75715e">
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;git2.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span>
 <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
 	git_repository <span style="color:#f92672">*</span>repo;
   git_libgit2_init();
 
-  git_clone(<span style="color:#f92672">&amp;</span>repo, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">https://github.com/octocat/Hello-World.git</span><span style="color:#e6db74">&#34;</span>, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">hello-world</span><span style="color:#e6db74">&#34;</span>, NULL);
+  git_clone(<span style="color:#f92672">&amp;</span>repo, <span style="color:#e6db74">&#34;https://github.com/octocat/Hello-World.git&#34;</span>, <span style="color:#e6db74">&#34;hello-world&#34;</span>, NULL);
 
   <span style="color:#66d9ef">if</span>(repo){
     git_repository_free(repo);
@@ -267,21 +267,21 @@ LD_LIBRARY_PATH=./ ./a.out
 </code></pre><h2 id="空のコミットを重ねるだけリポジトリがあればそのまま使い無ければ作る">空のコミットを重ねるだけ（リポジトリがあればそのまま使い、無ければ作る）</h2>
 <p>コミット後にログも出す。
 変なマクロを書いたけど気にしない。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-c" data-lang="c"><span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;stdio.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">#</span><span style="color:#75715e">include</span> <span style="color:#75715e">&lt;git2.h&gt;</span><span style="color:#75715e">
+<span style="color:#75715e">#include</span> <span style="color:#75715e">&lt;git2.h&gt;</span><span style="color:#75715e">
 </span><span style="color:#75715e"></span>
-<span style="color:#75715e">#</span><span style="color:#75715e">define ASSERT(expr) do { \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">  int ret = (expr); \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">  if (ret != 0) { \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">    fprintf(stderr, &#34;&#39;&#34; #expr &#34;&#39; was not return of zero (ret=%d).\n&#34;, ret); \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">    const git_error *err = giterr_last(); \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">		if (err) { \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">      fprintf(stderr, &#34;ERROR %d: %s\n&#34;, err-&gt;klass, err-&gt;message); \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">    } \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">    abort(); \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">  } \</span><span style="color:#75715e">
-</span><span style="color:#75715e"></span><span style="color:#75715e">}while(0)</span><span style="color:#75715e">
+<span style="color:#75715e">#define ASSERT(expr) do { \
+</span><span style="color:#75715e">  int ret = (expr); \
+</span><span style="color:#75715e">  if (ret != 0) { \
+</span><span style="color:#75715e">    fprintf(stderr, &#34;&#39;&#34; #expr &#34;&#39; was not return of zero (ret=%d).\n&#34;, ret); \
+</span><span style="color:#75715e">    const git_error *err = giterr_last(); \
+</span><span style="color:#75715e">		if (err) { \
+</span><span style="color:#75715e">      fprintf(stderr, &#34;ERROR %d: %s\n&#34;, err-&gt;klass, err-&gt;message); \
+</span><span style="color:#75715e">    } \
+</span><span style="color:#75715e">    abort(); \
+</span><span style="color:#75715e">  } \
+</span><span style="color:#75715e">}while(0)
 </span><span style="color:#75715e"></span>
 
 <span style="color:#66d9ef">void</span> <span style="color:#a6e22e">print_commit</span>(<span style="color:#66d9ef">const</span> git_commit <span style="color:#f92672">*</span>commit){
@@ -294,18 +294,18 @@ LD_LIBRARY_PATH=./ ./a.out
 
     <span style="color:#75715e">// 1行出力するため終端を探す
 </span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>eos <span style="color:#f92672">=</span> message;
-    <span style="color:#66d9ef">for</span>(; <span style="color:#f92672">*</span>eos <span style="color:#f92672">!</span><span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">\n</span><span style="color:#e6db74">&#39;</span> <span style="color:#f92672">&amp;</span><span style="color:#f92672">&amp;</span> <span style="color:#f92672">*</span>eos <span style="color:#f92672">!</span><span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#39;</span><span style="color:#e6db74">\0</span><span style="color:#e6db74">&#39;</span>; eos<span style="color:#f92672">+</span><span style="color:#f92672">+</span>);
-    printf(<span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">%s (%s &lt;%s&gt;): %.*s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
+    <span style="color:#66d9ef">for</span>(; <span style="color:#f92672">*</span>eos <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;\n&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">*</span>eos <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;\0&#39;</span>; eos<span style="color:#f92672">++</span>);
+    printf(<span style="color:#e6db74">&#34;%s (%s &lt;%s&gt;): %.*s</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">&#34;</span>,
       bufptr,
-      parent_sig<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>name,
-      parent_sig<span style="color:#f92672">-</span><span style="color:#f92672">&gt;</span>email,
+      parent_sig<span style="color:#f92672">-&gt;</span>name,
+      parent_sig<span style="color:#f92672">-&gt;</span>email,
       (<span style="color:#66d9ef">int</span>)(eos <span style="color:#f92672">-</span> message),
       message
     );
 }
 
 <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">main</span>(){
-  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>repodir <span style="color:#f92672">=</span> <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">hello-world</span><span style="color:#e6db74">&#34;</span>;
+  <span style="color:#66d9ef">const</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>repodir <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;hello-world&#34;</span>;
 	git_repository <span style="color:#f92672">*</span>repo <span style="color:#f92672">=</span> NULL;
   
   <span style="color:#75715e">// libgit2の初期化
@@ -344,13 +344,13 @@ LD_LIBRARY_PATH=./ ./a.out
 </span><span style="color:#75715e"></span>  <span style="color:#75715e">// これを親のコミットに使う（もしコミットが無い状態であればparentはNULLのままになる）
 </span><span style="color:#75715e"></span>	git_object <span style="color:#f92672">*</span>parent <span style="color:#f92672">=</span> NULL;
 	git_reference <span style="color:#f92672">*</span>ref <span style="color:#f92672">=</span> NULL;
-  git_revparse_ext(<span style="color:#f92672">&amp;</span>parent, <span style="color:#f92672">&amp;</span>ref, repo, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">HEAD</span><span style="color:#e6db74">&#34;</span>);
+  git_revparse_ext(<span style="color:#f92672">&amp;</span>parent, <span style="color:#f92672">&amp;</span>ref, repo, <span style="color:#e6db74">&#34;HEAD&#34;</span>);
 
   <span style="color:#75715e">// コミットオブジェクトを作成
 </span><span style="color:#75715e"></span>  git_oid commit_id;
   ASSERT(git_commit_create_v(
-			<span style="color:#f92672">&amp;</span>commit_id, repo, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">HEAD</span><span style="color:#e6db74">&#34;</span>, sig, sig,
-			NULL, <span style="color:#e6db74"></span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">Create empty commit</span><span style="color:#ae81ff">\n</span><span style="color:#ae81ff">\n</span><span style="color:#e6db74">hello hello</span><span style="color:#e6db74">&#34;</span>, tree,
+			<span style="color:#f92672">&amp;</span>commit_id, repo, <span style="color:#e6db74">&#34;HEAD&#34;</span>, sig, sig,
+			NULL, <span style="color:#e6db74">&#34;Create empty commit</span><span style="color:#ae81ff">\n\n</span><span style="color:#e6db74">hello hello&#34;</span>, tree,
       <span style="color:#ae81ff">1</span>, parent));
 
   <span style="color:#75715e">// コミットログを全部辿る（もう少しいい感じのやり方はあるかもしれない）
@@ -430,12 +430,12 @@ time <span style="color:#f92672">{</span> seq <span style="color:#ae81ff">1</spa
 
 <span style="color:#75715e"># forで</span>
 time <span style="color:#66d9ef">for</span> i in <span style="color:#e6db74">`</span>seq <span style="color:#ae81ff">1</span> 100<span style="color:#e6db74">`</span>; <span style="color:#66d9ef">do</span>
-  echo <span style="color:#e6db74">&#34;</span>$i<span style="color:#e6db74">.dat</span><span style="color:#e6db74">&#34;</span>
+  echo <span style="color:#e6db74">&#34;</span>$i<span style="color:#e6db74">.dat&#34;</span>
 <span style="color:#66d9ef">done</span>
 
 <span style="color:#75715e"># whileも</span>
 time <span style="color:#66d9ef">while</span> read line ; <span style="color:#66d9ef">do</span>
-  echo <span style="color:#e6db74">&#34;</span>$line<span style="color:#e6db74">.dat</span><span style="color:#e6db74">&#34;</span>
+  echo <span style="color:#e6db74">&#34;</span>$line<span style="color:#e6db74">.dat&#34;</span>
 <span style="color:#66d9ef">done</span> &lt; &lt;<span style="color:#f92672">(</span>seq <span style="color:#ae81ff">1</span> 100<span style="color:#f92672">)</span>
 
 </code></pre></div><p>これで思いつきでたくさんコマンドを組み合わせた場合でも簡単に時間が測れる。</p>
@@ -460,16 +460,16 @@ time <span style="color:#66d9ef">while</span> read line ; <span style="color:#66
 <p>原因はGitHub Actionsで動いているコンテナが日本のタイムゾーンではないため。考えてみれば当たり前という感じだった。</p>
 <p>以下を参考に <code>TZ</code> 環境変数を設定して実行するようにした。</p>
 <p><a href="https://discourse.gohugo.io/t/dateformat-force-a-specific-timezone/9860/2">https://discourse.gohugo.io/t/dateformat-force-a-specific-timezone/9860/2</a></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">      - name: Build
-        run: TZ=Asia/Tokyo hugo --minify
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">      - <span style="color:#66d9ef">name</span>: Build
+        <span style="color:#66d9ef">run</span>: TZ=Asia/Tokyo hugo --minify
 </code></pre></div><h3 id="actioncheckoutが---depth-1-を使っている">action@checkoutが <code>--depth 1</code> を使っている</h3>
 <p>enableGitInfoでコミット時の情報を使う機能が機能しなかった。</p>
 <p>原因はaction@checkoutが <code>--depth 1</code> を使ってfetchしていたため。Hugoから見たら最新のコミットの日時しかないように見えてしまう。</p>
 <p>対応としては、<code>fetch-depth: 0</code> で全部のコミットをとる必要があった。</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">      - uses: actions/checkout@v2
-        with:
-          submodules: <span style="color:#66d9ef">true</span>
-          fetch-depth: <span style="color:#ae81ff">0</span> <span style="color:#75715e"># for enableGitInfo</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yml" data-lang="yml">      - <span style="color:#66d9ef">uses</span>: actions/checkout@v2
+        <span style="color:#66d9ef">with</span>:
+          <span style="color:#66d9ef">submodules</span>: <span style="color:#66d9ef">true</span>
+          <span style="color:#66d9ef">fetch-depth</span>: <span style="color:#ae81ff">0</span> <span style="color:#75715e"># for enableGitInfo</span>
 </code></pre></div><p>これ、チューニングオプションなんだから、デフォルトにするのやめてほしい。</p>
 ]]></content></item><item><title>PulumiでAzureのリソースを構成する</title><link>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</link><pubDate>Mon, 24 Jun 2019 00:58:49 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/06/24/configure-azure-resources-with-pulumi/</guid><description>PulumiはIndrastracture as Codeを実現するソフトウェア。 Azure Resource Manager(Template)やTerraformで出来</description><content type="html"><![CDATA[<p><a href="https://pulumi.io/">Pulumi</a>はIndrastracture as Codeを実現するソフトウェア。
 Azure Resource Manager(Template)やTerraformで出来ることと同じだが、特定の言語(JavaScript,TypeScript,Python)で記述できるのが強み。</p>
@@ -526,12 +526,12 @@ To perform an initial deployment, run 'pulumi up'
 <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">PROJECT_NAME</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;pulumi&#39;</span>
 
 <span style="color:#75715e">// Create an Azure Resource Group
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
     <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;JapanEast&#34;</span>,
 });
 
 <span style="color:#75715e">// Create an Azure resource (Storage Account)
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">account</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">Account</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">storage</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">account</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">storage</span>.<span style="color:#a6e22e">Account</span>(<span style="color:#e6db74">`storage</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
     <span style="color:#a6e22e">resourceGroupName</span>: <span style="color:#66d9ef">resourceGroup.name</span>,
     <span style="color:#a6e22e">location</span>: <span style="color:#66d9ef">resourceGroup.location</span>,
     <span style="color:#a6e22e">accountTier</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;Standard&#34;</span>,
@@ -576,8 +576,8 @@ Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
 <h3 id="リソース名を明示して変更を反映する">リソース名を明示して変更を反映する</h3>
 <p>用意されているリソースには大抵nameプロパティがあり、これを明示的に設定すればよいらしい。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-ts" data-lang="ts"><span style="color:#75715e">// Create an Azure Resource Group
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
-    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, <span style="color:#75715e">// この行を追記
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, <span style="color:#75715e">// この行を追記
 </span><span style="color:#75715e"></span>    <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;JapanEast&#34;</span>,
 });
 </code></pre></div><p>Azureのリソースグループは通常名前変更ができないし、そもそも前のリソースの名前(<code>rg-pulumided110d7</code>)がわからなくなる。</p>
@@ -623,8 +623,8 @@ Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
 <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">PROJECT_NAME</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;pulumi&#39;</span>
 
 <span style="color:#75715e">// Create an Azure Resource Group
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
-    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`</span><span style="color:#e6db74">rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>,
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">resourceGroup</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">azure</span>.<span style="color:#a6e22e">core</span>.<span style="color:#a6e22e">ResourceGroup</span>(<span style="color:#e6db74">`rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>, {
+    <span style="color:#a6e22e">name</span><span style="color:#f92672">:</span> <span style="color:#e6db74">`rg-</span><span style="color:#e6db74">${</span><span style="color:#a6e22e">PROJECT_NAME</span><span style="color:#e6db74">}</span><span style="color:#e6db74">`</span>,
     <span style="color:#a6e22e">location</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#34;JapanEast&#34;</span>,
 });
 
@@ -1000,16 +1000,16 @@ testdb=# \dx pg_bigm
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">TABLE</span> pg_tools (tool text, description text);
 
 <span style="color:#75715e">-- レコード作成
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_hint_plan</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLでHINT句を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
-<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_dbms_stats</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLの統計情報を固定化するツール</span><span style="color:#e6db74">&#39;</span>);
-<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_bigm</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLで2-gramの全文検索を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
-<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;</span><span style="color:#e6db74">pg_trgm</span><span style="color:#e6db74">&#39;</span>, <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">PostgreSQLで3-gramの全文検索を使えるようにするツール</span><span style="color:#e6db74">&#39;</span>);
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;pg_hint_plan&#39;</span>, <span style="color:#e6db74">&#39;PostgreSQLでHINT句を使えるようにするツール&#39;</span>);
+<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;pg_dbms_stats&#39;</span>, <span style="color:#e6db74">&#39;PostgreSQLの統計情報を固定化するツール&#39;</span>);
+<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;pg_bigm&#39;</span>, <span style="color:#e6db74">&#39;PostgreSQLで2-gramの全文検索を使えるようにするツール&#39;</span>);
+<span style="color:#66d9ef">INSERT</span> <span style="color:#66d9ef">INTO</span> pg_tools <span style="color:#66d9ef">VALUES</span> (<span style="color:#e6db74">&#39;pg_trgm&#39;</span>, <span style="color:#e6db74">&#39;PostgreSQLで3-gramの全文検索を使えるようにするツール&#39;</span>);
 
 <span style="color:#75715e">-- インデックス作成
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">CREATE</span> <span style="color:#66d9ef">INDEX</span> pg_tools_idx <span style="color:#66d9ef">ON</span> pg_tools <span style="color:#66d9ef">USING</span> gin (description gin_bigm_ops);
 
 <span style="color:#75715e">-- 全文検索 =&gt; 2件ヒットすること
-</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> pg_tools <span style="color:#66d9ef">WHERE</span> description <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;</span><span style="color:#e6db74">%全文検索%</span><span style="color:#e6db74">&#39;</span>;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">SELECT</span> <span style="color:#f92672">*</span> <span style="color:#66d9ef">FROM</span> pg_tools <span style="color:#66d9ef">WHERE</span> description <span style="color:#66d9ef">LIKE</span> <span style="color:#e6db74">&#39;%全文検索%&#39;</span>;
 
 <span style="color:#75715e">-- テーブル削除
 </span><span style="color:#75715e"></span><span style="color:#66d9ef">DROP</span> <span style="color:#66d9ef">TABLE</span> pg_tools;
@@ -1109,7 +1109,7 @@ sudo timedatectl set-timezone Asia/Tokyo
 locale
 # タイムゾーンの変更の確認
 date
-</code></pre><h2 id="lets-encryptでssl証明書を作る">Let's EncryptでSSL証明書を作る</h2>
+</code></pre><h2 id="lets-encryptでssl証明書を作る">Let&rsquo;s EncryptでSSL証明書を作る</h2>
 <p>ドメインは Google Domainsで管理しており、ワイルドカード証明書を発行したい。</p>
 <p>ワイルドカード証明書の場合、DNS-01認証が必須でありDNSサーバに対してTXTレコードを書き込む必要がある。
 一般的なドメインレジストリ（お名前.com、Value-Domain等）でも手動で行えば可能ではあるが、90日の有効期間しかないため、この作業は自動化したい。</p>
@@ -1468,24 +1468,24 @@ Error relocating /path/to/a.out: __sprintf_chk: symbol not found
 <p>色々悩んだけど、そもそもビルド環境からコピーすれば良いよね、という考えに至った。</p>
 <p>ということで、dockerfileはこんな感じ。</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-dockerfile" data-lang="dockerfile"><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> mydev:latest as build</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># ... プログラムのビルドを行う</span><span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">FROM</span><span style="color:#e6db74"> busybox</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># nsswitch.confを作る(glibcがこれを読みに来る)</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">RUN</span> echo <span style="color:#e6db74">&#39;hosts: files dns&#39;</span> &gt;&gt; /etc/nsswitch.conf<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># ld-linux-x86-64.so.2とプログラムの依存ライブラリ</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/ld-linux-x86-64.so.2 /lib64/libc.so.6 /lib64/libdl.so.2 /lib64/libm.so.6 /lib64/libpthread.so.0 /lib64<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># glibcが/etc/nsswitch.confを参照して利用する依存ライブラリ</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/libresolv-2.28.so /lib64/lib/libresolv.so.2<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/libnss_dns-2.28.so /lib64/libnss_dns.so.2<span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /lib64/libnss_files-2.28.so /lib64/libnss_files.so.2<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#75715e"># プログラム</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">COPY</span> --from<span style="color:#f92672">=</span>build /usr/local/src/a.out /usr/local/bin/a.out<span style="color:#960050;background-color:#1e0010">
-</span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#960050;background-color:#1e0010">
+</span><span style="color:#960050;background-color:#1e0010">
 </span><span style="color:#960050;background-color:#1e0010"></span><span style="color:#66d9ef">CMD</span> [<span style="color:#e6db74">&#34;/usr/local/bin/a.out&#34;</span>]<span style="color:#960050;background-color:#1e0010">
 </span></code></pre></div><p>蛇足だが、プログラム内部で<code>ld.so</code>の場所を持っているので、コマンドを実行するとちゃんと<code>ld.so</code>を使って動的リンクを行ってくれる。(lddで<code>/lib64/ld-linux-x86-64.so.2</code>と出るなら、これを動的リンカーに使おうとする。この場所に動的リンカーが無い場合はエラーになる)
 また、今回のように目的の場所に無い場合は、直接<code>ld.so</code>からプログラムを実行することもできます。もし<code>/lib64</code>ではなく、<code>/usr/local/lib</code>に全部配置した場合はこんな感じ。</p>
