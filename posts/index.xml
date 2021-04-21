@@ -1,4 +1,33 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Sun, 13 Dec 2020 22:06:40 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>ワンタイムパスワードのTOTPを少し調べた</title><link>https://fukasawah.github.io/posts/2020/12/13/totp/</link><pubDate>Sun, 13 Dec 2020 22:06:40 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/12/13/totp/</guid><description>ワンタイムパスワード（OTP）のTOTPについて調べた。 ワンタイムパスワードは２段階認証をやったりするときに使う。何気なく使ってたけど、これ</description><content type="html"><![CDATA[<p>ワンタイムパスワード（OTP）のTOTPについて調べた。</p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Thu, 22 Apr 2021 08:35:00 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Hugoのmarkdown-render-hooksのメモ</title><link>https://fukasawah.github.io/posts/2021/04/22/hugo-markdown-render-hooks/</link><pubDate>Thu, 22 Apr 2021 08:35:00 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/04/22/hugo-markdown-render-hooks/</guid><description>HugoはMarkdownをHTMLに変換してくれるが、このときのHookを提供してくれている https://gohugo.io/getting-started/configuration-markup#markdown-render-hooks 例えばmarkdownでは画像を埋め込むこと</description><content type="html"><![CDATA[<p>HugoはMarkdownをHTMLに変換してくれるが、このときのHookを提供してくれている</p>
+<p><a href="https://gohugo.io/getting-started/configuration-markup#markdown-render-hooks">https://gohugo.io/getting-started/configuration-markup#markdown-render-hooks</a></p>
+<p>例えばmarkdownでは画像を埋め込むことができるが、画像のサムネイルも作りつつそれに合ったHTMLを出したい、<code>loading=&quot;lazy&quot;</code>をつけたい、といった場合、<code>layouts\_default\_markup\render-image.html</code>を用意することでできるようになる。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="p">{{</span> <span class="p">.</span><span class="nx">Destination</span> <span class="p">|</span> <span class="nx">safeURL</span> <span class="p">}}</span>
+<span class="p">{{</span><span class="o">-</span> <span class="err">$</span><span class="nx">res</span> <span class="o">:=</span> <span class="p">.</span><span class="nx">Page</span><span class="p">.</span><span class="nx">Resources</span><span class="p">.</span><span class="nx">GetMatch</span> <span class="p">.</span><span class="nx">Destination</span> <span class="p">}}</span>
+<span class="p">{{</span><span class="o">-</span> <span class="k">if</span> <span class="err">$</span><span class="nx">res</span> <span class="p">}}</span>
+    <span class="p">{{</span><span class="o">-</span> <span class="err">$</span><span class="nx">image</span> <span class="o">:=</span> <span class="err">$</span><span class="nx">res</span><span class="p">.</span><span class="nx">Fit</span> <span class="s">&#34;300x300 jpg q50&#34;</span> <span class="p">}}</span>
+    <span class="p">{{</span><span class="o">-</span> <span class="err">$</span><span class="nx">imageUrl</span> <span class="o">:=</span> <span class="err">$</span><span class="nx">image</span><span class="p">.</span><span class="nx">RelPermalink</span> <span class="p">}}</span>
+    <span class="p">&lt;</span><span class="nx">figure</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nx">a</span> <span class="nx">href</span><span class="p">=</span><span class="s">&#34;{{ .Destination | safeURL }}&#34;</span> <span class="nx">target</span><span class="p">=</span><span class="s">&#34;_blank&#34;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="p">=</span><span class="s">&#34;{{ $imageUrl | safeURL }}&#34;</span> <span class="p">{{</span> <span class="nx">with</span> <span class="p">.</span><span class="nx">Text</span><span class="p">}}</span> <span class="nx">alt</span><span class="p">=</span><span class="s">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="nx">end</span> <span class="p">}}</span> <span class="p">{{</span> <span class="nx">with</span> <span class="p">.</span><span class="nx">Title</span><span class="p">}}</span> <span class="nx">title</span><span class="p">=</span><span class="s">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="nx">end</span> <span class="p">}}</span> <span class="nx">loading</span><span class="p">=</span><span class="s">&#34;lazy&#34;</span><span class="o">/</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="o">/</span><span class="nx">a</span><span class="p">&gt;</span>
+    <span class="p">{{</span><span class="o">-</span> <span class="nx">with</span> <span class="p">.</span><span class="nx">Text</span> <span class="p">}}</span>
+        <span class="p">&lt;</span><span class="nx">figcaption</span><span class="p">&gt;{{</span> <span class="p">.</span> <span class="p">}}&lt;</span><span class="o">/</span><span class="nx">figcaption</span><span class="p">&gt;</span>
+    <span class="p">{{</span><span class="o">-</span> <span class="nx">end</span> <span class="p">}}</span>
+    <span class="p">&lt;</span><span class="o">/</span><span class="nx">figure</span><span class="p">&gt;</span>
+<span class="p">{{</span><span class="o">-</span> <span class="k">else</span> <span class="p">}}</span>
+    <span class="p">&lt;</span><span class="nx">img</span> <span class="nx">src</span><span class="p">=</span><span class="s">&#34;{{ .Destination | safeURL }}&#34;</span> <span class="p">{{</span> <span class="nx">with</span> <span class="p">.</span><span class="nx">Text</span><span class="p">}}</span> <span class="nx">alt</span><span class="p">=</span><span class="s">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="nx">end</span> <span class="p">}}</span> <span class="p">{{</span> <span class="nx">with</span> <span class="p">.</span><span class="nx">Title</span><span class="p">}}</span> <span class="nx">title</span><span class="p">=</span><span class="s">&#34;{{ . }}&#34;</span><span class="p">{{</span> <span class="nx">end</span> <span class="p">}}</span> <span class="nx">loading</span><span class="p">=</span><span class="s">&#34;lazy&#34;</span><span class="o">/</span><span class="p">&gt;</span>
+<span class="p">{{</span><span class="o">-</span> <span class="nx">end</span><span class="p">}}</span>
+</code></pre></div><p>（直リンク画像などはelseに該当するはずだが、あまり動作確認してない）</p>
+<p>結果サンプル。markdown viewerでもみれていて、HTMLではfigureタグで囲まれているはず。</p>
+<p>
+    <figure>
+    <a href="images/index/2021-04-22-06-01-22.png" target="_blank" onclick="showOverlay(event)">
+        <img src="/posts/2021/04/22/hugo-markdown-render-hooks/images/index/2021-04-22-06-01-22_hu13c7e3eabc1f076990944d10962ad5d6_4597_300x300_fit_q50_bgffffff_box_2.jpg"  alt="test"  loading="lazy"/>
+    </a>
+        <figcaption>test</figcaption>
+    </figure></p>
+<p>hugoのshortcodeと同じ要領なので全く同じことはshortcodeでもできるのだが、shortcodeはmarkdown viewerと相性が悪いのでこういうカスタマイズができるのはうれしい。</p>
+]]></content></item><item><title>ワンタイムパスワードのTOTPを少し調べた</title><link>https://fukasawah.github.io/posts/2020/12/13/totp/</link><pubDate>Sun, 13 Dec 2020 22:06:40 +0900</pubDate><guid>https://fukasawah.github.io/posts/2020/12/13/totp/</guid><description>ワンタイムパスワード（OTP）のTOTPについて調べた。 ワンタイムパスワードは２段階認証をやったりするときに使う。何気なく使ってたけど、これ</description><content type="html"><![CDATA[<p>ワンタイムパスワード（OTP）のTOTPについて調べた。</p>
 <p>ワンタイムパスワードは２段階認証をやったりするときに使う。何気なく使ってたけど、これどうやって実装するんだろう？と思っていたので感覚をつかみたかった。</p>
 <h2 id="totptime-based-one-time-password">TOTP(Time-Based One-Time Password)</h2>
 <h3 id="概要">概要</h3>
@@ -164,7 +193,8 @@
 <li>Time-basedを選択する</li>
 <li>「Verify Authenticator」 をクリックして表示されるコードを確認</li>
 </ul>
-<p><img src="./images/index/2020-12-14-00-26-33.png" alt=""></p>
+<p>
+    <img src="./images/index/2020-12-14-00-26-33.png"   loading="lazy"/></p>
 <h2 id="おわり">おわり</h2>
 <p>実際に動くWebアプリを作ったり、TOTP用の秘密鍵はどう扱えばよいのか、他の方式(HOTP)の優劣とか使い分けとか、どんなときにワンタイムパスワードを要求するのかとかもう少し調べるところはありそう。</p>
 <p>ワンタイムパスワードも面倒なのでデバイス認証にしたい場合とかも気になる。FIDO U2Fとか。</p>
@@ -867,7 +897,8 @@ Permalink: file:///C:/Users/fukasawah/quickstart/.pulumi/stacks/dev.json
 </ul>
 <p>なお、結果は点数のみでどこが間違えたかは教えてくれないが、こんな感じでどの分野が良かったか/悪かったかは教えてくれる。</p>
 <p>こちらは全般的にダメでID周りが壊滅的な例です。誰か教えてくれ。</p>
-<p><img src="/images/2019/fail-an-examination-az-103/result.jpg" alt=""></p>
+<p>
+    <img src="/images/2019/fail-an-examination-az-103/result.jpg"   loading="lazy"/></p>
 <h3 id="問題の言語について">問題の言語について</h3>
 <p>日本語で翻訳も怪しい所はあまりなかった。</p>
 <p>WebAppをWebアプリと訳していたりちょっと残念なところはあったが、Microsoftのドキュメントを日本語で日常的に読んでいれば補完が利くので違和感はないと思う。</p>
@@ -1306,12 +1337,14 @@ LetsEncryptによる証明書の作成・更新を行うためのプログラム
 <li>DNS名: 取得したドメイン名</li>
 <li>DNSSEC: オン</li>
 </ul>
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-14-23.png" alt=""></p>
+<p>
+    <img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-14-23.png"   loading="lazy"/></p>
 <p>作成出来たらゾーンについてネームサーバが割り当たる。ゾーンで登録したレコードの情報はこのネームサーバに設定される。</p>
 <h3 id="ネームサーバを変更google-domains---google-cloud-dns-service">ネームサーバを変更(Google domains -&gt; Google Cloud DNS Service)</h3>
 <p>Google Cloud DNS Serviceでゾーンを作成した時に得られたネームサーバをGoogle Domainsに登録する。</p>
 <p>まず、<a href="https://domains.google.com/">Google Domains</a>を開き、ネームサーバを変更する。</p>
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-20-14.png" alt=""></p>
+<p>
+    <img src="/images/vps-server-setup-with-letsencrypt/2019-03-16-21-20-14.png"   loading="lazy"/></p>
 <p>この変更は最長1日ぐらいかかる。結構時間がかかった。</p>
 <h3 id="google-cloud-dns-serviceの認可情報を作る">Google Cloud DNS Serviceの認可情報を作る</h3>
 <p>次にGoogle DNSでDNS登録をプログラムが行えるようにOAuth2認証の準備をする</p>
@@ -1379,7 +1412,8 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
 (Y)es/(N)o: N
 
 </code></pre><p>実行後、Cloud DNS上をみると、以下のようにレコードを登録していることが分かる。
-<img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-22-59-38.png" alt=""></p>
+
+    <img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-22-59-38.png"   loading="lazy"/></p>
 <p>うまくいくと以下のような形になる。</p>
 <pre><code>IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
@@ -1512,10 +1546,12 @@ systemctl status nginx
 <pre><code>firewall-cmd --add-service=https --zone=public 
 firewall-cmd --add-service=https --zone=public --permanent
 </code></pre><p>Chrome等のブラウザでアクセスして表示されればOK</p>
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-35-31.png" alt=""></p>
+<p>
+    <img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-35-31.png"   loading="lazy"/></p>
 <p>SSLの妥当性もテストしてくれるサービスがあるので、これも試す。
 <a href="https://www.ssllabs.com/ssltest/">https://www.ssllabs.com/ssltest/</a></p>
-<p><img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png" alt=""></p>
+<p>
+    <img src="/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png"   loading="lazy"/></p>
 <p>いいですね。</p>
 <p>ちなみに、証明書を更新し終わったらnginxもreloadを行わないと反映されない。ので、<code>systemctl reload nginx</code>をcronに入れておくなりすると良いでしょう。</p>
 ]]></content></item><item><title>GNU ldで一部をスタティックリンクにする</title><link>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</link><pubDate>Mon, 07 Jan 2019 03:15:17 +0900</pubDate><guid>https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/</guid><description>tl;dr gccなら-Wl,...でリンク時のオプション(==ldコマンドのオプション)を渡せる。オプションが複数ある場合はカンマで繋げる。 ldのオ</description><content type="html"><![CDATA[<h2 id="tldr">tl;dr</h2>
@@ -1833,5 +1869,6 @@ git commit -m &quot;Update&quot;
     &quot;pasteImage.insertPattern&quot;: &quot;${imageSyntaxPrefix}/images/${currentFileNameWithoutExt}/${imageFileName}${imageSyntaxSuffix}&quot;
 }
 </code></pre><p>以下は画像。貼り付けのお試し。</p>
-<p><img src="/images/using-hugo/2018-12-25-16-45-13.png" alt=""></p>
+<p>
+    <img src="/images/using-hugo/2018-12-25-16-45-13.png"   loading="lazy"/></p>
 ]]></content></item></channel></rss>
