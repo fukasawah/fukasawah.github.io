@@ -1,4 +1,48 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Sun, 05 Dec 2021 12:16:24 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Gitのクライアントフックを使いHugoの記事の作成日時を忘れずに置き換える</title><link>https://fukasawah.github.io/posts/2021/12/05/use-git-hooks-to-replace-creation-date/</link><pubDate>Sun, 05 Dec 2021 12:16:24 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/12/05/use-git-hooks-to-replace-creation-date/</guid><description>要約 Hugoの記事データに埋め込む作成日時をコミット時の日時にしたく、Gitのフック(pre-commit)とGitattributesのフ</description><content type="html"><![CDATA[<h2 id="要約">要約</h2>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Sun, 05 Dec 2021 12:58:52 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>MCP資格のAZ-104に合格しました</title><link>https://fukasawah.github.io/posts/2021/12/05/exam-az-104/</link><pubDate>Sun, 05 Dec 2021 12:58:52 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/12/05/exam-az-104/</guid><description>2年以上前にAZ-103を受けて不合格だったが、今回は受かった。1000点中700点で合格で814点。Azureが使えると言っていいのかは微</description><content type="html"><![CDATA[<p><a href="/posts/2019/05/25/fail-an-examination-az-103">2年以上前にAZ-103を受けて不合格だった</a>が、今回は受かった。1000点中700点で合格で814点。Azureが使えると言っていいのかは微妙ですが、合格は合格です。</p>
+<p>
+    <figure>
+    <a href="images/index/scorereport.jpg" target="_blank" onclick="showOverlay(event)">
+        <img src="/posts/2021/12/05/exam-az-104/images/index/scorereport_hubf6120104839cbe23c123095e382bff3_277408_300x300_fit_q75_box.jpg"  alt="scorereport"  loading="lazy"/>
+    </a>
+        <figcaption>scorereport</figcaption>
+    </figure></p>
+<p>特に仕事でVM ScaleSetやLoadBalancerを使ったり、FunctionsやAppServiceを書いたり、RBACを意識してマネージドIDを活用したり、ARM Templateに苦しんでBicepに乗り換えたけど根本的な所は解決してないと気付いて辛くなったり、Azureのポータルとにらめっこしたり、と色々やってたので、その辺りで力がついたと思う。逆を言えば2年も仕事でやって自信がついていた領域で満点とれてないのが悲しい。</p>
+<h3 id="試験の受け方">試験の受け方</h3>
+<p>今回も外の試験会場に予約を取って行った。会場は違っても流れは前回と同じ。</p>
+<h3 id="試験">試験</h3>
+<p>全て選択問題。100分で55問？ぐらいだった。前回は180分だったので、だいぶ短くなっている。</p>
+<p>問題形式は以下で例がある。</p>
+<p><a href="https://docs.microsoft.com/ja-jp/learn/certifications/exam-duration-question-types">https://docs.microsoft.com/ja-jp/learn/certifications/exam-duration-question-types</a></p>
+<p>AZ-103の時はケーススタディに入る前に見直しが入って見直し後は二度と見直しができなかった気がするが、AZ-104ではそういうのは無かった。</p>
+<p>しかし、時間が短くなったことで1問に2分しか費やせない。問題によっては1分あれば十分なものもあれば5分あっても厳しいものがあった。結局、時間切れと同時に最後の回答をしたぐらいギリギリだった。</p>
+<p>回答選択できる項目を先にみてから、何を答えようとしているかを先に頭に入れてから問題を読むほうが良いかもしれない。ケーススタディは特に。答える時も2分以上悩むようであれば、その時に考えてる答えを選んで見直し対象にして後で確認でも良いだろう。</p>
+<p>あと、言葉足らずな問題が2問ぐらいあった気がする。「それ、どういう状態での話なの？Aなら1,Bなら2なんだが」という感じで回答に困るのがあった。問題文を見落としているだけなのかもしれないが。
+そういう時はその時の直感で答えておき、見直し対象に含めて後で改めて考えるのがよかったと思う。</p>
+<h3 id="問題">問題</h3>
+<p>具体的な問題については書けない。</p>
+<p>相変わらず問題文のクセが強い。「（事前条件）があり（目的）をしたい。何をすればよいか？」といった感じ。これはAZ-103のころから変わってなかった。恐らくは1度受けないと慣れない形式だと思う。</p>
+<p>ストレージアカウントの認証にアクセスキーやSASだけではなく、Azure AD連携(サービスプリンシパルとRBAC)を使うとか出来ることが増えているのだが、この辺りについてはまだ含まれていなさそうだった。
+ただ、シークレットレスな構築ができるように進化が進んでいる感じはしているので、この辺りの移り変わりも起きると思う。結局第三者に使ってもらう時は何かしらシークレット情報を共有しないといけないのだけど。（サービスプリンシパルを公開鍵でやるとか色々やり方はあるけども、そもそもサービスプリンシパルって第三者のアプリのために払い出すのってどうなんだろう。）</p>
+<h3 id="勉強方法">勉強方法</h3>
+<p>ざっくり分けると以下。</p>
+<ul>
+<li>仕事</li>
+<li>Azure Learn</li>
+<li>Udemyの動画(1200円)</li>
+</ul>
+<p>仕事で範囲内のことを色々やっていたのが一番大きいが、前回と比べてAzure Learnが増えているのもポイント。</p>
+<p><a href="https://docs.microsoft.com/ja-jp/learn/certifications/exams/az-104">https://docs.microsoft.com/ja-jp/learn/certifications/exams/az-104</a></p>
+<p>試験概要のページ（いつの間にかdocsに移ってた）で、Azure Learnが紹介されており、何を抑えればいいかをざっくり辿れるものが出てきて、勉強面では充実してきている。一通り眺めて、タイトルに分からない単語があったらそれを拾って読んだりしていた。
+前回はAzure AD周りやNetwork Watcherあたり(接続モニター、IPフロー検証、NSGフローログ、パケットキャプチャ)が全く分かってなかったので、そこを少し厚く眺めてた気がする。今もよくわかってない。</p>
+<p>しかし、試験の内容を考えるとこれだけで抑えるのはかなり無理があると思う。Learnは製品の説明や出来ることを説明していく形であり、製品の制約などを抑える必要もある。大事なところは割とLearnの内容でも書いてあるのだが、引用されたドキュメントも含めて理解する必要もあったり、謎が謎を呼びどこまで読めば理解したと言えるのか？と辛くなった。また、Learnの途中にある理解度チェックの内容は実際の問題に少し近いが、試験範囲を全くカバーできていないので、Learnだけで試験に通用するぐらい理解できるとは思えない。私の要領が悪いだけかもしれない。</p>
+<p>で、不安だったので、Udemyでシラバスの内容を操作付き動画で説明するコースが購入した。今回は英語だったが<a href="https://www.udemy.com/course/70533-azure/">AZ-104 Microsoft Azure Administrator Exam Certification 2021</a>を買った。セールで1200円。他の試験領域と被るので流用はあったものの、かなりボリュームがある。実際はトランスクリプト(文字起こし・英語）をGoogle翻訳で訳しながら2倍速で流し読みした。トランスクリプトの認識が間違ってたり、文をまたいで変な翻訳になるものの概ね理解できる内容で読めていた。</p>
+<p>手を動かして学ぶのがやり方の一つではあるけども、分からない状態でドキュメントに従い手を動かすというのは、私は結構面倒に感じている。また<strong>Azureはお試しでも課金が発生する</strong>ので、その不安の中で作業する必要があり、ストレスフルであり、やる気を失いがちだと思う。Learnのサンドボックス環境もあるし、課金プランを理解できていれば変な課金は発生しないし、予算設定しなさいとか、12ヵ月の無償期間をうまくつかうとか、終わったらきちんと削除しましょうとか色々あるけど。</p>
+<p>その点、解説動画は<strong>分かっている人が手を動かしてやって見せてくれる</strong>のが良くて、その不安を軽減できる。どこに何があるかをもたもた探さなくてよい。作成には時間がかかるものもあるが動画ならカットしてくれる。「そうやればいいのね」と学びもある。そういうコースが1200円で見れるのでアリだと思う。ドットインストールとかで何か学んでたりした人は良いかもしれない。</p>
+<p>なお、1年前にUdemyで模擬試験のコースがセールで安かったので買ったものの、見ないまま放置していたらコースが削除されて見れなくなるという事があって、自分の中ではUdemyの株は下がっている。次に使うかはわからない。</p>
+<p>他の勉強方法としては、公認のトレーニングがあったり、トレーニングを受けた人向けのWebセミナーをやっているが、トレーニングは時間拘束されるのとお高いので使っていない。</p>
+<h3 id="おわり">おわり</h3>
+<p>リベンジが果たせてよかった。でも仕事に生かせるかどうかは自信がない。今まで通りやっていくだけだろうなぁ。</p>
+]]></content></item><item><title>Gitのクライアントフックを使いHugoの記事の作成日時を忘れずに置き換える</title><link>https://fukasawah.github.io/posts/2021/12/05/use-git-hooks-to-replace-creation-date/</link><pubDate>Sun, 05 Dec 2021 12:16:24 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/12/05/use-git-hooks-to-replace-creation-date/</guid><description>要約 Hugoの記事データに埋め込む作成日時をコミット時の日時にしたく、Gitのフック(pre-commit)とGitattributesのフ</description><content type="html"><![CDATA[<h2 id="要約">要約</h2>
 <p>Hugoの記事データに埋め込む作成日時をコミット時の日時にしたく、Gitのフック(pre-commit)とGitattributesのフィルタを試して、フックを採用した。</p>
 <p>セットアップを楽にしたくcloneしたらすぐ機能する状態にしたかったが、完全に手順を無くすことはできなさそう。というのも、そうしないと、cloneした後add/commitで任意コマンド実行といった脆弱性に繋がる。なので明示的に指定させるやり方を取っているんだと思う。そのため、必ずconfigに1行書き足すコマンドを実行する必要があるが、それは許容する事にした。README.mdとかに書いておけばよいでしょう。</p>
 <h2 id="参考">参考</h2>
@@ -140,7 +184,7 @@ cat content/posts/test.md
 <p>
     <figure>
     <a href="images/index/2021-04-22-06-01-22.png" target="_blank" onclick="showOverlay(event)">
-        <img src="/posts/2021/04/22/hugo-markdown-render-hooks/images/index/2021-04-22-06-01-22_hu13c7e3eabc1f076990944d10962ad5d6_4597_300x300_fit_q50_bgffffff_box_2.jpg"  alt="test"  loading="lazy"/>
+        <img src="/posts/2021/04/22/hugo-markdown-render-hooks/images/index/2021-04-22-06-01-22_hu13c7e3eabc1f076990944d10962ad5d6_4597_300x300_fit_q75_bgffffff_box_2.jpg"  alt="test"  loading="lazy"/>
     </a>
         <figcaption>test</figcaption>
     </figure></p>
