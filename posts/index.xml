@@ -1,4 +1,122 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Thu, 22 Apr 2021 08:35:00 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Hugoのmarkdown-render-hooksのメモ</title><link>https://fukasawah.github.io/posts/2021/04/22/hugo-markdown-render-hooks/</link><pubDate>Thu, 22 Apr 2021 08:35:00 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/04/22/hugo-markdown-render-hooks/</guid><description>HugoはMarkdownをHTMLに変換してくれるが、このときのHookを提供してくれている https://gohugo.io/getting-started/configuration-markup#markdown-render-hooks 例えばmarkdownでは画像を埋め込むこと</description><content type="html"><![CDATA[<p>HugoはMarkdownをHTMLに変換してくれるが、このときのHookを提供してくれている</p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Sun, 05 Dec 2021 12:16:24 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Gitのクライアントフックを使いHugoの記事の作成日時を忘れずに置き換える</title><link>https://fukasawah.github.io/posts/2021/12/05/use-git-hooks-to-replace-creation-date/</link><pubDate>Sun, 05 Dec 2021 12:16:24 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/12/05/use-git-hooks-to-replace-creation-date/</guid><description>要約 Hugoの記事データに埋め込む作成日時をコミット時の日時にしたく、Gitのフック(pre-commit)とGitattributesのフ</description><content type="html"><![CDATA[<h2 id="要約">要約</h2>
+<p>Hugoの記事データに埋め込む作成日時をコミット時の日時にしたく、Gitのフック(pre-commit)とGitattributesのフィルタを試して、フックを採用した。</p>
+<p>セットアップを楽にしたくcloneしたらすぐ機能する状態にしたかったが、完全に手順を無くすことはできなさそう。というのも、そうしないと、cloneした後add/commitで任意コマンド実行といった脆弱性に繋がる。なので明示的に指定させるやり方を取っているんだと思う。そのため、必ずconfigに1行書き足すコマンドを実行する必要があるが、それは許容する事にした。README.mdとかに書いておけばよいでしょう。</p>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://git-scm.com/docs/githooks">https://git-scm.com/docs/githooks</a></li>
+<li><a href="https://git-scm.com/docs/git-config#FILES">https://git-scm.com/docs/git-config#FILES</a></li>
+<li><a href="https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%83%95%E3%83%83%E3%82%AF">https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%83%95%E3%83%83%E3%82%AF</a></li>
+<li><a href="https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%81%AE%E5%B1%9E%E6%80%A7#r_keyword_expansion">https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%81%AE%E5%B1%9E%E6%80%A7#r_keyword_expansion</a></li>
+</ul>
+<h2 id="背景">背景</h2>
+<p>ここの記事を書く時に作成日時を毎回コミット前に時計を見ながらだいたいの日時に合わせていた。
+ある日、ふとプログラマらしからぬ行動だなと思い、これを自動化する方法を考えた。</p>
+<p>まず、ここの記事はhugoを使ってHTMLへ変換している。そしてHugoの機能で最終更新日時をGitのコミットログから取り出す機能があるので作成日時も取れるのではないかと考えたが、そのような機能は提供していなかった。一応、hugoの機能で<a href="https://gohugo.io/content-management/archetypes/">テンプレートから記事を作成する機能</a>があり、その際に現在日時を埋め込むテンプレートを書くことができるが、記事を書き終えた日時ではないので若干ずれるし、書き始めたのはいいものの書ききれず翌日に持ち越しになることもある（そのまま日の目を見ないまま朽ちる方が多い）</p>
+<p>なので、どうにかしてコミット時の日時になるように置き換えたい。具体的には・・・</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">---<span class="w">
+</span><span class="w"></span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;タイトル&#34;</span><span class="w">
+</span><span class="w"></span><span class="k">date</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-12-05T12:16:24+09:00&#34;</span><span class="w">
+</span></code></pre></div><p>こんなかんじで書き、コミットするときにdateの箇所がコミット時の日時になるように置き換えたい。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">---<span class="w">
+</span><span class="w"></span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;タイトル&#34;</span><span class="w">
+</span><span class="w"></span><span class="k">date</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-11-11T02:44:50+09:00&#34;</span><span class="w">
+</span></code></pre></div><p>もっと単純にすると「該当ファイルの特定キーワードを見つけたらコミット時の日時に置き換えたい」</p>
+<p>なお<code>date: .*</code>にマッチする行を見つけたら<code>date: &quot;2021-01-23T01:23:45Z&quot;</code>に置き換えるように書いてもよいが、<code>date: .*</code>だと次回もコミットするたびに上書きされてしまう。更新日時であればそれでも良いが、今回は作成日時なので作成した時の1回だけ置き換えるように<code>date: &quot;&quot;</code>を置き換える形とする。これなら2回目はマッチせず置き換わらない。</p>
+<h2 id="調査">調査</h2>
+<h3 id="hookを使うクライアントサイドフック">Hookを使う（クライアントサイドフック）</h3>
+<p><a href="https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%83%95%E3%83%83%E3%82%AF">https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%83%95%E3%83%83%E3%82%AF</a></p>
+<p><code>.git/hooks/pre-commit</code> を定義しておくと、commitを作成する前にこのスクリプトを実行してくれる。
+しかし、<code>.git</code>配下はバージョン管理できないためここに置く運用は少しコストがある。
+なので、適当に<code>.git_hooks</code>などのディレクトリを作り、git config で <code>core.hooksPath .git_hooks</code> と設定するのがよさそう。（シンボリックリンクでもいいかもしれないがWindowsではジャンクションとかになるので手順が変わってしまう）</p>
+<p>これを利用してコミットしたファイルの内容に含まれる作成日時を書き換えたい。</p>
+<p>手順。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># フックスクリプトを作成。バージョン管理対象。</span>
+<span class="c1"># .gitがあるディレクトリ(GIT_DIR)からの相対パスで作成する。core.hooksPathで指定できるパスであればなんでも良い</span>
+<span class="c1"># GIT_DIR</span>
+<span class="c1"># - .git</span>
+<span class="c1"># - .git_hooks</span>
+<span class="c1">#    - pre-commit</span>
+mkdir .git_hooks
+cat <span class="s">&lt;&lt; &#39;EOF&#39; &gt; &#34;.git_hooks/pre-commit&#34;
+</span><span class="s">#!/bin/bash
+</span><span class="s">
+</span><span class="s">TIMESTAMP=$(date --iso-8601=s)
+</span><span class="s">
+</span><span class="s">git diff --cached --name-only | grep &#39;^content/.*\.md$&#39; | while read filepath; do
+</span><span class="s">  if [ -f &#34;$filepath&#34; ] &amp;&amp; sed -i &#34;s/^date: \&#34;\&#34;/date: \&#34;$TIMESTAMP\&#34;/g&#34; &#34;$filepath&#34;; then
+</span><span class="s">    echo &#34;(filter) rewrited $filepath&#34;
+</span><span class="s">    git add &#34;$filepath&#34;
+</span><span class="s">  fi
+</span><span class="s">done
+</span><span class="s">EOF</span>
+
+<span class="c1"># Linuxでは実行権限を与える必要がある</span>
+chmod +x <span class="s2">&#34;.git_hooks/pre-commit&#34;</span>
+
+</code></pre></div><p>次にデフォルトのフックではなく、作成したフックがあるディレクトリを参照するようにする。このリポジトリにだけ効けばよいので<code>--local</code>をつける。この作業はclone後などにリポジトリ毎に最初に1回だけ行う。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># フックスクリプトのホームを指定。.gitがあるディレクトリ(GIT_DIR)からの相対パス</span>
+<span class="c1"># これはclone直後などに1回だけセットアップする</span>
+git config --local core.hooksPath <span class="s2">&#34;.git_hooks&#34;</span>
+</code></pre></div><p>今回は、ステージした<code>.md</code>に含まれる一部の文字列を書き換えたいので、コミット対象ファイルパスを取得し、<code>^content/.*\.md$</code>にマッチするものでフィルタし、sedで書き換え、該当ファイルを編集後に再度 <code>git add</code> する。</p>
+<p>ただし、このやり方は<code>git add -p</code>で部分的な編集を無視してしまうことになるので注意。</p>
+<p>動作確認。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># テストファイル作成</span>
+<span class="nb">echo</span> <span class="s1">&#39;date: &#34;&#34;&#39;</span> &gt; content/posts/test.md
+<span class="c1"># ステージに反映し、コミット対象に含める</span>
+git add content/posts/test.md
+
+<span class="c1"># ワーキングディレクトリの内容が置き換わっていないことを確認</span>
+cat <span class="s2">&#34;content/posts/test.md&#34;</span>
+<span class="c1"># コミット</span>
+git commit -m <span class="s2">&#34;お試し&#34;</span>
+
+<span class="c1"># ワーキングディレクトリの内容が置き換わったことを確認</span>
+cat <span class="s2">&#34;content/posts/test.md&#34;</span>
+<span class="c1"># コミットに反映されたのをログの差分から確認</span>
+git log -p HEAD
+
+<span class="c1"># 確認が終わったので、コミットを取り消して、addやコミット前の状態に戻す</span>
+git reset HEAD^
+</code></pre></div><p>管理面では、commit作業する前に<code>core.hooksPath</code>を忘れずに設定しておく必要がある。</p>
+<h3 id="gitattributesとフィルタを使う">gitattributesとフィルタを使う</h3>
+<p><a href="https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%81%AE%E5%B1%9E%E6%80%A7#r_keyword_expansion">https://git-scm.com/book/ja/v2/Git-%E3%81%AE%E3%82%AB%E3%82%B9%E3%82%BF%E3%83%9E%E3%82%A4%E3%82%BA-Git-%E3%81%AE%E5%B1%9E%E6%80%A7#r_keyword_expansion</a></p>
+<p>上記のリファレンスでは「キーワード展開」と目次があるがそのような機能ではなく、ファイルの内容を書き換えるフィルタを「キーワード展開」として使っている。
+なお、キーワード展開はSubversionにあった「<a href="https://svnbook.red-bean.com/en/1.7/svn.advanced.props.special.keywords.html">キーワード置換</a>」のようなもので、<code>$Author$</code>とあったら<code>$Author: fukasawah$</code>と置き換える。リファレンスではこれをこのフィルタの機能で行えることを示す内容にもなっている。</p>
+<p>ステージングエリアとワーキングディレクトリを行き来するときのフィルタを書くことができる。</p>
+<ul>
+<li>git checkout (ステージングエリア→ワーキングディレクトリ、チェックアウトの直前)の時は<code>sumdge</code>フィルタを実行</li>
+<li>git add (ワーキングディレクトリ→ステージングエリア、ステージングの直前)の時は<code>clean</code>フィルタを実行</li>
+</ul>
+<p>フィルタは、コマンド実行する形で、標準入力でデータを読み標準出力で書き出す、という形を守れば何でもよいらしい。</p>
+<p>これが使えないか検討したが、今回は見送った。後述。</p>
+<p>手順。</p>
+<p>フィルタをgitのconfigとして書く。<code>filter.フィルタ名.clean</code>という形式で書いていく。 このリポジトリにだけ効けばよいので<code>--local</code>をつける。この作業はclone後などにリポジトリ毎に最初に1回だけ行う。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">git config --local filter.dater.clean <span class="s1">&#39;sed &#34;s/^date: \&#34;\&#34;/date: \&#34;$(date --iso-8601=s)\&#34;/g&#34;&#39;</span>
+</code></pre></div><p>.gitattributes でどのファイルがどのフィルタを使うか定義する。daterという名前を付けたのでそれを使うようにする。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">echo</span> <span class="s1">&#39;content/**/*.md filter=dater&#39;</span> &gt; .gitattributes
+</code></pre></div><p>動作確認。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">echo</span> <span class="s1">&#39;date: &#34;&#34;&#39;</span> &gt;&gt; content/posts/test.md
+git add content/posts/test.md
+
+<span class="c1"># ステージとの差分を確認し、置き換わっているものがステージされていることを確認</span>
+git diff --cached
+<span class="c1"># ワーキングディレクトリの内容は **置き換わっていない** 事を確認</span>
+cat content/posts/test.md
+</code></pre></div><p>ワーキングディレクトリの内容が置き換わっていないので、この後、修正し再度addしてしまうとまたその時の日時になってしまう。ちゃんとステージにある内容をチェックアウトすればいいのだが、忘れそうだ。
+これは本意ではないので今回は採用しなかった。</p>
+<h3 id="サーバーサイドフック">サーバーサイドフック</h3>
+<p>今回の用途には使えない気がするので詳しく調べていない。</p>
+<p>やりたいことがファイルの中身を書き換える性質上、仮にできたとしてもサーバサイドでやってしまうとコミットIDが変わってしまい、ローカルとリモートリポジトリで差ができてしまう。
+なのでそれ以外の処理に使うものだと思う。特定ブランチのPushを拒否したり、CIを回すトリガーとかに使うとか。</p>
+<ul>
+<li><a href="https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#_server_side_hooks">https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks#_server_side_hooks</a></li>
+<li>GitHubの場合Enterprise版で可能
+<ul>
+<li><a href="https://docs.github.com/en/enterprise-server@3.2/admin/policies/enforcing-policy-with-pre-receive-hooks/creating-a-pre-receive-hook-script">https://docs.github.com/en/enterprise-server@3.2/admin/policies/enforcing-policy-with-pre-receive-hooks/creating-a-pre-receive-hook-script</a></li>
+</ul>
+</li>
+</ul>
+]]></content></item><item><title>Hugoのmarkdown-render-hooksのメモ</title><link>https://fukasawah.github.io/posts/2021/04/22/hugo-markdown-render-hooks/</link><pubDate>Thu, 22 Apr 2021 08:35:00 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/04/22/hugo-markdown-render-hooks/</guid><description>HugoはMarkdownをHTMLに変換してくれるが、このときのHookを提供してくれている https://gohugo.io/getting-started/configuration-markup#markdown-render-hooks 例えばmarkdownでは画像を埋め込むこと</description><content type="html"><![CDATA[<p>HugoはMarkdownをHTMLに変換してくれるが、このときのHookを提供してくれている</p>
 <p><a href="https://gohugo.io/getting-started/configuration-markup#markdown-render-hooks">https://gohugo.io/getting-started/configuration-markup#markdown-render-hooks</a></p>
 <p>例えばmarkdownでは画像を埋め込むことができるが、画像のサムネイルも作りつつそれに合ったHTMLを出したい、<code>loading=&quot;lazy&quot;</code>をつけたい、といった場合、<code>layouts\_default\_markup\render-image.html</code>を用意することでできるようになる。</p>
 <div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="p">{{</span> <span class="p">.</span><span class="nx">Destination</span> <span class="p">|</span> <span class="nx">safeURL</span> <span class="p">}}</span>
