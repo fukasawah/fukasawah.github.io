@@ -58,12 +58,12 @@
 <p>まず、ここの記事はhugoを使ってHTMLへ変換している。そしてHugoの機能で最終更新日時をGitのコミットログから取り出す機能があるので作成日時も取れるのではないかと考えたが、そのような機能は提供していなかった。一応、hugoの機能で<a href="https://gohugo.io/content-management/archetypes/">テンプレートから記事を作成する機能</a>があり、その際に現在日時を埋め込むテンプレートを書くことができるが、記事を書き終えた日時ではないので若干ずれるし、書き始めたのはいいものの書ききれず翌日に持ち越しになることもある（そのまま日の目を見ないまま朽ちる方が多い）</p>
 <p>なので、どうにかしてコミット時の日時になるように置き換えたい。具体的には・・・</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">---<span class="w">
-</span><span class="w"></span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;タイトル&#34;</span><span class="w">
-</span><span class="w"></span><span class="k">date</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-12-05T12:16:24+09:00&#34;</span><span class="w">
+</span><span class="w"> </span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;タイトル&#34;</span><span class="w">
+</span><span class="w"> </span><span class="k">date</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;&#34;</span><span class="w"> </span><span class="c"># （先頭にスペースが入ってるが実際はスペースは含まれない。フックのせいで書き換わってしまうのでスペースを入れて誤魔化している）</span><span class="w">
 </span></code></pre></div><p>こんなかんじで書き、コミットするときにdateの箇所がコミット時の日時になるように置き換えたい。</p>
 <div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml">---<span class="w">
-</span><span class="w"></span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;タイトル&#34;</span><span class="w">
-</span><span class="w"></span><span class="k">date</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-11-11T02:44:50+09:00&#34;</span><span class="w">
+</span><span class="w"> </span><span class="k">title</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;タイトル&#34;</span><span class="w">
+</span><span class="w"> </span><span class="k">date</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-11-11T02:44:50+09:00&#34;</span><span class="w">
 </span></code></pre></div><p>もっと単純にすると「該当ファイルの特定キーワードを見つけたらコミット時の日時に置き換えたい」</p>
 <p>なお<code>date: .*</code>にマッチする行を見つけたら<code>date: &quot;2021-01-23T01:23:45Z&quot;</code>に置き換えるように書いてもよいが、<code>date: .*</code>だと次回もコミットするたびに上書きされてしまう。更新日時であればそれでも良いが、今回は作成日時なので作成した時の1回だけ置き換えるように<code>date: &quot;&quot;</code>を置き換える形とする。これなら2回目はマッチせず置き換わらない。</p>
 <h2 id="調査">調査</h2>
