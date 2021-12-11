@@ -1,7 +1,13 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Sat, 11 Dec 2021 11:09:06 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Azure AD B2Cを作ってサンプルアプリを動かした</title><link>https://fukasawah.github.io/posts/2021/12/11/azure-ad-b2c/</link><pubDate>Sat, 11 Dec 2021 11:09:06 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/12/11/azure-ad-b2c/</guid><description>Azure AD B2CでめんどくさいID管理を丸投げできないかなと思い調べた 座学 https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/ 作成準備 DNSゾーン作成（任意） Azure DNSゾーンでやる必要はなく、任意の</description><content type="html"><![CDATA[<p>Azure AD B2CでめんどくさいID管理を丸投げできないかなと思い調べた</p>
-<h2 id="座学">座学</h2>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Sat, 11 Dec 2021 11:09:06 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Azure AD B2Cを作ってサンプルアプリを動かした</title><link>https://fukasawah.github.io/posts/2021/12/11/azure-ad-b2c/</link><pubDate>Sat, 11 Dec 2021 11:09:06 +0900</pubDate><guid>https://fukasawah.github.io/posts/2021/12/11/azure-ad-b2c/</guid><description>Azure AD B2CでめんどくさいID管理を丸投げできないかなと思い調べた 参考資料 ドキュメント https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/ 読んでおくと良さそうな記事 https://jpazureid.github.io/blog/azure-active-directory/azure-ad-b2c-fundamentals/ https://qiita.com/Shinya-Yamaguchi/items/03321728b373a27be009 作成準備 DNSゾーン作成</description><content type="html"><![CDATA[<p>Azure AD B2CでめんどくさいID管理を丸投げできないかなと思い調べた</p>
+<h2 id="参考資料">参考資料</h2>
+<p>ドキュメント</p>
 <ul>
 <li><a href="https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/">https://docs.microsoft.com/ja-jp/azure/active-directory-b2c/</a></li>
+</ul>
+<p>読んでおくと良さそうな記事</p>
+<ul>
+<li><a href="https://jpazureid.github.io/blog/azure-active-directory/azure-ad-b2c-fundamentals/">https://jpazureid.github.io/blog/azure-active-directory/azure-ad-b2c-fundamentals/</a></li>
+<li><a href="https://qiita.com/Shinya-Yamaguchi/items/03321728b373a27be009">https://qiita.com/Shinya-Yamaguchi/items/03321728b373a27be009</a></li>
 </ul>
 <h2 id="作成準備">作成準備</h2>
 <h3 id="dnsゾーン作成任意">DNSゾーン作成（任意）</h3>
@@ -153,7 +159,7 @@ apexドメイン(fukasawah.dev)でも良いが、今回はアプリケーショ�
     </figure></p>
 <p>「任意の ID プロバイダーまたは組織ディレクトリ内のアカウント (ユーザー フローを使用したユーザーの認証用)」にすること。
 このテナントしか使わないからと「この組織ディレクトリのみに含まれるアカウント」を選ぶと、通らなくなるので注意。</p>
-<p>リダイレクトURIは動作確認用アプリに合わせた値を指定する。（<code>https://localhost:44316/signin-oidc</code>とした）</p>
+<p>リダイレクトURIは動作確認用アプリに合わせた値を指定する。（サンプルアプリの都合から<code>https://localhost:44316/signin-oidc</code>とした）</p>
 <p>
     <figure>
     <a href="images/index/2021-12-11-08-08-09.png" target="_blank" onclick="showOverlay(event)">
