@@ -1,4 +1,55 @@
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Wed, 20 Apr 2022 03:50:57 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>PostgreSQLのALTER DEFAULT PRIVILEGESのtarget_roleには指定したロール自身の操作しか反映されない</title><link>https://fukasawah.github.io/posts/2022/04/20/postgresql-alter-default-privileges/</link><pubDate>Wed, 20 Apr 2022 03:50:57 +0900</pubDate><guid>https://fukasawah.github.io/posts/2022/04/20/postgresql-alter-default-privileges/</guid><description>タイトル通り。ハマったのでメモ。 要約 テーブル作成ができる contributorというロールがあり、contributorが付与されているad</description><content type="html"><![CDATA[<p>タイトル通り。ハマったのでメモ。</p>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Posts on fukasawah.github.io</title><link>https://fukasawah.github.io/posts/</link><description>Recent content in Posts on fukasawah.github.io</description><generator>Hugo -- gohugo.io</generator><language>ja-JP</language><lastBuildDate>Mon, 19 Sep 2022 13:38:26 +0900</lastBuildDate><atom:link href="https://fukasawah.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>MCP資格のAZ-204に合格しました</title><link>https://fukasawah.github.io/posts/2022/09/19/exam-az-204/</link><pubDate>Mon, 19 Sep 2022 13:38:26 +0900</pubDate><guid>https://fukasawah.github.io/posts/2022/09/19/exam-az-204/</guid><description>Cloud Skill Challenge 2022 Mayのバウチャーをもらったので受けてきました。AZ-305を請けるつもりでしたが、対象外だったので。 821点で合格でした。セクショ</description><content type="html"><![CDATA[<p>Cloud Skill Challenge 2022 Mayのバウチャーをもらったので受けてきました。AZ-305を請けるつもりでしたが、対象外だったので。</p>
+<p>821点で合格でした。セクションごとの成績を見てみましょう。</p>
+<p>
+    <figure>
+    <a href="images/index/2022-09-17-17-01-18.png" target="_blank" onclick="showOverlay(event)">
+        <img src="/posts/2022/09/19/exam-az-204/images/index/2022-09-17-17-01-18_hua4ed97517ec21bac2dbdd9ea14f791e2_10471055_300x300_fit_q75_bgffffff_box_2.jpg"  alt="受験結果のスコア。80%切ってるものが多い。"  loading="lazy"/>
+    </a>
+        <figcaption>受験結果のスコア。80%切ってるものが多い。</figcaption>
+    </figure></p>
+<p>特に「Azureサービスおよびサードパーティ製サービスの接続と使用」が悲惨です。ロクに実技をしてないことがよくわかりますね。</p>
+<h3 id="感想">感想</h3>
+<ul>
+<li>言語選択があった(C#, Python)
+<ul>
+<li>実装コードを選ばせられる。さすがにライブラリ固有な話はない・・・こともなかったが、実装経験がないとすぐには難しそうな話も</li>
+</ul>
+</li>
+<li>学習ガイドに無い範囲もさわり程度にAzure Static WebApps出てくる</li>
+<li>ニッチな設問も多く出る
+<ul>
+<li>Azure ADで認証するアプリで、アプリからアプリの権限でリソースにアクセスするのではなく、アプリから認証したユーザから権限を委譲してもらい、リソースにアクセスする系の話があった気がする。こういった複合技みたいな情報はすぐには出てこないし裏付けを取るのがしんどい。</li>
+</ul>
+</li>
+<li>アカウントキー等のリソースのシークレット情報を使わず、マネージドIDを使ったAzure AD認証を推していっている
+<ul>
+<li>今のチュートリアルでやった気になっていると、ここでふるい落とされる</li>
+</ul>
+</li>
+</ul>
+<h3 id="やっておいたほうがいいこと">やっておいたほうがいいこと</h3>
+<p>まず821点ごときの凡々な成績者の言う事なんで話半分に・・・（予防線）</p>
+<p>勉強法は、教材を買ってひたすら解いてわからないところを復習、というありきたりな方法はまだ通用すると思います。</p>
+<p>しかし、今回の試験を受けた感じ、Azureはこういうのを認めていない気がしていて、実際に範囲外の内容も出てきた。
+（もちろん、Udemyなどで教材を売る方は合格に繋がらない教材は買ってもらえなくなるので、そのうちキャッチアップして対応していくだろう）</p>
+<p>なので、それ以外にやっておいたほうが良いことはありそうだったので書いてみる。どちらかというと、Azureを使う上でやっておいた方が良いことのほうが近くて、これが試験の役に立つと思ってます。</p>
+<ul>
+<li>アップデート情報をキャッチアップする</li>
+<li>サービスの制限を知る</li>
+<li>時代の流れを抑えておく</li>
+</ul>
+<p>試験範囲ではないからやらない、のではなく、普段からアップデート情報をキャッチアップしていく。
+以下のあたりはAZ-204では触れられていないはずだが、キャッチアップはできていたので迷わず答えることができた（あっていたかは別）</p>
+<ul>
+<li>Azure Static WebApps</li>
+<li>Managed disk のZRSのサポート</li>
+</ul>
+<p>サービスの制限とかを抑えておくと細かい点数を拾えるのでよいでしょう。Azureはサービスの一貫性みたいなのがなく、プランで出来ることが違ったり、なぜできないのかわからない制限、実運用していくと辛くなる制限も多いです。サービスの数だけ覚えないといけないのはなんか違うのでは、という気はしている。</p>
+<p>あとは時代の流れ(?)というものがあると思っていて、ゾーン冗長、Azure AD認証（マネージドIDなど）、プライベートエンドポイント接続あたりを推していると感じている。</p>
+<p>ゾーン冗長はもちろん可用性のためであり、ゾーン冗長のサポート無しのサービスをゾーンレベルの可用性を取るように複数台構成を運用するのはシンドイ。Azure functionのインスタンスを3つも稼働するコストなんかない、といわれ2つをTrafficManagerでホットスタンバイ構成を取るのを最近やったが、まぁしんどかった。3つ分のお金を出せれば迷わず使いたいが。個人的にはせめて2インスタンスから始められると嬉しい。</p>
+<p>Azure AD認証はシークレットレスな運用を推し進めることでセキュアにしていく狙いがありそうで、リソース毎に払い出されるアカウントキーとかは今後使わないのが普通になるのではないかと思う。チュートリアルでは当たり前のように使っているが、正直アカウントキーをどう管理するかを踏まえて説明するか、警告してやる化したほうが良いと思っている。</p>
+<p>プライベートエンドポイント接続は、通信をVNET内に閉じさせたいという <del>厳しい</del> お客様は未だに数多くいて、プライベートエンドポイント接続のサポート状況で採用できるサービスやプランが変わる事も多い。</p>
+]]></content></item><item><title>PostgreSQLのALTER DEFAULT PRIVILEGESのtarget_roleには指定したロール自身の操作しか反映されない</title><link>https://fukasawah.github.io/posts/2022/04/20/postgresql-alter-default-privileges/</link><pubDate>Wed, 20 Apr 2022 03:50:57 +0900</pubDate><guid>https://fukasawah.github.io/posts/2022/04/20/postgresql-alter-default-privileges/</guid><description>タイトル通り。ハマったのでメモ。 要約 テーブル作成ができる contributorというロールがあり、contributorが付与されているad</description><content type="html"><![CDATA[<p>タイトル通り。ハマったのでメモ。</p>
 <h2 id="要約">要約</h2>
 <p>テーブル作成ができる <code>contributor</code>というロールがあり、<code>contributor</code>が付与されている<code>admin1</code>というユーザ(ログインできるロール)が居るとする。</p>
 <p>読み取りのみできる<code>reader</code>というロールがあるとする。</p>
