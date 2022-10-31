@@ -1,7 +1,6 @@
-<!doctype html><html lang=ja-jp><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta http-equiv=x-ua-compatible content="ie=edge"><meta itemprop=name content="VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)"><meta itemprop=description content="まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする"><meta itemprop=datePublished content="2019-03-25T02:16:16+09:00"><meta itemprop=dateModified content="2019-05-27T11:35:31+09:00"><meta itemprop=wordCount content="4238"><meta itemprop=keywords content="Server,LetsEncrypt,"><meta property="og:title" content="VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)"><meta property="og:description" content="まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする"><meta property="og:type" content="article"><meta property="og:url" content="https://fukasawah.github.io/posts/2019/03/25/vps-server-setup-with-letsencrypt/"><meta property="article:published_time" content="2019-03-25T02:16:16+09:00"><meta property="article:modified_time" content="2019-05-27T11:35:31+09:00"><meta name=twitter:card content="summary"><meta name=twitter:title content="VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)"><meta name=twitter:description content="まずは入っているパッケージを適当に最新化 yum update reboot ユーザを作る # ユーザ作成 useradd fukasawah # パスワード設定 passwd fukasawah # wheelを与えてsudoを使えるようにする"><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/site.webmanifest><link rel=mask-icon href=/safari-pinned-tab.svg color><link rel="shortcut icon" href=/favicon.ico><title>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</title><link rel=stylesheet href=https://fukasawah.github.io/css/style.min.eac77496566fd7d5768fd650ddb0b2b181ca6a2d7c5fdd6fe6b8ba4bf47e566f.css integrity="sha256-6sd0llZv19V2j9ZQ3bCysYHKai18X91v5ri6S/R+Vm8=" crossorigin=anonymous><script src=/js/app.js></script><link rel=stylesheet href=/css/style.css><style>.bg-img{background-image:url(https://fukasawah.github.io/)}</style></head><body id=page><header id=site-header class="animated slideInUp"><div class="hdr-wrapper section-inner"><div class=hdr-left><div class=site-branding><a href=https://fukasawah.github.io/>fukasawah.github.io</a></div><nav class="site-nav hide-in-mobile"><a href=https://fukasawah.github.io/posts/>Posts</a>
-<a href=https://fukasawah.github.io/about/>About</a></nav></div><div class="hdr-right hdr-icons"><span class="hdr-social hide-in-mobile"><a href=https://twitter.com/fukasawah target=_blank rel="noopener me" title=Twitter><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9.0 01-3.14 1.53 4.48 4.48.0 00-7.86 3v1A10.66 10.66.0 013 4s-4 9 5 13a11.64 11.64.0 01-7 2c9 5 20 0 20-11.5a4.5 4.5.0 00-.08-.83A7.72 7.72.0 0023 3z"/></svg></a><a href=https://github.com/fukasawah target=_blank rel="noopener me" title=Github><svg xmlns="http://www.w3.org/2000/svg" class="feather" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37.0 00-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44.0 0020 4.77 5.07 5.07.0 0019.91 1S18.73.65 16 2.48a13.38 13.38.0 00-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07.0 005 4.77a5.44 5.44.0 00-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37.0 009 18.13V22"/></svg></a></span><button id=menu-btn class=hdr-btn title=Menu><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button></div></div></header><div id=mobile-menu class="animated fast"><ul><li><a href=https://fukasawah.github.io/posts/>Posts</a></li><li><a href=https://fukasawah.github.io/about/>About</a></li></ul></div><main class="site-main section-inner animated fadeIn faster"><article class=thin><header class=post-header><div class=post-meta><span>Mar 25, 2019</span></div><h1>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</h1></header><div class=content><p>まずは入っているパッケージを適当に最新化</p><pre><code>yum update
+<!doctype html><html><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><link rel=stylesheet type=text/css href=https://fukasawah.github.io/css/theme.min.9d12c4e634f802b98375ad90880492251ec9d3f73bc320dab9d903811246e0b42c708c1a8d50717f9b1babc9feb6efa75bb5d414cf501a45ec86f4d77731b4a9.css integrity="sha512-nRLE5jT4ArmDda2QiASSJR7J0/c7wyDaudkDgRJG4LQscIwajVBxf5sbq8n+tu+nW7XUFM9QGkXshvTXdzG0qQ=="><link rel=stylesheet type=text/css href=https://fukasawah.github.io/css/syntax.min.9d0044b0ce135aff3405271be2a17805c5ae03ec48f146191dc4b30923424c76fe7c6086323aa2cbf83affd41e11fef907f33b6cd685fe3645043bb79f63509a.css integrity="sha512-nQBEsM4TWv80BScb4qF4BcWuA+xI8UYZHcSzCSNCTHb+fGCGMjqiy/g6/9QeEf75B/M7bNaF/jZFBDu3n2NQmg=="><title>fukasawah.github.io | VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</title></head><body><header><p><a href=https://fukasawah.github.io/>fukasawah.github.io</a></p></header><main><article><header><h1>VPS ServerのセットアップとLetsEncryptによる証明書取得と利用まで(Google Cloud DNS Service)</h1></header><p>まずは入っているパッケージを適当に最新化</p><pre tabindex=0><code>yum update
 reboot
-</code></pre><p>ユーザを作る</p><pre><code># ユーザ作成
+</code></pre><p>ユーザを作る</p><pre tabindex=0><code># ユーザ作成
 useradd fukasawah
 # パスワード設定
 passwd fukasawah
@@ -15,17 +14,17 @@ su - fukasawah
 
 # sudoが使えるか確認。パスワード設定した時のパスワードが必要
 sudo ls -l /
-</code></pre><h3 id=ssh鍵の生成>SSH鍵の生成</h3><p>作成したユーザに対して行う。既に公開鍵の準備がある場合は、後述のauthorized_keysに追記する手順まで飛ばす。</p><pre><code>$ ssh-keygen -t rsa -b 4096
+</code></pre><h3 id=ssh鍵の生成>SSH鍵の生成</h3><p>作成したユーザに対して行う。既に公開鍵の準備がある場合は、後述のauthorized_keysに追記する手順まで飛ばす。</p><pre tabindex=0><code>$ ssh-keygen -t rsa -b 4096
 Generating public/private rsa key pair.
 Enter file in which to save the key (/home/fukasawah/.ssh/id_rsa):
-Created directory '/home/fukasawah/.ssh'.
+Created directory &#39;/home/fukasawah/.ssh&#39;.
 Enter passphrase (empty for no passphrase):
 Enter same passphrase again:
 Your identification has been saved in /home/fukasawah/.ssh/id_rsa.
 Your public key has been saved in /home/fukasawah/.ssh/id_rsa.pub.
 The key fingerprint is:
 1c:03:30:bb:05:59:23🇩🇪96:02:5a:5b:b2:48:c9:e9 fukasawah@ik1-309-14734.vs.sakura.ne.jp
-The key's randomart image is:
+The key&#39;s randomart image is:
 +--[ RSA 4096]----+
 |..* *++          |
 |.B B.* +         |
@@ -37,12 +36,12 @@ The key's randomart image is:
 |                 |
 |                 |
 +-----------------+
-</code></pre><p>信頼できる公開鍵として登録しておく</p><pre><code>cat .ssh/id_rsa.pub &gt;&gt; .ssh/authorized_keys
+</code></pre><p>信頼できる公開鍵として登録しておく</p><pre tabindex=0><code>cat .ssh/id_rsa.pub &gt;&gt; .ssh/authorized_keys
 chmod 0600 .ssh/authorized_keys
-</code></pre><p>秘密鍵はSSH接続時に必要になるので内容をコピーして手元に持ってきておく</p><pre><code>cat .ssh/id_rsa
-</code></pre><p>表示された <code>-----BEGIN RSA PRIVATE KEY-----</code>から<code>-----END RSA PRIVATE KEY-----</code>までの間の内容が秘密鍵なので、これをSSH接続したい端末にコピーする。</p><p>以降は必要ないので削除しておく</p><h3 id=sshサーバのセキュリティを高める>SSHサーバのセキュリティを高める</h3><p>rootユーザで行う。</p><p>SSHサーバに以下の設定を施す。</p><ul><li>パスワード認証を無効（公開鍵認証）</li><li>rootのログイン無効（作成したユーザからsuでログインする）</li><li>空のパスワードログインを無効（必ずパスワード設定しないとログインできないようにする）</li></ul><pre><code>cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+</code></pre><p>秘密鍵はSSH接続時に必要になるので内容をコピーして手元に持ってきておく</p><pre tabindex=0><code>cat .ssh/id_rsa
+</code></pre><p>表示された <code>-----BEGIN RSA PRIVATE KEY-----</code>から<code>-----END RSA PRIVATE KEY-----</code>までの間の内容が秘密鍵なので、これをSSH接続したい端末にコピーする。</p><p>以降は必要ないので削除しておく</p><h3 id=sshサーバのセキュリティを高める>SSHサーバのセキュリティを高める</h3><p>rootユーザで行う。</p><p>SSHサーバに以下の設定を施す。</p><ul><li>パスワード認証を無効（公開鍵認証）</li><li>rootのログイン無効（作成したユーザからsuでログインする）</li><li>空のパスワードログインを無効（必ずパスワード設定しないとログインできないようにする）</li></ul><pre tabindex=0><code>cp /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 vi /etc/ssh/sshd_config
-</code></pre><p>diffでバックアップとの差分を出して以下のように変更されたことを確認</p><pre><code>#diff /etc/ssh/sshd_config.bak /etc/ssh/sshd_config
+</code></pre><p>diffでバックアップとの差分を出して以下のように変更されたことを確認</p><pre tabindex=0><code>#diff /etc/ssh/sshd_config.bak /etc/ssh/sshd_config
 55c55
 &lt; #PubkeyAuthentication yes
 ---
@@ -53,48 +52,48 @@ vi /etc/ssh/sshd_config
 ---
 &gt; PermitEmptyPasswords no
 &gt; PasswordAuthentication no
-</code></pre><pre><code>問題がなければsshdを再起動
+</code></pre><pre tabindex=0><code>問題がなければsshdを再起動
 systemctl restart sshd
-</code></pre><p>以下を確認する</p><ul><li>root＋パスワード認証でログインできないこと</li><li>作成したユーザ＋パスワード認証でログインできないこと</li><li>作成したユーザ＋公開鍵認証でログインできること</li></ul><h3 id=ロケールとタイムゾーンの変更>ロケールとタイムゾーンの変更</h3><p>OS設定のロケールとタイムゾーンを日本に合わせる</p><pre><code># ロケールの確認
+</code></pre><p>以下を確認する</p><ul><li>root＋パスワード認証でログインできないこと</li><li>作成したユーザ＋パスワード認証でログインできないこと</li><li>作成したユーザ＋公開鍵認証でログインできること</li></ul><h3 id=ロケールとタイムゾーンの変更>ロケールとタイムゾーンの変更</h3><p>OS設定のロケールとタイムゾーンを日本に合わせる</p><pre tabindex=0><code># ロケールの確認
 locale
 # タイムゾーンの確認
 date
-</code></pre><p>以下のコマンドで変更する。</p><pre><code># ロケール変更
+</code></pre><p>以下のコマンドで変更する。</p><pre tabindex=0><code># ロケール変更
 sudo localectl set-locale LANG=ja_JP.UTF-8
 
 # タイムゾーン変更
 sudo timedatectl set-timezone Asia/Tokyo
-</code></pre><p>ロケールは再接続後に反映される。</p><pre><code># ロケールの確認
+</code></pre><p>ロケールは再接続後に反映される。</p><pre tabindex=0><code># ロケールの確認
 locale
 # タイムゾーンの変更の確認
 date
 </code></pre><h2 id=lets-encryptでssl証明書を作る>Let&rsquo;s EncryptでSSL証明書を作る</h2><p>ドメインは Google Domainsで管理しており、ワイルドカード証明書を発行したい。</p><p>ワイルドカード証明書の場合、DNS-01認証が必須でありDNSサーバに対してTXTレコードを書き込む必要がある。
 一般的なドメインレジストリ（お名前.com、Value-Domain等）でも手動で行えば可能ではあるが、90日の有効期間しかないため、この作業は自動化したい。</p><p>もちろん、スクレイピングなどを駆使すれば出来なくはないがデザイン変更などでスクレイピングプログラムが動かなくなるリスクも考えられる。そのあたりを考えると大変。
 そこで、DNSをAPIで操作できるサービスを利用する。こちらならAPIが変わらない限り動かなくなることもなく、失敗時の動作もわかりやすい。</p><p>ただ、そのためには、ドメインレジストリで管理しているネームサーバではなく、サービス提供のネームサーバに転送し、解決させるようにする必要がある</p><p>今回はCoocle Cloud Platformで提供されているGoogle Cloud DNS Serviceを使う。ちなみに、Azure DNSでも同じ要領で出来る。
-LetsEncryptによる証明書の作成・更新を行うためのプログラムには、certbot+certbot-dns-google プラグインを使う。</p><ul><li>Google Cloud DNS Serviceへゾーンを作成する</li><li>ネームサーバを変更(Google domains -> Google Cloud DNS Service)</li><li>Google Cloud DNS Serviceの認可情報を作る</li></ul><h3 id=google-cloud-dns-serviceへゾーンを作成する>Google Cloud DNS Serviceへゾーンを作成する</h3><p><a href=https://cloud.google.com/dns/>https://cloud.google.com/dns/</a></p><p>ゾーンはドメインに対してDNSレコードを管理する単位で、1ドメインにつき1ゾーンを作ることになる。</p><p>以下を進めて、Google Cloud DNS Serviceを有効化にする。</p><p><a href=https://console.cloud.google.com/net-services/dns/zones>https://console.cloud.google.com/net-services/dns/zones</a></p><p>ゾーンを作成する。</p><ul><li>ゾーンタイプ: 公開</li><li>ゾーン名: 自由</li><li>DNS名: 取得したドメイン名</li><li>DNSSEC: オン</li></ul><p><img src=/images/vps-server-setup-with-letsencrypt/2019-03-16-21-14-23.png loading=lazy></p><p>作成出来たらゾーンについてネームサーバが割り当たる。ゾーンで登録したレコードの情報はこのネームサーバに設定される。</p><h3 id=ネームサーバを変更google-domains---google-cloud-dns-service>ネームサーバを変更(Google domains -> Google Cloud DNS Service)</h3><p>Google Cloud DNS Serviceでゾーンを作成した時に得られたネームサーバをGoogle Domainsに登録する。</p><p>まず、<a href=https://domains.google.com/>Google Domains</a>を開き、ネームサーバを変更する。</p><p><img src=/images/vps-server-setup-with-letsencrypt/2019-03-16-21-20-14.png loading=lazy></p><p>この変更は最長1日ぐらいかかる。結構時間がかかった。</p><h3 id=google-cloud-dns-serviceの認可情報を作る>Google Cloud DNS Serviceの認可情報を作る</h3><p>次にGoogle DNSでDNS登録をプログラムが行えるようにOAuth2認証の準備をする</p><p><a href=https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount>https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount</a></p><ul><li>プロジェクトを作る(fukasawah-devとした)</li><li>サービスアカウントを作る（certbotとした）</li><li>サービスアカウントの権限を設定する（DNS管理者とした。おそらくこれが必要最小限の権限）</li><li>キーの作成を行い、JSONファイルで出力する。これがクレデンシャル情報となる。</li></ul><p>ここで生成したJSONファイルはこの後使う。</p><p>クレデンシャル情報は自分の代わりに操作を許すための認証情報という扱いなので、絶対に人に見せてはいけない。
-また、もし漏れた場合でも影響を抑えるため、権限は必要最小限に設定する。</p><h3 id=certbotでssl証明書を発行する>certbotでSSL証明書を発行する</h3><p><a href=https://docs.docker.com/install/linux/docker-ce/centos/>https://docs.docker.com/install/linux/docker-ce/centos/</a></p><p>今回はdockerとcertbotを使う。dockerのほうが環境が汚れなくて精神衛生上よいため。</p><pre><code>yum install -y yum-utils device-mapper-persistent-data lvm2
+LetsEncryptによる証明書の作成・更新を行うためのプログラムには、certbot+certbot-dns-google プラグインを使う。</p><ul><li>Google Cloud DNS Serviceへゾーンを作成する</li><li>ネームサーバを変更(Google domains -> Google Cloud DNS Service)</li><li>Google Cloud DNS Serviceの認可情報を作る</li></ul><h3 id=google-cloud-dns-serviceへゾーンを作成する>Google Cloud DNS Serviceへゾーンを作成する</h3><p><a href=https://cloud.google.com/dns/>https://cloud.google.com/dns/</a></p><p>ゾーンはドメインに対してDNSレコードを管理する単位で、1ドメインにつき1ゾーンを作ることになる。</p><p>以下を進めて、Google Cloud DNS Serviceを有効化にする。</p><p><a href=https://console.cloud.google.com/net-services/dns/zones>https://console.cloud.google.com/net-services/dns/zones</a></p><p>ゾーンを作成する。</p><ul><li>ゾーンタイプ: 公開</li><li>ゾーン名: 自由</li><li>DNS名: 取得したドメイン名</li><li>DNSSEC: オン</li></ul><p><figure><img src=/images/vps-server-setup-with-letsencrypt/2019-03-16-21-14-23.png loading=lazy></figure></p><p>作成出来たらゾーンについてネームサーバが割り当たる。ゾーンで登録したレコードの情報はこのネームサーバに設定される。</p><h3 id=ネームサーバを変更google-domains---google-cloud-dns-service>ネームサーバを変更(Google domains -> Google Cloud DNS Service)</h3><p>Google Cloud DNS Serviceでゾーンを作成した時に得られたネームサーバをGoogle Domainsに登録する。</p><p>まず、<a href=https://domains.google.com/>Google Domains</a>を開き、ネームサーバを変更する。</p><p><figure><img src=/images/vps-server-setup-with-letsencrypt/2019-03-16-21-20-14.png loading=lazy></figure></p><p>この変更は最長1日ぐらいかかる。結構時間がかかった。</p><h3 id=google-cloud-dns-serviceの認可情報を作る>Google Cloud DNS Serviceの認可情報を作る</h3><p>次にGoogle DNSでDNS登録をプログラムが行えるようにOAuth2認証の準備をする</p><p><a href=https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount>https://developers.google.com/identity/protocols/OAuth2ServiceAccount#creatinganaccount</a></p><ul><li>プロジェクトを作る(fukasawah-devとした)</li><li>サービスアカウントを作る（certbotとした）</li><li>サービスアカウントの権限を設定する（DNS管理者とした。おそらくこれが必要最小限の権限）</li><li>キーの作成を行い、JSONファイルで出力する。これがクレデンシャル情報となる。</li></ul><p>ここで生成したJSONファイルはこの後使う。</p><p>クレデンシャル情報は自分の代わりに操作を許すための認証情報という扱いなので、絶対に人に見せてはいけない。
+また、もし漏れた場合でも影響を抑えるため、権限は必要最小限に設定する。</p><h3 id=certbotでssl証明書を発行する>certbotでSSL証明書を発行する</h3><p><a href=https://docs.docker.com/install/linux/docker-ce/centos/>https://docs.docker.com/install/linux/docker-ce/centos/</a></p><p>今回はdockerとcertbotを使う。dockerのほうが環境が汚れなくて精神衛生上よいため。</p><pre tabindex=0><code>yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install docker-ce docker-ce-cli containerd.io
 
 systemctl start docker
 systemctl enable docker
-</code></pre><p>dockerのインストールが終わったら作業ディレクトリを用意する</p><pre><code>groupadd letsencrypt
+</code></pre><p>dockerのインストールが終わったら作業ディレクトリを用意する</p><pre tabindex=0><code>groupadd letsencrypt
 mkdir -p /etc/letsencrypt /var/lib/letsencrypt /var/log/letsencrypt
 chmod 0770 /etc/letsencrypt /var/lib/letsencrypt /var/log/letsencrypt
 chown root:letsencrypt /etc/letsencrypt /var/lib/letsencrypt /var/log/letsencrypt
-</code></pre><p>実行前にGoogle Cloud DNSを操作するための認証情報をJSONファイルで与える必要があるので、先ほどダウンロードしたJSONファイルを送る。</p><pre><code>vi /etc/letsencrypt/google.json
+</code></pre><p>実行前にGoogle Cloud DNSを操作するための認証情報をJSONファイルで与える必要があるので、先ほどダウンロードしたJSONファイルを送る。</p><pre tabindex=0><code>vi /etc/letsencrypt/google.json
 chmod 0600 /etc/letsencrypt/google.json
-</code></pre><p>ドメインはよしなに置き換える</p><pre><code>sudo docker run -it --rm --name certbot \
-            -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; \
-            -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; \
-            -v &quot;/var/log/letsencrypt:/var/log/letsencrypt&quot; \
+</code></pre><p>ドメインはよしなに置き換える</p><pre tabindex=0><code>sudo docker run -it --rm --name certbot \
+            -v &#34;/etc/letsencrypt:/etc/letsencrypt&#34; \
+            -v &#34;/var/lib/letsencrypt:/var/lib/letsencrypt&#34; \
+            -v &#34;/var/log/letsencrypt:/var/log/letsencrypt&#34; \
             certbot/dns-google certonly \
   --dns-google \
   --dns-google-credentials /etc/letsencrypt/google.json \
   --dns-google-propagation-seconds 120 \
   -d fukasawah.dev \
   -d *.fukasawah.dev
-</code></pre><p>実行すると3つほど尋ねられる。</p><ul><li>再発行やセキュリティの通知先のEmail</li><li>利用規約とその同意</li><li>非営利組織Electronic Frontier Foundationの活動を伝えるため、メールアドレスを共有してよいか？（Noでよい）</li></ul><pre><code>Enter email address (used for urgent renewal and security notices) (Enter 'c' to
+</code></pre><p>実行すると3つほど尋ねられる。</p><ul><li>再発行やセキュリティの通知先のEmail</li><li>利用規約とその同意</li><li>非営利組織Electronic Frontier Foundationの活動を伝えるため、メールアドレスを共有してよいか？（Noでよい）</li></ul><pre tabindex=0><code>Enter email address (used for urgent renewal and security notices) (Enter &#39;c&#39; to
 cancel): メールアドレスを入力
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,14 +106,12 @@ https://acme-v02.api.letsencrypt.org/directory
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Would you be willing to share your email address with the Electronic Frontier
-Foundation, a founding partner of the Let's Encrypt project and the non-profit
-organization that develops Certbot? We'd like to send you email about our work
+Foundation, a founding partner of the Let&#39;s Encrypt project and the non-profit
+organization that develops Certbot? We&#39;d like to send you email about our work
 encrypting the web, EFF news, campaigns, and ways to support digital freedom.
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 (Y)es/(N)o: N
-
-</code></pre><p>実行後、Cloud DNS上をみると、以下のようにレコードを登録していることが分かる。
-<img src=/images/vps-server-setup-with-letsencrypt/2019-03-17-22-59-38.png loading=lazy></p><p>うまくいくと以下のような形になる。</p><pre><code>IMPORTANT NOTES:
+</code></pre><p>実行後、Cloud DNS上をみると、以下のようにレコードを登録していることが分かる。<figure><img src=/images/vps-server-setup-with-letsencrypt/2019-03-17-22-59-38.png loading=lazy></figure></p><p>うまくいくと以下のような形になる。</p><pre tabindex=0><code>IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
    /etc/letsencrypt/live/fukasawah.dev/fullchain.pem
    Your key file has been saved at:
@@ -122,15 +119,14 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
    Your cert will expire on 2019-06-15. To obtain a new or tweaked
    version of this certificate in the future, simply run certbot
    again. To non-interactively renew *all* of your certificates, run
-   &quot;certbot renew&quot;
+   &#34;certbot renew&#34;
  - If you like Certbot, please consider supporting our work by:
 
-   Donating to ISRG / Let's Encrypt:   https://letsencrypt.org/donate
+   Donating to ISRG / Let&#39;s Encrypt:   https://letsencrypt.org/donate
    Donating to EFF:                    https://eff.org/donate-le
-
-</code></pre><p>以下の場所に生成される。<code>fukasawah.dev</code>はドメイン名なので実行する環境で変わる。</p><ul><li>証明書（CAのみ）: <code>/etc/letsencrypt/live/fukasawah.dev/chain.pem</code></li><li>証明書（ドメインのみ）: <code>/etc/letsencrypt/live/fukasawah.dev/cert.pem</code></li><li>証明書（CA+ドメイン）: <code>/etc/letsencrypt/live/fukasawah.dev/fullchain.pem</code></li><li>秘密鍵: <code>/etc/letsencrypt/live/fukasawah.dev/privkey.pem</code></li></ul><p>fullchainとprivkeyを良く使うことになるはず。</p><p>opensslコマンドで証明書の内容を覗くことができる。</p><pre><code>openssl x509 -text /etc/letsencrypt/live/fukasawah.dev/fullchain.pem
+</code></pre><p>以下の場所に生成される。<code>fukasawah.dev</code>はドメイン名なので実行する環境で変わる。</p><ul><li>証明書（CAのみ）: <code>/etc/letsencrypt/live/fukasawah.dev/chain.pem</code></li><li>証明書（ドメインのみ）: <code>/etc/letsencrypt/live/fukasawah.dev/cert.pem</code></li><li>証明書（CA+ドメイン）: <code>/etc/letsencrypt/live/fukasawah.dev/fullchain.pem</code></li><li>秘密鍵: <code>/etc/letsencrypt/live/fukasawah.dev/privkey.pem</code></li></ul><p>fullchainとprivkeyを良く使うことになるはず。</p><p>opensslコマンドで証明書の内容を覗くことができる。</p><pre tabindex=0><code>openssl x509 -text /etc/letsencrypt/live/fukasawah.dev/fullchain.pem
 </code></pre><p>なお、ファイルパスはシンボリックリンクされており、再発行(renew)してもファイルパスが変わらないように配慮されている。</p><p>ちなみに<code>certbot</code>実行時、TXTレコードが反映されるまでデフォルト60秒待つのだけど、それが間に合わなかったのか以下のように失敗することがあった。
-なので、<code>--dns-google-propagation-seconds 120</code>オプションを足している。</p><pre><code>IMPORTANT NOTES:
+なので、<code>--dns-google-propagation-seconds 120</code>オプションを足している。</p><pre tabindex=0><code>IMPORTANT NOTES:
  - The following errors were reported by the server:
 
    Domain: fukasawah.dev
@@ -145,23 +141,22 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
    secure backup of this folder now. This configuration directory will
    also contain certificates and private keys obtained by Certbot so
    making regular backups of this folder is ideal.
-
 </code></pre><h3 id=再発行を試す>再発行を試す</h3><p>期限が近付いてきたときにちゃんと証明書が更新されるか確認する。</p><p>通常はLetsEncryptのAPIのリミットにかからないように、手元の証明書が本当に更新が必要かどうか検証してから行うようになっている。
-ただ、それだと再試行まで時間がかかってしまうので、<code>--force-renew</code>オプションで無理やり再発行する。</p><pre><code>sudo docker run -it --rm --name certbot \
-            -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; \
-            -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; \
-            -v &quot;/var/log/letsencrypt:/var/log/letsencrypt&quot; \
+ただ、それだと再試行まで時間がかかってしまうので、<code>--force-renew</code>オプションで無理やり再発行する。</p><pre tabindex=0><code>sudo docker run -it --rm --name certbot \
+            -v &#34;/etc/letsencrypt:/etc/letsencrypt&#34; \
+            -v &#34;/var/lib/letsencrypt:/var/lib/letsencrypt&#34; \
+            -v &#34;/var/log/letsencrypt:/var/log/letsencrypt&#34; \
             certbot/dns-google renew --force-renew
-</code></pre><p>うまくいけば、<code>ls -l /etc/letsencrypt/archive/*</code>で証明書と秘密鍵が増えているはず。</p><h3 id=cronで自動実行する>cronで自動実行する</h3><p>自動化するまでがお仕事です。今回はCronを使う。</p><p>cronでrootユーザでrenewを定期的に実行する</p><pre><code>sudo crontab -e
-</code></pre><p>毎日午前3時12分に実行する。（時間はずらす）</p><pre><code>12 3 * * * docker run --rm --name certbot -v &quot;/etc/letsencrypt:/etc/letsencrypt&quot; -v &quot;/var/lib/letsencrypt:/var/lib/letsencrypt&quot; -v &quot;/var/log/letsencrypt:/var/log/letsencrypt&quot; certbot/dns-google renew 
-</code></pre><h2 id=nginxの導入とssl証明書の利用>nginxの導入とSSL証明書の利用</h2><p>nginxの導入は手抜き</p><pre><code>sudo yum install nginx
-</code></pre><p><code>sudo vi /etc/nginx/nginx.conf</code></p><p>HTTP(tcp/80)は使わないので、この部分を上書きしていく。「</p><pre><code>    server {
+</code></pre><p>うまくいけば、<code>ls -l /etc/letsencrypt/archive/*</code>で証明書と秘密鍵が増えているはず。</p><h3 id=cronで自動実行する>cronで自動実行する</h3><p>自動化するまでがお仕事です。今回はCronを使う。</p><p>cronでrootユーザでrenewを定期的に実行する</p><pre tabindex=0><code>sudo crontab -e
+</code></pre><p>毎日午前3時12分に実行する。（時間はずらす）</p><pre tabindex=0><code>12 3 * * * docker run --rm --name certbot -v &#34;/etc/letsencrypt:/etc/letsencrypt&#34; -v &#34;/var/lib/letsencrypt:/var/lib/letsencrypt&#34; -v &#34;/var/log/letsencrypt:/var/log/letsencrypt&#34; certbot/dns-google renew 
+</code></pre><h2 id=nginxの導入とssl証明書の利用>nginxの導入とSSL証明書の利用</h2><p>nginxの導入は手抜き</p><pre tabindex=0><code>sudo yum install nginx
+</code></pre><p><code>sudo vi /etc/nginx/nginx.conf</code></p><p>HTTP(tcp/80)は使わないので、この部分を上書きしていく。「</p><pre tabindex=0><code>    server {
         listen       80 default_server;
         listen       [::]:80 default_server;
 
         ...
     }
-</code></pre><p>以下のように置き換える。</p><pre><code>    server {
+</code></pre><p>以下のように置き換える。</p><pre tabindex=0><code>    server {
         listen 443 ssl http2;
         listen [::]:443 ssl http2;
 
@@ -173,7 +168,7 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
         ssl_session_tickets off;
         # modern configuration. tweak to your needs.
         ssl_protocols TLSv1.2;
-        ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+        ssl_ciphers &#39;ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256&#39;;
         ssl_prefer_server_ciphers on;
 
         # HSTS (ngx_http_headers_module is required) (15768000 seconds = 6 months)
@@ -205,13 +200,17 @@ encrypting the web, EFF news, campaigns, and ways to support digital freedom.
         }
     }
 </code></pre><p>なお、この元ネタは以下から生成している。
-<a href=https://mozilla.github.io/server-side-tls/ssl-config-generator/>https://mozilla.github.io/server-side-tls/ssl-config-generator/</a></p><p>以下の行が違うだけで、<code>fukasawah.dev</code>を自ドメインに置き換えればよい。</p><ul><li><code>ssl_certificate</code></li><li><code>ssl_certificate_key</code></li><li><code>ssl_trusted_certificate</code></li></ul><p>設定が終わったら、サーバの起動・自動起動</p><pre><code>systemctl start nginx
+<a href=https://mozilla.github.io/server-side-tls/ssl-config-generator/>https://mozilla.github.io/server-side-tls/ssl-config-generator/</a></p><p>以下の行が違うだけで、<code>fukasawah.dev</code>を自ドメインに置き換えればよい。</p><ul><li><code>ssl_certificate</code></li><li><code>ssl_certificate_key</code></li><li><code>ssl_trusted_certificate</code></li></ul><p>設定が終わったら、サーバの起動・自動起動</p><pre tabindex=0><code>systemctl start nginx
 systemctl enable nginx
 
 systemctl status nginx
-</code></pre><p>https(tcp/443)のポートはファイアウォールで塞がれているので、firewalldの設定を変更し、https(tcp/443)からのアクセスを許可する</p><pre><code>firewall-cmd --add-service=https --zone=public 
+</code></pre><p>https(tcp/443)のポートはファイアウォールで塞がれているので、firewalldの設定を変更し、https(tcp/443)からのアクセスを許可する</p><pre tabindex=0><code>firewall-cmd --add-service=https --zone=public 
 firewall-cmd --add-service=https --zone=public --permanent
-</code></pre><p>Chrome等のブラウザでアクセスして表示されればOK</p><p><img src=/images/vps-server-setup-with-letsencrypt/2019-03-17-23-35-31.png loading=lazy></p><p>SSLの妥当性もテストしてくれるサービスがあるので、これも試す。
-<a href=https://www.ssllabs.com/ssltest/>https://www.ssllabs.com/ssltest/</a></p><p><img src=/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png loading=lazy></p><p>いいですね。</p><p>ちなみに、証明書を更新し終わったらnginxもreloadを行わないと反映されない。ので、<code>systemctl reload nginx</code>をcronに入れておくなりすると良いでしょう。</p></div><hr class=post-end><footer class=post-info><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://fukasawah.github.io/tags/server>Server</a></span><span class=tag><a href=https://fukasawah.github.io/tags/letsencrypt>LetsEncrypt</a></span></p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6A2 2 0 004 4v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>4238 Words</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Created at: 2019-03-25 02:16 +0900</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>Updated at: 2019-05-27 11:35 +0900</p><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-git-commit"><circle cx="12" cy="12" r="4"/><line x1="1.05" y1="12" x2="7" y2="12"/><line x1="17.01" y1="12" x2="22.96" y2="12"/></svg><a href=https://github.com/fukasawah/blog/commit/4e988d9374ed88a1fe3beaedeb6462380649ad85 target=_blank rel=noopener>4e988d9</a> @ 2019-05-27</p></footer></article><div class="post-nav thin"><a class=next-post href=https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/><span class=post-nav-label><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>&nbsp;Newer</span><br><span>Install PostgreSQL 11 on CentOS 7</span></a>
-<a class=prev-post href=https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/><span class=post-nav-label>Older&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></span><br><span>GNU ldで一部をスタティックリンクにする</span></a></div><div id=comments class=thin><div id=disqus_thread></div><script type=application/javascript>var disqus_config=function(){};(function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById('disqus_thread').innerHTML='Disqus comments not available by default when the website is previewed locally.';return;}
-var d=document,s=d.createElement('script');s.async=true;s.src='//'+"fukasawah"+'.disqus.com/embed.js';s.setAttribute('data-timestamp',+new Date());(d.head||d.body).appendChild(s);})();</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a></div></main><footer id=site-footer class="section-inner thin animated fadeIn faster"><p>&copy; 2022 <a href=https://fukasawah.github.io/>fukasawah</a></p><p>Made with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a> &#183; Theme <a href=https://github.com/Track3/hermit target=_blank rel=noopener>Hermit</a> &#183; <a href=https://fukasawah.github.io/posts/index.xml target=_blank title=rss><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 019 9"/><path d="M4 4a16 16 0 0116 16"/><circle cx="5" cy="19" r="1"/></svg></a></p></footer><script src=https://fukasawah.github.io/js/bundle.min.4a9a0ac3d2217822c7865b4161e6c2a71de1d70492264337755427898dd718f6.js integrity="sha256-SpoKw9IheCLHhltBYebCpx3h1wSSJkM3dVQniY3XGPY=" crossorigin=anonymous></script><script type=application/javascript>var doNotTrack=false;if(!doNotTrack){window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;ga('create','UA-136852520-1','auto');ga('send','pageview');}</script><script async src=https://www.google-analytics.com/analytics.js></script></body></html>
+</code></pre><p>Chrome等のブラウザでアクセスして表示されればOK</p><p><figure><img src=/images/vps-server-setup-with-letsencrypt/2019-03-17-23-35-31.png loading=lazy></figure></p><p>SSLの妥当性もテストしてくれるサービスがあるので、これも試す。
+<a href=https://www.ssllabs.com/ssltest/>https://www.ssllabs.com/ssltest/</a></p><p><figure><img src=/images/vps-server-setup-with-letsencrypt/2019-03-17-23-40-44.png loading=lazy></figure></p><p>いいですね。</p><p>ちなみに、証明書を更新し終わったらnginxもreloadを行わないと反映されない。ので、<code>systemctl reload nginx</code>をcronに入れておくなりすると良いでしょう。</p><footer><p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83.0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7" y2="7"/></svg><span class=tag><a href=https://fukasawah.github.io/tags/server>#Server</a></span>
+<span class=tag><a href=https://fukasawah.github.io/tags/letsencrypt>#LetsEncrypt</a></span></p><p>Created at: 2019-03-25 02:16 +0900<br>Updated at: 2019-05-27 11:35 +0900 <a href=https://github.com/fukasawah/blog/commit/4e988d9374ed88a1fe3beaedeb6462380649ad85 target=_blank rel=noopener>#4e988d9</a></p><p><a href=https://fukasawah.github.io/posts/2019/03/26/install-postgresql-11-on-centos7/><span title="Install PostgreSQL 11 on CentOS 7">&lt; Next</span></a>
+|
+<a href=https://fukasawah.github.io/posts/><span title=Posts>Posts</span></a>
+|
+<a href=https://fukasawah.github.io/posts/2019/01/07/a-part-static-link-in-gnu-ld/><span title="GNU ldで一部をスタティックリンクにする">Prev ></span></a></p></footer></article><div id=disqus_thread></div><script type=application/javascript>window.disqus_config=function(){},function(){if(["localhost","127.0.0.1"].indexOf(window.location.hostname)!=-1){document.getElementById("disqus_thread").innerHTML="Disqus comments not available by default when the website is previewed locally.";return}var t=document,e=t.createElement("script");e.async=!0,e.src="//fukasawah.disqus.com/embed.js",e.setAttribute("data-timestamp",+new Date),(t.head||t.body).appendChild(e)}()</script><noscript>Please enable JavaScript to view the <a href=https://disqus.com/?ref_noscript>comments powered by Disqus.</a></noscript><a href=https://disqus.com class=dsq-brlink>comments powered by <span class=logo-disqus>Disqus</span></a>
+<script src=https://fukasawah.github.io/js/theme-posts.min.526bf4c8dff80bed936c62a06f7bc8c02703fad621e3dd2ba243812d43c40b98397ff1951e5905c790b97c38633d42a0e35bf5314fdf9fcfbce31b18181b8ae3.js integrity="sha512-Umv0yN/4C+2TbGKgb3vIwCcD+tYh490rokOBLUPEC5g5f/GVHlkFx5C5fDhjPUKg41v1MU/fn8+84xsYGBuK4w==" defer></script></main><footer><p>&copy; 2022 <a href=https://fukasawah.github.io/>fukasawah</a></p></footer></body></html>
